@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.BoxBlur?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="loginPane" minHeight="-Infinity" prefHeight="695.0" prefWidth="1280.0" style="-fx-background-color: #2b2b2b;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.LoginController">
+   <children>
+      <HBox alignment="TOP_CENTER" fillHeight="false" layoutX="-1.0" layoutY="25.0" prefHeight="564.0" prefWidth="616.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fx:id="background" fitHeight="695.0" fitWidth="1280.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../../../../../Resources/images/argus_logo2.png" />
+               </image>
+               <effect>
+                  <BoxBlur height="4.0" iterations="3" width="4.0" />
+               </effect>
+            </ImageView>
+         </children>
+      </HBox>
+      <VBox fx:id="box_login" alignment="CENTER" layoutX="112.0" layoutY="25.0" prefHeight="695.0" prefWidth="1280.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="label_error" text="Usuário ou senha incorretos." textFill="RED" visible="false" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Bold Italic" size="16.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0">
+               <children>
+                  <FontAwesomeIconView glyphName="USER" glyphStyle="-fx-fill:#b2b2b2" size="25" />
+                  <JFXTextField fx:id="txt_login" focusColor="#898989" labelFloat="true" maxWidth="288.0" minWidth="288.0" prefHeight="43.0" prefWidth="288.0" promptText="Nome de usuario" unFocusColor="#e1ff00" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0">
+               <children>
+                  <FontAwesomeIconView glyphName="LOCK" glyphStyle="-fx-fill:#aaacaf" size="25" />
+                  <JFXPasswordField fx:id="txt_senha" focusColor="#898989" labelFloat="true" maxWidth="301.0" minWidth="294.0" onKeyPressed="#handle_loginEnter" prefHeight="43.0" prefWidth="294.0" promptText="Senha" unFocusColor="#e1ff00" />
+               </children>
+            </HBox>
+            <JFXButton fx:id="btn_confirmar" buttonType="RAISED" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#handle_login" prefHeight="45.0" prefWidth="115.0" styleClass="login-btn" text="ENTRAR" textFill="#f5efef">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </JFXButton>
+            <Hyperlink onAction="#mudarSenhaMenu" text="Esqueceu a senha?" textFill="#acd01c">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </Hyperlink>
+         </children>
+      </VBox>
+      <VBox fx:id="Box_recovery" alignment="CENTER" layoutX="122.0" layoutY="35.0" prefHeight="695.0" prefWidth="1280.0" spacing="30.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <FontAwesomeIconView fill="#fffcb0" glyphName="LOCK" size="80" />
+            <Label fx:id="label_error2" text="CPF não encontrado" textFill="RED" visible="false" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Bold Italic" size="16.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="309.0" prefHeight="0.0" prefWidth="250.0">
+               <children>
+                  <FontAwesomeIconView glyphName="KEY" glyphStyle="-fx-fill:#b2b2b2" size="25" />
+                  <JFXTextField fx:id="CPF" focusColor="#898989" labelFloat="true" maxWidth="288.0" minWidth="288.0" prefHeight="43.0" prefWidth="288.0" promptText="Digite seu CPF (Apenas números)" unFocusColor="#e1ff00" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0">
+               <children>
+                  <FontAwesomeIconView glyphName="LOCK" glyphStyle="-fx-fill:#b2b2b2" size="25" />
+                  <JFXPasswordField fx:id="novaSenha" focusColor="#898989" labelFloat="true" prefWidth="288.0" promptText="Senha (Entre 6 e 11 caracteres)" unFocusColor="#e1ff00" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0">
+               <children>
+                  <FontAwesomeIconView glyphName="LOCK" glyphStyle="-fx-fill:#aaacaf" size="25" />
+                  <JFXPasswordField fx:id="confirmarSenha" focusColor="#898989" labelFloat="true" maxWidth="301.0" minWidth="294.0" prefHeight="43.0" prefWidth="294.0" promptText="Confirmar senha" unFocusColor="#e1ff00" />
+               </children>
+            </HBox>
+            <JFXButton fx:id="solicitarAut" buttonType="RAISED" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#handle_request" prefHeight="45.0" prefWidth="226.0" styleClass="login-btn" text="Solicitar autorização" textFill="#f5efef">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="solicitarAut1" buttonType="RAISED" contentDisplay="CENTER" layoutX="537.0" layoutY="528.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#mudarSenhaMenu" prefHeight="45.0" prefWidth="105.0" styleClass="login-btn" text="Voltar" textFill="#f5efef">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

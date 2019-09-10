@@ -1,0 +1,13 @@
+.parent{
+	-fx-background-color:  #880308;
+}
+.options-btn{
+	-fx-background-color:  #880308;
+	-fx-background-radius: 0px
+	
+}
+
+.options-btn:hover{
+	-fx-background-color: #E81123;	
+	
+}

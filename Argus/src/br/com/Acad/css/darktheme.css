@@ -1,0 +1,434 @@
+/* 
+    Created on : 11 Nov, 2017, 4:42:53 AM
+    Author     : afsal villan
+*/
+
+.close-btn{
+	-fx-background-color: transparent;	
+}
+
+.close-btn:hover{
+	-fx-background-color: #E81123;	
+}
+
+.min-btn{
+	-fx-background-color: transparent;	
+}
+
+.min-btn:hover{
+	-fx-background-color: white;	
+}
+
+.max-btn{
+	-fx-background-color: transparent;	
+}
+
+.max-btn:hover{
+	-fx-background-color: #5439F0;	
+}
+
+.root{
+    -fx-background-color: #2A2E37;
+}
+
+.button{
+    -fx-text-fill: #B2B2B2;
+    -fx-background-color: #2A2E37;
+    -fx-border-color: #FFFF8D;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-font-size: 15pt;
+}
+
+.button:hover{
+    -fx-border-color: #FFFF8D;
+    -fx-background-color: #FFFF8D;
+    -fx-text-fill: #2A2E37;
+}
+
+.button:pressed{
+	-fx-padding: 10,15,10,15;
+	-fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+
+.text-field
+{
+    -fx-text-fill: #B2B2B2;
+    -fx-font-size : 12pt;
+    -jfx-focus-color: #FFFF8D;
+    -fx-text-fill: derive(#FFFF8D, 20%);
+}
+
+/*Login Screen Specific*/
+
+
+/*Main Screen CSS Styling starts here*/
+
+/*TablPane styling*/
+.tab{
+    -fx-background-color: #2A2E37;
+    -fx-pref-width: 200;
+    -fx-pref-height: 50;
+}
+
+.tab-header-background{
+    -fx-background-color: #2A2E37;
+}
+
+.tab-label{
+    -fx-text-fill: #FFFF8D;
+    -fx-font-size: 10pt; 
+}
+
+
+.tab-main{
+    -fx-pref-height : 60;
+    -fx-max-height : 60;
+}
+
+.settings-tab{
+    -fx-background-color: derive(#2A2E37, 10%);
+    -fx-padding: 5px 20px 5px 20px;
+}
+
+.settings-tab:selected{
+    -fx-background-color: #FFFF8D;
+}
+
+.settings-tab:selected .tab-label{
+    -fx-text-fill: #2A2E37;
+}
+
+.settings-tab .tab-header-background{
+    -fx-background-color: derive(#2A2E37, -50%);
+}
+/*Menu bar Styling*/
+.menu-bar{
+    -fx-font-size: 14;
+    -fx-base : #2A2E37;
+    -fx-background-color: #2A2E37;
+}
+
+.context-menu
+{
+    -fx-background-color:  derive(#2A2E37, 20%);
+}
+
+/*Hamburger Styling*/
+.jfx-hamburger-icon{
+    -fx-spacing: 7;
+}
+
+.jfx-hamburger-icon StackPane
+{
+    -fx-background-color: #FFFF8D;
+    -fx-background-radius: 5px;
+}
+
+/*Toolbar buttons*/
+.toolbar-button
+{
+    -fx-border-color: transparent;
+    -fx-background-color: derive(#2A2E37, 10%);
+    -fx-background-radius: 0px;
+    -fx-border-radius: 0px;
+}
+.toolbar-button:hover
+{
+    -fx-background-color: #FFFF8D;
+    -fx-text-fill: #2A2E37;
+}
+
+.toolbar-button:hover .glyph-icon, .toolbar-button:hover .glyph-icon
+{
+    -fx-fill: #2A2E37;
+}
+
+/*Text styling*/
+.main-text
+{
+    -fx-fill: #FFFF8D;
+    -fx-font-size: 14pt;
+    -fx-text-alignment: center;
+}
+
+
+/*JFXDialog styling*/
+.jfx-layout-heading
+{
+    -fx-background-color: #2A2E37;
+    -fx-text-fill: white;
+}
+.jfx-layout-heading .label
+{
+    -fx-text-fill: white;
+}
+
+
+/*About window*/
+.about-text{
+    -fx-fill: #FFFF8D;
+}
+
+.about-button{
+    -fx-border-color: transparent;
+}
+
+/*Custom window background*/
+.custom-pane{
+    -fx-background-color: derive(#2A2E37, 5%);
+}
+
+/*TableView Default*/
+.table-view{
+    -fx-background-color: derive(#2A2E37, 10%);
+    -fx-font-size: 16px; 
+    -fx-border-color: derive(#FFFF8D, -60%);
+}
+.table-view:focused{
+    -fx-background-color: derive(#2A2E37, 20%);
+}
+.table-row-cell {
+    -fx-cell-size: 40px;
+}
+.table-view .column-header-background{
+    -fx-background-color: #2A2E37;
+}
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+.table-view .table-cell{
+    -fx-text-fill: white;
+}
+.table-row-cell:focused, .table-cell:focused{
+    -fx-text-fill: #2A2E37;
+}
+.table-row-cell{
+    -fx-background-color: #2A2E37;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+.table-column{
+    -fx-alignment: CENTER;  
+}
+.table-row-cell:even{
+    -fx-background-color: derive(#2A2E37, 10%);
+}
+.table-row-cell:selected {
+    -fx-background-color: #FFFF8D;
+    -fx-text-fill: #2A2E37;
+    -fx-background-insets: 0;
+}
+.table-row-cell:selected .table-cell{
+    -fx-text-fill: #2A2E37;
+}
+.placeholder .label{
+    -fx-text-fill: white;
+}
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+.table-view > .virtual-flow > .scroll-bar > .increment-button, 
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-text-fill: white;
+}
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb{
+    -fx-background-color: derive(#2A2E37, 60%);
+    -fx-border-color: transparent;
+    -fx-background-radius: 5em;
+}
+.table-view .filler{
+    -fx-fill: #2A2E37;
+    -fx-background-color: #2A2E37;
+}
+.table-context
+{
+    -fx-base: #2A2E37;
+}
+
+
+
+
+/*Dashboard label*/
+.not-available 
+{
+    -fx-background-radius: 5px;
+    -fx-fill: derive(blue, 80%);
+    -fx-cursor: hand;
+}
+
+/*Checkbox*/
+
+.checkbox-main{
+    -fx-text-fill: #FFFF8D; 
+    -jfx-checked-color: #2A2E37;
+    -fx-font-size: 10pt;
+}
+
+/*Progrss bar*/
+
+.progress-bar-main .track{
+    -fx-background-color: #2A2E37;
+}
+.progress-bar-main .bar{
+    -fx-background-color: #FFFF8D;
+    -fx-padding: 5px;
+}
+
+.common-label{
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFF8D;
+    -fx-font-size: 12pt;
+}
+
+
+/*ScrollPane */
+
+.scroll-pane {
+    -fx-background-color: #2A2E37;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 5em;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #2A2E37;
+}
+
+/*Context Menu Style */
+
+
+.context-menu {
+  -fx-background-color: #2A2E37;
+  -fx-text-fill: white;
+}
+
+.menu-item .label {
+  -fx-text-fill: #FFFF8D;
+}
+
+.menu-item:focused .label {
+  -fx-text-fill: white;
+}
+
+/*ComboBox */
+
+.combo-box,
+.choice-box {
+    -fx-background-color: none;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #bdbdbd;
+    -fx-padding: 0 0 3 -8;
+    -fx-font-size: 16px;
+}
+
+.combo-box .arrow,
+.choice-box .arrow {
+    -fx-background-color: #FFFF8D;   
+}
+
+.combo-box .text-field {
+	-fx-prompt-text-fill: #FFFF8D;
+	-fx-text-fill: #FFFF8D;
+    -fx-background-color: transparent 
+}
+.combo-box .text-field:focused {
+	-fx-prompt-text-fill: #FFFF8D;
+	-fx-text-fill: #FFFF8D;
+    -fx-background-color: transparent 
+}
+
+.combo-box > .arrow-button {
+   -fx-background-color: transparent ;
+  }
+  
+ .combo-box-popup .list-view {
+    -fx-background-color: #2A2E37;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
+    -fx-padding: 0.333333em 0.333333em 0.666667em 0.083333em; 
+   
+}
+.combo-box-popup .list-view .list-cell {
+-fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view .list-cell:filled {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFF8D;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: #bdbdbd;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: #bdbdbd;
+}
+
+
+ .dialog-pane{
+	-fx-border-color: black;
+	-fx-border-width:2.0px;	
+ }
+
+/**Costumization of The Bar where the buttons are located**/
+.dialog-pane > .button-bar > .container {
+  -fx-background-color:#2A2E37;
+}
+
+/*content label */
+.dialog-pane > .content.label {
+   -fx-background-color: #2A2E37;
+   -fx-text-fill:white;
+   -fx-font-size: 16px;
+   -fx-font-weight: bold;
+}
+
+/**Costumization of DialogPane Header**/
+.dialog-pane:header .header-panel {
+  -fx-background-color: #2A2E37;
+  
+}
+
+.dialog-pane:header .header-panel .label{
+	-fx-background-color: #2A2E37;
+	-fx-background-radius:10px;
+	-fx-text-fill:black;
+	-fx-font-size:16.0px;
+	-fx-font-weight: bold;
+
+}
+
+.jfx-layout-actions{
+	-fx-hgap: 10;
+}
