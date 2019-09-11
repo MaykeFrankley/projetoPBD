@@ -6,22 +6,27 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 public class ConnectionClass {
 	
 	public static Connection connection = null;
 	public static boolean dbExists = false;
 	
-	public final static String URL = "jdbc:mysql://localhost:3306/Argus?autoReconnect=true&useSSL=false&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false";
+	public final static String URL = "jdbc:mysql://127.0.0.1:3306/sys?autoReconnect=true&useSSL=false&"
+			+ "&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false";
 	public final static String USERNAME = "root";
 	public final static String PASSWORD = "9612";
 	
 	public static Connection createConnection(){
 		
-		if(!dbExists)runSqlScriptRuntime();
+		if(!dbExists){
+			dbExists = true;
+			createSchema();
+		}	
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -38,7 +43,24 @@ public class ConnectionClass {
 	
 	}
 	
+	private static void createSchema(){
+		try {
+			Connection con = createConnection();
+			Statement Stmt = con.createStatement();
+			Stmt.execute("CREATE SCHEMA IF NOT EXISTS `argus` DEFAULT CHARACTER SET utf8 ;");
+			Stmt.close();
+			dbExists = true;
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		dbExists = false;
+	}
+	
 	public static void runSqlScriptRuntime(){
+		
+		System.out.println("Running Script");
 		
 		String cmd = ("cmd/ /c cd C:\\\\"+"\\Program Files\\MySQL\\MySQL Server 8.0\\bin&mysql --host=127.0.0.1 --port=3306 --force --user=root --password=9612 --execute=\"CREATE DATABASE IF NOT EXISTS Argus;\"");
 

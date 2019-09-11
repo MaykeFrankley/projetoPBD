@@ -5,7 +5,10 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.BoxBlur?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -14,9 +17,21 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.MainTelaController">
    <children>
-      <Label alignment="CENTER" layoutX="240.0" layoutY="300.0" text="Bem vindo(a) ao Sistema Argus." textFill="#d7d44b" wrapText="true" AnchorPane.bottomAnchor="336.0" AnchorPane.leftAnchor="240.0" AnchorPane.rightAnchor="245.0" AnchorPane.topAnchor="300.0">
+      <HBox alignment="CENTER" layoutX="400.0" layoutY="200.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="128.0" AnchorPane.leftAnchor="370.0" AnchorPane.rightAnchor="361.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <ImageView fitHeight="400.0" fitWidth="500.0" opacity="0.42" pickOnBounds="true" smooth="false">
+               <image>
+                  <Image url="@../../../../../Resources/images/argus_logo_transparent.png" />
+               </image>
+               <effect>
+                  <BoxBlur iterations="3" width="3.04" />
+               </effect>
+            </ImageView>
+         </children>
+      </HBox>
+      <Label alignment="CENTER" layoutX="200.0" layoutY="300.0" text="Bem-Vindo" textFill="#fff95c" wrapText="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="370.0" AnchorPane.rightAnchor="361.0" AnchorPane.topAnchor="120.0">
          <font>
-            <Font size="57.0" />
+            <Font name="Vijaya Bold" size="96.0" />
          </font>
       </Label>
       <BorderPane fx:id="borderPane" layoutX="1.0" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

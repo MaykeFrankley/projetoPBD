@@ -16,6 +16,7 @@ import br.com.Acad.app.Main;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.Util;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 public class MainTelaController implements Initializable{
 
@@ -43,6 +46,20 @@ public class MainTelaController implements Initializable{
 
     @FXML
     private HBox top;
+    
+    //CircleAnimation
+    
+    @FXML
+    private Circle c1;
+
+    @FXML
+    private Circle c2;
+
+    @FXML
+    private Circle c3;
+
+    @FXML
+    private Circle c4;
     
     public Timer timer = new Timer();
     
@@ -182,6 +199,7 @@ public class MainTelaController implements Initializable{
     void enableDrawer(){
     	if(drawer.isDisabled()){
     		drawer.setDisable(false);
+    		drawer.open();
     	}
     }
     
@@ -208,6 +226,23 @@ public class MainTelaController implements Initializable{
 		initializeMenu();
 		Util.contentPane = contentPane;
 		
+		setRotate(c1, true, 360, 10);
+		setRotate(c2, true, 180, 18);
+		setRotate(c3, true, 145, 24);
+		setRotate(c4, true, 90, 30);
+		
+	}
+	
+	private void setRotate(Circle c, boolean reverse, int angle, int duration) {
+		RotateTransition rotateTransfition = new RotateTransition(Duration.seconds(duration), c);
+		
+		rotateTransfition.setAutoReverse(reverse);
+		
+		rotateTransfition.setByAngle(angle);
+		rotateTransfition.setDelay(Duration.seconds(0));
+		rotateTransfition.setRate(3);
+		rotateTransfition.setCycleCount(18);
+		rotateTransfition.play();
 	}
 	
 	class checkPasswordsRequest extends TimerTask {

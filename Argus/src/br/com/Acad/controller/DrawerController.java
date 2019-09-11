@@ -89,7 +89,9 @@ public class DrawerController implements Initializable{
 
 				timel.getKeyFrames().add(kf);
 				timel.setOnFinished(e -> {
-					Util.contentPane.getChildren().remove(0);
+					if(Util.contentPane.getChildren().size() > 1){
+						Util.contentPane.getChildren().remove(0);
+					}
 				});
 				timel.play();
 				

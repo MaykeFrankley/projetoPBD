@@ -2,10 +2,7 @@ package br.com.Acad.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
-
-import javax.persistence.Persistence;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -19,20 +16,14 @@ import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Usuario;
-import br.com.Acad.sql.FillDataBase;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -237,22 +228,9 @@ public class LoginController implements Initializable{
 		background.setFitWidth(screenBounds.getWidth());
 		background.setFitHeight(screenBounds.getHeight());
 		
-
-		FillDataBase db = new FillDataBase();
-		
-		try {
-			db.checkDB();
-		} catch (SQLException | IOException e) {
-			e.printStackTrace();
-		}
-		
-		Main.factory = Persistence.createEntityManagerFactory("argusDB");
-		Main.entityManager = Main.factory.createEntityManager();
-		
 		daoUsuarios = new DaoUsuarios(Main.entityManager);
 		daoMudarSenhas = new DaoMudarSenhas(Main.entityManager);
-		
-		
+			
 		txt_senha.textProperty().addListener(
 		     (observable, old_value, new_value) -> {
 		    	 

@@ -33,9 +33,7 @@ public class FillDataBase {
 			runner.runScript(new BufferedReader(new FileReader(file)));
 			
 			File file2 = new File(getClass().getResource("/scripts/PopulatePessoasRandom.sql").getFile());
-			
-			
-			
+				
 			String admin = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Mayke Frankley', 'Serra Talhada', '1997-08-08', '116.734.914-80', 'Ativo');";
 			stmt = con.prepareStatement(admin);
 			stmt.execute();
