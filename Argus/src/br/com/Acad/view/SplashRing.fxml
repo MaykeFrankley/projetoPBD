@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.effect.BoxBlur?>
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
@@ -13,12 +12,12 @@
    <children>
       <StackPane>
          <children>
-            <ImageView fitHeight="389.0" fitWidth="391.0" pickOnBounds="true">
+            <ImageView fitHeight="595.0" fitWidth="848.0" pickOnBounds="true">
                <image>
                   <Image url="@../../../../../Resources/images/argus_logo.png" />
                </image>
                <effect>
-                  <BoxBlur width="0.0" />
+                  <BoxBlur height="2.0" iterations="2" width="2.0" />
                </effect>
             </ImageView>
             <Circle fx:id="c1" fill="TRANSPARENT" radius="193.0" stroke="RED" strokeType="INSIDE" strokeWidth="20.0" style="-fx-stroke-dash-array: 80;" />
@@ -36,7 +35,6 @@
                </effect></Circle>
          </children>
       </StackPane>
-      <ProgressBar fx:id="progressBar" prefHeight="18.0" prefWidth="389.0" progress="0.0" style="-fx-accent: black;" />
    </children>
    <effect>
       <Glow level="1.0" />

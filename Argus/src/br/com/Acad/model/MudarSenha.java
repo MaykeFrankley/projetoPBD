@@ -16,7 +16,7 @@ public class MudarSenha {
 	@NotNull
 	private String cpf;
 
-	@Column
+	@Column(name="NovaSenha")
 	@NotNull
 	private String senha;
 	

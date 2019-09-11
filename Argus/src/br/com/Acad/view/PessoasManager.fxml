@@ -119,20 +119,13 @@
                                  <children>
                                     <VBox fillWidth="false" prefHeight="317.0" prefWidth="485.0" spacing="30.0">
                                        <children>
-                                          <Label fx:id="codigo_listar" textFill="#54e85b8e" wrapText="true">
+                                          <Label fx:id="codigo_listar" text="Código:" textFill="#54e85b8e" wrapText="true">
                                              <font>
                                                 <Font name="Arial Bold" size="16.0" />
                                              </font>
                                              <VBox.margin>
                                                 <Insets left="12.0" />
                                              </VBox.margin>
-                                             <graphic>
-                                                <Label text="Código:" textFill="#54e85b8e" wrapText="true">
-                                                   <font>
-                                                      <Font name="Arial Bold" size="16.0" />
-                                                   </font>
-                                                </Label>
-                                             </graphic>
                                           </Label>
                                           <JFXTextField fx:id="nome_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="427.0" prefHeight="43.0" prefWidth="427.0" promptText="*Nome" style="-fx-font-size: 16px;" styleClass="text-field" unFocusColor="#54ea5e" />
                                           <JFXDatePicker fx:id="dt_nascimento_update" defaultColor="#54ea5e" promptText="*Data de Nascimento" style="-fx-font-size: 16px;" />

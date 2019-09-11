@@ -114,7 +114,7 @@ public class DrawerController implements Initializable{
     }
     
     void setUser(Usuario user){	
-    	this.label_user.setText(user.getUsuario());
+    	this.label_user.setText(user.getUser());
     }
     
     void setMainTela(MainTelaController mc){

@@ -43,7 +43,9 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 		try {
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
-			entityMn.remove(ms);
+			
+			MudarSenha m = entityMn.merge(ms);
+			entityMn.remove(m);
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();

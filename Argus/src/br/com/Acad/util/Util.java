@@ -19,6 +19,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -37,6 +38,10 @@ import javafx.util.Duration;
 public class Util {
 
 	public static StackPane contentPane;
+	
+	static JFXDialogLayout dialogLayout = new JFXDialogLayout();
+	static JFXDialog dialog;
+	
 
 	private static final String EMAIL_PATTERN
 	= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -119,9 +124,10 @@ public class Util {
         if (controls.isEmpty()) {
             controls.add(new JFXButton("Okay"));
         }
-        JFXDialogLayout dialogLayout = new JFXDialogLayout();
-        JFXDialog dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
+        if(dialog != null)dialog.close();
         
+        dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
+     
         controls.forEach(controlButton -> {
             controlButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
                 dialog.close();
@@ -138,13 +144,13 @@ public class Util {
         	   +"-fx-font-weight: bold;"
         	   );
         
+        dialog.setOverlayClose(false);
         dialog.show();
-        dialog.setOnDialogClosed(event1 -> {
+        dialog.setOnDialogClosed(event1 -> {	
         	
         	contentPane.getChildren().get(0).setEffect(null);
         });
-        if(contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);;
-        
+        if(contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);
     }
 
 	public static boolean confirmation(String message){
@@ -178,10 +184,7 @@ public class Util {
 				.text(message)
 				.graphic(null)
 				.hideAfter(Duration.seconds(10))
-				.position(Pos.BOTTOM_RIGHT)
-				.onAction(e ->{
-					System.out.println("ENVIAR PARA A TELA DE MUDANCADESENHAS");
-				});
+				.position(Pos.BOTTOM_RIGHT);		
 		not.darkStyle();
 		not.showInformation();
 	}

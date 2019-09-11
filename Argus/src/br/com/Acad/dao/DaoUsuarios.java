@@ -40,7 +40,8 @@ public class DaoUsuarios implements IDaoUsuarios{
 		try{
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
-			entityMn.persist(usuario);
+			
+			entityMn.merge(usuario);
 			int id = usuario.getCodPessoa();
 			entityMn.flush();
 			entityMn.clear();
@@ -102,7 +103,7 @@ public class DaoUsuarios implements IDaoUsuarios{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<Usuario> getAllUsuarios() throws ExceptionUtil{
-		List<Usuario> list = entityMn.createNativeQuery("SELECT * FROM usuarios").getResultList();
+		List<Usuario> list = entityMn.createQuery("from Usuario").getResultList();
 		ObservableList<Usuario> obs = FXCollections.observableList(list);
 		return obs;
 	}

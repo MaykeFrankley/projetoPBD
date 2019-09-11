@@ -17,18 +17,21 @@ public class Usuario {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "pessoas")
 	private int codPessoa;
 	
-	@Id
-	@Column
+	
+	@Column(name="CPF")
 	@NotNull
 	private String cpf;
 
 	@Column(name="User")
-	private String usuario;
+	@NotNull
+	private String user;
 	
-	@Column
+	
+	@Column(name="Senha")
+	@NotNull
 	private String senha;
 	
-	@Column
+	@Column(name="Tipo")
 	private String tipo;
 	
 	@Column
@@ -42,12 +45,12 @@ public class Usuario {
 		return codPessoa;
 	}
 
-	public String getCPF() {
+	public String getCpf() {
 		return cpf;
 	}
 
-	public String getUsuario() {
-		return usuario;
+	public String getUser() {
+		return user;
 	}
 
 	public String getSenha() {
@@ -66,12 +69,12 @@ public class Usuario {
 		this.codPessoa = codPessoa;
 	}
 
-	public void setCPF(String Cpf) {
+	public void setCpf(String Cpf) {
 		cpf = Cpf;
 	}
 
-	public void setUsuario(String Usuario) {
-		usuario = Usuario;
+	public void setUser(String User) {
+		user = User;
 	}
 
 	public void setSenha(String Senha) {
@@ -82,9 +85,13 @@ public class Usuario {
 		status = Status;
 	}
 	
+	public void setTipo(String Tipo){
+		tipo = Tipo;
+	}
+	
 	public String toString(){
 		
-		return "codPessoa: "+codPessoa+"\nCPF: "+cpf+"\nUsuario: "+usuario+
+		return "codPessoa: "+codPessoa+"\nCPF: "+cpf+"\nUsuario: "+user+
 				"\nSenha: "+senha+"\nStatus: "+status+"\nTipo: "+tipo;
 	}
 	

@@ -21,7 +21,7 @@
             <Font name="System Bold" size="22.0" />
          </font>
       </Label>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_usuarios" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 16px;" styleClass="options-btn" text="Gerenciar Usuários" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_usuarios" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 16px;" styleClass="options-btn" text="Gerenciar Usuários" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
@@ -29,7 +29,7 @@
             <FontAwesomeIconView fill="WHITE" glyphName="USER" size="18" />
          </graphic>
       </Button>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="27.0" mnemonicParsing="false" onAction="#gerenciar_pessoas" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 16px;" styleClass="options-btn" text="Gerenciar Pessoas" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="27.0" mnemonicParsing="false" onAction="#gerenciar_pessoas" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 16px;" styleClass="options-btn" text="Gerenciar Pessoas" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
@@ -37,7 +37,7 @@
             <FontAwesomeIconView fill="WHITE" glyphName="USERS" size="18" />
          </graphic>
       </Button>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_alunos" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Gerenciar Alunos" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_alunos" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Gerenciar Alunos" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
@@ -45,7 +45,7 @@
             <FontAwesomeIconView fill="WHITE" glyphName="DESKTOP" size="18" />
          </graphic>
       </Button>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="30.0" mnemonicParsing="false" onAction="#pagamentos" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Pagamentos" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#pagamentos" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Pagamentos" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
@@ -53,7 +53,7 @@
             <FontAwesomeIconView fill="WHITE" glyphName="MONEY" size="18" />
          </graphic>
       </Button>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="30.0" mnemonicParsing="false" onAction="#boletim_escolar" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Boletim Escolar" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#boletim_escolar" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Boletim Escolar" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
@@ -61,7 +61,7 @@
             <FontAwesomeIconView fill="WHITE" glyphName="LIST_ALT" size="18" />
          </graphic>
       </Button>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="30.0" mnemonicParsing="false" onAction="#configuracoes" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Configurações" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#configuracoes" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Configurações" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
@@ -69,7 +69,7 @@
             <FontAwesomeIconView fill="WHITE" glyphName="GEAR" size="18" />
          </graphic>
       </Button>
-      <Button alignment="BASELINE_LEFT" defaultButton="true" graphicTextGap="30.0" mnemonicParsing="false" onAction="#logout_handler" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Logout" textFill="WHITE">
+      <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#logout_handler" prefHeight="33.0" prefWidth="203.0" style="-fx-font-size: 12pt;" styleClass="options-btn" text="Logout" textFill="WHITE">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>

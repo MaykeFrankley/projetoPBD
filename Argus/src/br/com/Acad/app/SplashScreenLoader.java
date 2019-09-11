@@ -1,6 +1,5 @@
 package br.com.Acad.app;
 
-import br.com.Acad.controller.SplashController;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -38,7 +37,7 @@ public class SplashScreenLoader extends Preloader{
     @Override
     public void handleApplicationNotification(PreloaderNotification info) {
     	if (info instanceof ProgressNotification){
-    		SplashController.bar.setProgress(((ProgressNotification) info).getProgress());
+    		System.out.println("Loading: "+((ProgressNotification) info).getProgress()*100 +"%");
     	}
     }
     

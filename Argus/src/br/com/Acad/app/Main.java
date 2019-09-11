@@ -31,6 +31,7 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
 
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		
@@ -41,10 +42,10 @@ public class Main extends Application{
 		
 		primaryStage.setScene(scene);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
-		stage = primaryStage;
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/Icon.png")));
 		primaryStage.show();
 		
+		stage = primaryStage;
 		stage.setWidth(screenBounds.getWidth());
 		stage.setHeight(screenBounds.getHeight());
 	}
