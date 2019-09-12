@@ -71,6 +71,8 @@ public class DaoEndereco implements IDaoEnderecos{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<Endereco> getAllEndereco() throws ExceptionUtil{
+		if(!entityMn.getTransaction().isActive())
+			entityMn.getTransaction().begin();
 		List<Endereco> list = entityMn.createQuery("from Endereco").getResultList();
 		oblist = FXCollections.observableList(list);
 		

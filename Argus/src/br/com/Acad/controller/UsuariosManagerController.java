@@ -1,7 +1,12 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Date;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -12,11 +17,13 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.app.Main;
 import br.com.Acad.dao.DaoContatos;
+import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
+import br.com.Acad.model.Endereco;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
@@ -35,7 +42,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
+
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
@@ -184,9 +191,13 @@ public class UsuariosManagerController implements Initializable{
     
     private DaoContatos daoContatos;
     
+    private DaoEndereco daoEnderecos;
+    
     private ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
     
     private ObservableList<MudarSenha> oblist_cpf = FXCollections.observableArrayList();
+    
+    private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
     
     public FilteredList<Usuario> filteredData;
     
@@ -226,7 +237,7 @@ public class UsuariosManagerController implements Initializable{
         	
         	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
     	}else{
-    		Util.Alert("Selecione uma requisição!");
+    		Util.Alert("Selecione uma solicitação!");
     	}
     	
     }
@@ -234,43 +245,164 @@ public class UsuariosManagerController implements Initializable{
 
     @FXML
     void setUserName(KeyEvent event){
-    	spaceCount = 0;
 
     	String name = nome.getText();
     	
-    	for (int i = 0; i < name.length(); i++) {
-    		if(name.charAt(i) == ' ') {
-    			spaceCount++;
-    		}
-		}
+    	String[] part = name.split(" ");
     	
-    	String userName = name.replaceAll("\\s+", "");
+    	String teste = part[part.length - 1];
+    	
+    	String ultimoNome = teste;
+    	
+    	String pattern = "\\S+";
 
-    	if(spaceCount < 2)nomeUsuario.setText(userName);
-    	System.out.println(userName);
- 	
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(nome.getText());
+        
+        String primeiroNome = "";
+        
+        if (m.find( )) {
+        	primeiroNome = m.group(0);
+        }
+    	
+        nomeUsuario.setText(primeiroNome+ultimoNome);
+
     }
 
     @FXML
-    void confirmar(ActionEvent event) {
+    void confirmar(ActionEvent event) throws ExceptionUtil {
 
     	if(checkTextFields()){
-    		int idx = nome.getText().lastIndexOf(' ');
-    		String userName = nome.getText().substring(0, idx);
-    		String passWord = userName+cpf.getText().substring(0, 3);
     		
+    		oblist_pessoas = daoPessoas.getAllPessoa();
+    		for (int i = 0; i < oblist_pessoas.size(); i++) {
+				if(oblist_pessoas.get(i).getCpf().equals(cpf.getText())){
+					Util.Alert("CPF já está cadastrado no sistema!");
+					return;
+				}
+			}
+    		
+    		try {	
+
+    			Pessoa p = new Pessoa();
+        		Endereco e = new Endereco();
+        		Usuario u = new Usuario();
+        		Contato c = new Contato();
+        		
+        		Pattern r = Pattern.compile("\\S+");
+                Matcher m = r.matcher(nome.getText());
+                
+                String primeiroNome = "";
+                
+                if (m.find( )) {
+                	primeiroNome = m.group(0);
+                }
+
+        		String passWord = primeiroNome+cpf.getText().substring(0, 3);
+        		
+        		String hashPass = DigestUtils.sha1Hex(passWord);
+        		
+        		senha.setText(passWord);
+        		
+        		p.setNome(nome.getText());
+        		p.setCpf(cpf.getText());
+        		Date date = Date.valueOf(dt_nascimento.getValue());
+        		p.setDt_nascimento(date);
+        		p.setNaturalidade(naturalidade.getText());
+        		p.setStatus("Ativo");
+        		
+        		int cod = daoPessoas.addPessoa(p);
+        		
+        		e.setCodPessoa(cod);
+        		e.setBairro(bairro.getText());
+        		e.setCidade(cidade.getSelectionModel().getSelectedItem());
+        		e.setEstado(estado.getSelectionModel().getSelectedItem());
+        		e.setNumero(Integer.valueOf(numero.getText()));
+        		e.setRua(nomeRua.getText());
+        		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
+        		
+        		daoEnderecos.addEndereco(e);
+        		
+        		if(email.getText().length() > 0)c.setEmail(email.getText());
+    			if(telefone.getText().length() > 0)c.setTelefone(telefone.getText());
+    			if(celular.getText().length() > 0)c.setCelular(celular.getText());
+    			if(whatsapp.isSelected()){
+    				c.setWhatsapp(1);
+    			}
+    			else{
+    				c.setWhatsapp(0);
+    			}
+
+    			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
+    				daoContatos.UpdateContato(c);
+    			}
+    			
+    			u.setCodPessoa(cod);
+    			u.setCpf(cpf.getText());
+    			u.setUser(nomeUsuario.getText());
+    			u.setSenha(hashPass);
+    			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
+    			u.setStatus("Ativo");
+    			
+    			daoUsuarios.addUsuario(u);
+    			
+        		Util.Alert("Usuário cadastrado com sucesso!");
+    			
+    			initTables();
+			} catch (Exception e) {
+				Util.Alert("Erro ao concluir o cadastro!");
+				e.printStackTrace();
+				throw new ExceptionUtil("ERRO AO CADASTRAR USUARIO/PESSOA/ENDERECO/CONTATO!");
+			}
     		
     	}
     }
 
     @FXML
-    void desativar_ativar_Pessoas(ActionEvent event) {
+    void desativar_ativar_Pessoas(ActionEvent event) throws ExceptionUtil {
+    	Usuario selected = table_usuarios.getSelectionModel().getSelectedItem();
+    	if(selected != null){
+			if(event.getSource() == btn_ativar){
+				if(selected.getStatus().equals("Inativo")){
+					selected.setStatus("Ativo");
+					daoUsuarios.updateUsuario(selected);
+					Util.Alert("Usuario ativado no sistema!");
+					initTables();
+				}else{
+					Util.Alert("Usuario já está ativado no sistema!");
+				}
+			}
+			else if(event.getSource() == btn_desativar){
+				
+				if(oblist_usuarios.size() == 1){
+					Util.Alert("Não é possivel desativar o único usuário do sistema!");
+					return;
+				}
+				if(selected.getStatus().equals("Ativo")){
+					selected.setStatus("Inativo");
+					daoUsuarios.updateUsuario(selected);
+					Util.Alert("Foi desativado do sistema e não poderá mais fazer login!\n");
+					initTables();
+				}else{
+					Util.Alert("Usuario já está desativada no sistema!");
+				}
+			}
+			else if(event.getSource() == btn_deletar){
 
+			}
+		}else{
+			Util.Alert("Selecione um usuario na tabela!");
+		}
+    	
     }
 
     @FXML
     void formatNumeroTxt(KeyEvent event) {
-
+    	TextFieldFormatter tff = new TextFieldFormatter();
+		tff.setMask("#####");
+		tff.setCaracteresValidos("0123456789");
+		tff.setTf(numero);
+		tff.formatter();
     }
 
     @FXML
@@ -501,6 +633,7 @@ public class UsuariosManagerController implements Initializable{
 		daoPessoas = new DaoPessoa(Main.entityManager);
 		daoMudarSenhas = new DaoMudarSenhas(Main.entityManager);
 		daoContatos = new DaoContatos(Main.entityManager);
+		daoEnderecos = new DaoEndereco(Main.entityManager);
 		
 		initTables();
 		populateBoxes();

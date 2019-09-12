@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.util.MensagensUtil;
@@ -12,6 +13,7 @@ import javafx.collections.ObservableList;
 
 public class DaoMudarSenhas implements IDaoMudarSenhas{
 	
+
 	private EntityManager entityMn;
 	//	private Query query;
 
@@ -96,6 +98,8 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<MudarSenha> getAllRequests() {
+		if(!entityMn.getTransaction().isActive())
+			entityMn.getTransaction().begin();
 		List<MudarSenha> list = entityMn.createQuery("from MudarSenha").getResultList();
 		oblist = FXCollections.observableList(list);
 

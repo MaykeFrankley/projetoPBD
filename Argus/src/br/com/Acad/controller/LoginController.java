@@ -238,10 +238,6 @@ public class LoginController implements Initializable{
 		                //prevents from the new space char
 		        	  txt_senha.setText(old_value); 
 		          }
-		          if(new_value.length() > 11){
-		        	  txt_senha.setText(old_value);
-		          }
-		          
 		     }
 		);
 		

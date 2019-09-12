@@ -71,6 +71,8 @@ public class DaoContatos implements IDaoContatos{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<Contato> getAllContato() throws ExceptionUtil{
+		if(!entityMn.getTransaction().isActive())
+			entityMn.getTransaction().begin();
 		List<Contato> list = entityMn.createQuery("from Contato").getResultList();
 		oblist = FXCollections.observableList(list);
 		

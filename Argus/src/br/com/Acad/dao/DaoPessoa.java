@@ -15,7 +15,6 @@ import javafx.collections.ObservableList;
 public class DaoPessoa implements IDaoPessoas{
 
 	private EntityManager entityMn;
-	//	private Query query;
 
 	private ObservableList<Pessoa> oblist = FXCollections.observableArrayList();
 
@@ -26,15 +25,16 @@ public class DaoPessoa implements IDaoPessoas{
 	}
 
 	@Override
-	public void addPessoa(Pessoa pessoa) throws ExceptionUtil{
+	public int addPessoa(Pessoa pessoa) throws ExceptionUtil{
 		try {
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
 			entityMn.persist(pessoa);
+			int id = pessoa.getCodPessoa();
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-
+			return id;
 		} catch (Exception e) {
 			e.printStackTrace();
 			entityMn.getTransaction().rollback();
@@ -57,7 +57,7 @@ public class DaoPessoa implements IDaoPessoas{
 
 		}catch (Exception e) {
 			e.printStackTrace();
-
+			entityMn.getTransaction().rollback();
 		}
 		return 0;
 
@@ -90,9 +90,9 @@ public class DaoPessoa implements IDaoPessoas{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<Pessoa> getAllPessoa() throws ExceptionUtil{
+		
 		List<Pessoa> list = entityMn.createQuery("from Pessoa").getResultList();
 		oblist = FXCollections.observableList(list);
-
 		return oblist;
 	}
 

@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 public class DaoUsuarios implements IDaoUsuarios{
 	
 	private EntityManager entityMn;
+	
 	private Query query;
 	
 	public DaoUsuarios(EntityManager em) {
@@ -25,11 +26,13 @@ public class DaoUsuarios implements IDaoUsuarios{
 		try{
 			entityMn.getTransaction().begin();
 			entityMn.persist(usuario);
+			entityMn.flush();
+			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 			return true;
 		}catch (Exception e) {
 			e.printStackTrace();
+			entityMn.getTransaction().rollback();
 			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
 		}
 			
@@ -49,6 +52,7 @@ public class DaoUsuarios implements IDaoUsuarios{
 			return id;
 		}catch (Exception e) {
 			e.printStackTrace();
+			entityMn.getTransaction().rollback();
 			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
 		}
 		
@@ -103,6 +107,8 @@ public class DaoUsuarios implements IDaoUsuarios{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<Usuario> getAllUsuarios() throws ExceptionUtil{
+		if(!entityMn.getTransaction().isActive())
+			entityMn.getTransaction().begin();
 		List<Usuario> list = entityMn.createQuery("from Usuario").getResultList();
 		ObservableList<Usuario> obs = FXCollections.observableList(list);
 		return obs;
