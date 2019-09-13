@@ -43,6 +43,7 @@ public class Util {
 	static JFXDialog dialog;
 	
 
+
 	private static final String EMAIL_PATTERN
 	= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -83,7 +84,7 @@ public class Util {
 			if(contentPane.getChildren().size() > 1){
 				contentPane.getChildren().remove(0);
 			}
-			
+
 		});
 		timel.play();
 	}

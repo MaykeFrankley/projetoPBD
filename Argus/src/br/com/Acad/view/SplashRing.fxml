@@ -2,7 +2,6 @@
 
 <?import javafx.scene.effect.BoxBlur?>
 <?import javafx.scene.effect.Glow?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -12,10 +11,7 @@
    <children>
       <StackPane>
          <children>
-            <ImageView fitHeight="595.0" fitWidth="848.0" pickOnBounds="true">
-               <image>
-                  <Image url="@../../../../../Resources/images/argus_logo.png" />
-               </image>
+            <ImageView fx:id="background" fitHeight="595.0" fitWidth="848.0" pickOnBounds="true" smooth="false">
                <effect>
                   <BoxBlur height="2.0" iterations="2" width="2.0" />
                </effect>

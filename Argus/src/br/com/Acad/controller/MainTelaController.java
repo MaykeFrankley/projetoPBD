@@ -16,19 +16,18 @@ import br.com.Acad.app.Main;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.Util;
-import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-import javafx.util.Duration;
 
 public class MainTelaController implements Initializable{
 
@@ -40,35 +39,24 @@ public class MainTelaController implements Initializable{
 
     @FXML
     private JFXDrawer drawer;
-    
+
     @FXML
     private JFXHamburger hamburger;
 
     @FXML
     private HBox top;
-    
-    //CircleAnimation
-    
-    @FXML
-    private Circle c1;
 
     @FXML
-    private Circle c2;
+    private ImageView background;
 
-    @FXML
-    private Circle c3;
-
-    @FXML
-    private Circle c4;
-    
     public Timer timer = new Timer();
-    
+
     private DrawerController drawerController;
 
 	private double xOffSet;
 
 	private double yOffSet;
-	
+
 	Usuario user;
 
     @FXML
@@ -79,23 +67,23 @@ public class MainTelaController implements Initializable{
     		System.exit(1);
     	});
     	JFXButton cancel = new JFXButton("Cancelar");
-    	
+
     	Util.confirmation(Arrays.asList(yes, cancel),"Deseja sair do sistema?");
-    	
+
     }
 
     @FXML
     void minimize_stage(MouseEvent event) {
     	Main.stage.setIconified(true);
     }
-    
+
     private void makeStageDragable(){
-    	
+
 		top.setOnMousePressed((event) ->{
 			xOffSet = event.getSceneX();
 			yOffSet = event.getSceneY();
 		});
-		
+
 		top.setOnMouseDragged((event) -> {
 			if(!Main.stage.isMaximized()){
 				Main.stage.setX(event.getScreenX() - xOffSet);
@@ -104,23 +92,23 @@ public class MainTelaController implements Initializable{
 			}else{
 				event.consume();
 			}
-			
+
 		});
-		
+
 		top.setOnDragDone((event) -> {
 			Main.stage.setOpacity(1.0f);
 		});
-		
+
 		top.setOnMouseReleased((event) -> {
 			Main.stage.setOpacity(1.0f);
 		});
 
-		
+
 	}
 
     private void initDrawer(){
     	try {
-			
+
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/br/com/Acad/view/Dashboard_drawer.fxml"));
 			VBox box = loader.load();
@@ -130,39 +118,39 @@ public class MainTelaController implements Initializable{
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
     }
-    
+
     private void initializeMenu(){
- 	
+
     	HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(hamburger);
 		transition.setRate(-1);
-		
+
 		hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED,(e)->{
 			transition.setRate(transition.getRate()*-1);
 			transition.play();
-			
+
 			if(drawer.isShown()){
 				drawer.close();
 			}else{
 				drawer.open();
 			}
 		});
-		
+
     	drawer.setOnDrawerClosed(e -> {
     		if(transition.getRate() == 1){
     			transition.setRate(transition.getRate()*-1);
     			transition.play();
     		}
     	});
- 
+
     }
-    
+
     void setUser(Usuario user){
     	this.user = user;
     	drawerController.setUser(user);
     }
-    
+
     void enableHamburger(){
     	if(hamburger.isDisabled()){
     		hamburger.setDisable(false);
@@ -171,21 +159,21 @@ public class MainTelaController implements Initializable{
     		hamburger.setDisable(true);
         	hamburger.setVisible(false);
     	}
-    	
+
     }
-    
+
     void enableNotificationTask(){
     	if(user != null && user.getTipo().equals("Admin")){
     		timer = new Timer();
     		timer.scheduleAtFixedRate(new checkPasswordsRequest(), 1000, 30000);
     	}
     }
-    
+
     void cancelNotificationTask(){
     	timer.cancel();
     	timer.purge();
     }
-    
+
     void disableDrawer(){
     	if(drawer.isShown()){
     		drawer.close();
@@ -193,76 +181,61 @@ public class MainTelaController implements Initializable{
     	if(!drawer.isShown()){
     		drawer.setDisable(true);
     	}
-    	
+
     }
-    
+
     void enableDrawer(){
     	if(drawer.isDisabled()){
     		drawer.setDisable(false);
     		drawer.open();
     	}
     }
-    
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		background.setImage(new Image("/images/argus_logo_transparent.png"));
+
 		initDrawer();
-		
+
 		makeStageDragable();
-		
+
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/br/com/Acad/view/LoginTela.fxml"));
 			Parent root = loader.load();
 			LoginController control = loader.getController();
 			control.setMainTela(this);
-			
+
 			contentPane.getChildren().add(root);
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		initializeMenu();
 		Util.contentPane = contentPane;
-		
-		setRotate(c1, true, 360, 10);
-		setRotate(c2, true, 180, 18);
-		setRotate(c3, true, 145, 24);
-		setRotate(c4, true, 90, 30);
-		
+
 	}
-	
-	private void setRotate(Circle c, boolean reverse, int angle, int duration) {
-		RotateTransition rotateTransfition = new RotateTransition(Duration.seconds(duration), c);
-		
-		rotateTransfition.setAutoReverse(reverse);
-		
-		rotateTransfition.setByAngle(angle);
-		rotateTransfition.setDelay(Duration.seconds(0));
-		rotateTransfition.setRate(3);
-		rotateTransfition.setCycleCount(18);
-		rotateTransfition.play();
-	}
-	
+
 	class checkPasswordsRequest extends TimerTask {
-		
+
 		@Override
 		public void run() {
-			
-			DaoMudarSenhas daoMs = new DaoMudarSenhas(Main.entityManager);
-			
+
+			DaoMudarSenhas daoMs = new DaoMudarSenhas();
+
 			if(daoMs.getAllRequests().size() > 0){
 				Platform.runLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						if(user != null && user.getTipo().equals("Admin")){
-							Util.AdminNotification("Existem solicitações de troca de senha pendentes!", "Sistema Argus");	
+							Util.AdminNotification("Existem solicitações de troca de senha pendentes!", "Sistema Argus");
 						}
 					}
 				});
-				
+
 			}
 		}
 

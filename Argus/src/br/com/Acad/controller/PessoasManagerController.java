@@ -209,28 +209,17 @@ public class PessoasManagerController implements Initializable{
 		Pessoa selected = table_pessoas2.getSelectionModel().getSelectedItem();
 		if(selected != null){
 			if(event.getSource() == btn_ativar){
-				Pessoa p = daoPessoas.getPessoa(selected.getCodPessoa());
-				if(p.getStatus().equals("Inativo")){
-					p.setStatus("Ativo");
-					daoPessoas.UpdatePessoa(p);
-				}else{
-					Util.Alert("Pessoa já está ativada no sistema!");
-				}
+				daoPessoas.ativarPessoa(selected);
 			}
 			else if(event.getSource() == btn_desativar){
-				Pessoa p = daoPessoas.getPessoa(selected.getCodPessoa());
-				if(p.getStatus().equals("Ativo")){
-					p.setStatus("Inativo");
-					Util.Alert("Cod: "+p.getCodPessoa()+"\nNome: "+p.getNome()+"\nFoi desativado do sistema e não poderá\n"
-							+ "interagir com o mesmo. Caso seja um aluno, o mesmo não irá aparecer na lista de chamada.\n"
-							+ "");
-				}else{
-					Util.Alert("Pessoa já está desativada no sistema!");
-				}
+				daoPessoas.desativarPessoa(selected);
+
 			}
 			else if(event.getSource() == btn_deletar){
 
 			}
+
+			initTables();
 		}else{
 			Util.Alert("Selecione uma pessoa na tabela!");
 		}
@@ -242,6 +231,17 @@ public class PessoasManagerController implements Initializable{
 	void atualizar(ActionEvent event) throws ExceptionUtil {
 		if(checkTextFields()){
 			try {
+
+				oblist = daoPessoas.getAllPessoa();
+	    		for (int i = 0; i < oblist.size(); i++) {
+	    			String obCPF = oblist.get(i).getCpf();
+
+					if(obCPF != null && obCPF.equals(cpf_update.getText())){
+						Util.Alert("CPF já está cadastrado no sistema!");
+						return;
+					}
+				}
+
 				Date date = Date.valueOf(dt_nascimento_update.getValue());
 				Pessoa p = daoPessoas.getPessoa(Integer.valueOf(codigo_listar.getText()));
 				Endereco e = new Endereco();
@@ -363,7 +363,7 @@ public class PessoasManagerController implements Initializable{
 				String lowerCaseFilter = newValue.toLowerCase();
 				if(pessoa.getNome().toLowerCase().contains(lowerCaseFilter)){
 					return true;
-				}	
+				}
 				else if(pessoa.getNaturalidade().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
@@ -400,7 +400,7 @@ public class PessoasManagerController implements Initializable{
 				String lowerCaseFilter = newValue.toLowerCase();
 				if(pessoa.getNome().toLowerCase().contains(lowerCaseFilter)){
 					return true;
-				}	
+				}
 				else if(pessoa.getNaturalidade().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
@@ -544,6 +544,12 @@ public class PessoasManagerController implements Initializable{
 
 		if(atualizarTab.isSelected()){
 			TextFieldFormatter tff = new TextFieldFormatter();
+
+			if(nome_update.getText().length() == 0 || nome_update.getText() == null){
+				Util.Alert("Verifique o nome!");
+				return false;
+			}
+
 			if(cpf_update.getText().length() > 0){
 				if(cpf_update.getText().length() < 11 || (cpf_update.getText().length() > 11 && cpf_update.getText().length() < 14)){
 					Util.Alert("Verifique o CPF!");
@@ -555,11 +561,6 @@ public class PessoasManagerController implements Initializable{
 					tff.setTf(cpf_update);
 					tff.formatter();
 				}
-			}
-
-			if(nome_update.getText().length() < 5 || nome_update.getText() == null){
-				Util.Alert("Verifique o nome!");
-				return false;
 			}
 
 			if(naturalidade_update.getText().length() < 5 || naturalidade_update.getText() == null){
@@ -594,7 +595,7 @@ public class PessoasManagerController implements Initializable{
 
 			if(email_update.getText().length() > 0){
 				if(!Util.validarEmail(email_update.getText())){
-					Util.Alert("Verifique o email.\nPs: Email não é obrigatório no cadastro!");
+					Util.Alert("Verifique o email!");
 					return false;
 				}
 			}
@@ -602,7 +603,7 @@ public class PessoasManagerController implements Initializable{
 
 			if(celular_update.getText().length() > 0){
 				if(celular_update.getText().length() < 11 || (celular_update.getText().length() > 11 && celular_update.getText().length() < 14)){
-					Util.Alert("Verifique o número de celular.\nPs: celular não é obrigatório no cadastro!");
+					Util.Alert("Verifique o número de celular!");
 					return false;
 				}else{
 					tff.setMask("(##)#####-####");
@@ -614,7 +615,7 @@ public class PessoasManagerController implements Initializable{
 
 			if(telefone_update.getText().length() > 0){
 				if(telefone_update.getText().length() < 10 || (telefone_update.getText().length() > 10 && telefone_update.getText().length() < 13)){
-					Util.Alert("Verifique o número de telefone.\nPs: telefone não é obrigatório no cadastro!");
+					Util.Alert("Verifique o número de telefone!");
 					return false;
 				}else{
 					tff.setMask("(##)####-####");
@@ -665,9 +666,9 @@ public class PessoasManagerController implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoPessoas = new DaoPessoa(Main.entityManager);
-		daoEnderecos = new DaoEndereco(Main.entityManager);
-		daoContatos = new DaoContatos(Main.entityManager);
+		daoPessoas = new DaoPessoa();
+		daoEnderecos = new DaoEndereco();
+		daoContatos = new DaoContatos();
 
 		populateBoxes();
 		initTables();

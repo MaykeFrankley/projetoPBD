@@ -15,7 +15,6 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.app.Main;
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoMudarSenhas;
@@ -119,7 +118,7 @@ public class UsuariosManagerController implements Initializable{
 
     @FXML
     private TableColumn<Usuario, String> col_cpf;
-    
+
     @FXML
     private TableColumn<Usuario, String> col_cpf_mud;
 
@@ -182,37 +181,37 @@ public class UsuariosManagerController implements Initializable{
 
     @FXML
     private JFXButton btn_deletar;
-    
+
     private DaoUsuarios daoUsuarios;
-    
+
     private DaoPessoa daoPessoas;
-    
+
     private DaoMudarSenhas daoMudarSenhas;
-    
+
     private DaoContatos daoContatos;
-    
+
     private DaoEndereco daoEnderecos;
-    
+
     private ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
-    
+
     private ObservableList<MudarSenha> oblist_cpf = FXCollections.observableArrayList();
-    
+
     private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
-    
+
     public FilteredList<Usuario> filteredData;
-    
+
     int spaceCount = 0;
-    
+
 
     @FXML
     void autorizar(ActionEvent event) throws ExceptionUtil {
-    	
+
     	MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
-    	
+
     	if(!cod_update.getText().isEmpty() && ms != null){
-    		
+
     		String cpf = ms.getCpf();
-	
+
     		Usuario user = null;
     		for (int i = 0; i < oblist_usuarios.size(); i++) {
     			Usuario u = oblist_usuarios.get(i);
@@ -221,7 +220,7 @@ public class UsuariosManagerController implements Initializable{
     				break;
     			}
 			}
-     		
+
         	user.setCodPessoa(Integer.valueOf(cod_update.getText()));
         	user.setCpf(cpf_update.getText());
         	user.setSenha(novaSenha.getText());
@@ -231,15 +230,15 @@ public class UsuariosManagerController implements Initializable{
 
         	daoUsuarios.updateUsuario(user);
 
-        	
+
         	daoMudarSenhas.closeRequest(ms);
         	initTables();
-        	
+
         	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
     	}else{
     		Util.Alert("Selecione uma solicitação!");
     	}
-    	
+
     }
 
 
@@ -247,24 +246,28 @@ public class UsuariosManagerController implements Initializable{
     void setUserName(KeyEvent event){
 
     	String name = nome.getText();
-    	
+
     	String[] part = name.split(" ");
-    	
+
     	String teste = part[part.length - 1];
-    	
+
     	String ultimoNome = teste;
-    	
+
     	String pattern = "\\S+";
 
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(nome.getText());
-        
+
         String primeiroNome = "";
-        
+
         if (m.find( )) {
         	primeiroNome = m.group(0);
         }
-    	
+
+        if(primeiroNome.equals(ultimoNome)){
+        	nomeUsuario.clear();
+        	return;
+        }
         nomeUsuario.setText(primeiroNome+ultimoNome);
 
     }
@@ -273,56 +276,59 @@ public class UsuariosManagerController implements Initializable{
     void confirmar(ActionEvent event) throws ExceptionUtil {
 
     	if(checkTextFields()){
-    		
+
     		oblist_pessoas = daoPessoas.getAllPessoa();
     		for (int i = 0; i < oblist_pessoas.size(); i++) {
-				if(oblist_pessoas.get(i).getCpf().equals(cpf.getText())){
+    			String obCPF = oblist_pessoas.get(i).getCpf();
+
+				if(obCPF != null && obCPF.equals(cpf.getText())){
 					Util.Alert("CPF já está cadastrado no sistema!");
 					return;
 				}
 			}
-    		
-    		try {	
+
+    		try {
 
     			Pessoa p = new Pessoa();
         		Endereco e = new Endereco();
         		Usuario u = new Usuario();
         		Contato c = new Contato();
-        		
+
         		Pattern r = Pattern.compile("\\S+");
                 Matcher m = r.matcher(nome.getText());
-                
+
                 String primeiroNome = "";
-                
+
                 if (m.find( )) {
                 	primeiroNome = m.group(0);
                 }
 
         		String passWord = primeiroNome+cpf.getText().substring(0, 3);
-        		
+
         		String hashPass = DigestUtils.sha1Hex(passWord);
-        		
+
         		senha.setText(passWord);
-        		
+
         		p.setNome(nome.getText());
         		p.setCpf(cpf.getText());
         		Date date = Date.valueOf(dt_nascimento.getValue());
         		p.setDt_nascimento(date);
         		p.setNaturalidade(naturalidade.getText());
         		p.setStatus("Ativo");
-        		
+
         		int cod = daoPessoas.addPessoa(p);
-        		
+
         		e.setCodPessoa(cod);
         		e.setBairro(bairro.getText());
         		e.setCidade(cidade.getSelectionModel().getSelectedItem());
         		e.setEstado(estado.getSelectionModel().getSelectedItem());
-        		e.setNumero(Integer.valueOf(numero.getText()));
+        		e.setNumero(Integer.valueOf(numero.getText().replaceAll("\\s+", "")));
         		e.setRua(nomeRua.getText());
         		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
-        		
+
         		daoEnderecos.addEndereco(e);
-        		
+
+        		c.setCodPessoa(cod);
         		if(email.getText().length() > 0)c.setEmail(email.getText());
     			if(telefone.getText().length() > 0)c.setTelefone(telefone.getText());
     			if(celular.getText().length() > 0)c.setCelular(celular.getText());
@@ -336,25 +342,25 @@ public class UsuariosManagerController implements Initializable{
     			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
     				daoContatos.UpdateContato(c);
     			}
-    			
+
     			u.setCodPessoa(cod);
     			u.setCpf(cpf.getText());
     			u.setUser(nomeUsuario.getText());
     			u.setSenha(hashPass);
     			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
     			u.setStatus("Ativo");
-    			
+
     			daoUsuarios.addUsuario(u);
-    			
+
         		Util.Alert("Usuário cadastrado com sucesso!");
-    			
+
     			initTables();
 			} catch (Exception e) {
 				Util.Alert("Erro ao concluir o cadastro!");
 				e.printStackTrace();
 				throw new ExceptionUtil("ERRO AO CADASTRAR USUARIO/PESSOA/ENDERECO/CONTATO!");
 			}
-    		
+
     	}
     }
 
@@ -363,17 +369,11 @@ public class UsuariosManagerController implements Initializable{
     	Usuario selected = table_usuarios.getSelectionModel().getSelectedItem();
     	if(selected != null){
 			if(event.getSource() == btn_ativar){
-				if(selected.getStatus().equals("Inativo")){
-					selected.setStatus("Ativo");
-					daoUsuarios.updateUsuario(selected);
-					Util.Alert("Usuario ativado no sistema!");
+					daoUsuarios.desativarUsuario(selected);
 					initTables();
-				}else{
-					Util.Alert("Usuario já está ativado no sistema!");
-				}
 			}
 			else if(event.getSource() == btn_desativar){
-				
+
 				if(oblist_usuarios.size() == 1){
 					Util.Alert("Não é possivel desativar o único usuário do sistema!");
 					return;
@@ -393,7 +393,7 @@ public class UsuariosManagerController implements Initializable{
 		}else{
 			Util.Alert("Selecione um usuario na tabela!");
 		}
-    	
+
     }
 
     @FXML
@@ -414,11 +414,16 @@ public class UsuariosManagerController implements Initializable{
 			estado.getSelectionModel().clearSelection();bairro.clear();
 		}
     }
-    
+
     boolean checkTextFields(){
 
 		if(cadastrarTab.isSelected()){
 			TextFieldFormatter tff = new TextFieldFormatter();
+
+			if(nome.getText().length() == 0 || nome.getText() == null){
+				Util.Alert("Verifique o nome!");
+				return false;
+			}
 
 			if(cpf.getText().length() < 11 || (cpf.getText().length() > 11 && cpf.getText().length() < 14)){
 				Util.Alert("Verifique o CPF!");
@@ -429,11 +434,6 @@ public class UsuariosManagerController implements Initializable{
 				tff.setCaracteresValidos("0123456789");
 				tff.setTf(cpf);
 				tff.formatter();
-			}
-
-			if(nome.getText().length() < 5 || nome.getText() == null){
-				Util.Alert("Verifique o nome!");
-				return false;
 			}
 
 			if(naturalidade.getText().length() < 5 || naturalidade.getText() == null){
@@ -503,7 +503,7 @@ public class UsuariosManagerController implements Initializable{
 		return true;
 
 	}
-    
+
     void populateBoxes(){
     	estado.getItems().addAll("Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal",
 				"Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba",
@@ -533,7 +533,7 @@ public class UsuariosManagerController implements Initializable{
     			String lowerCaseFilter = newValue.toLowerCase();
     			if(String.valueOf(Usuario.getCodPessoa()).toLowerCase().contains(lowerCaseFilter)){
     				return true;
-    			}	
+    			}
     			else if(Usuario.getCpf().toLowerCase().contains(lowerCaseFilter)){
     				return true;
     			}
@@ -546,8 +546,8 @@ public class UsuariosManagerController implements Initializable{
     			else if(Usuario.getUser().toLowerCase().contains(lowerCaseFilter)){
     				return true;
     			}
-    			
-    			
+
+
     			return false;
     		});
     	});
@@ -557,37 +557,37 @@ public class UsuariosManagerController implements Initializable{
     }
 
     void initTables(){
-    	
+
     	oblist_usuarios.clear();
-    	oblist_cpf.clear();  	
-    	
+    	oblist_cpf.clear();
+
     	try {
 			oblist_usuarios = daoUsuarios.getAllUsuarios();
 			oblist_cpf = daoMudarSenhas.getAllRequests();
-    		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	
+
     	filteredData = new FilteredList<>(oblist_usuarios);
-    	
+
     	col_codPessoa.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
     	col_cpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
     	col_cpf_mud.setCellValueFactory(new PropertyValueFactory<>("cpf"));
     	col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
     	col_tipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     	col_username.setCellValueFactory(new PropertyValueFactory<>("user"));
-    	
+
     	table_cpf.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
-				
+
 				MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
 				String cpf = ms.getCpf();
-				
+
 				Pessoa p = null;
 				Usuario user = null;
 				Contato c = null;
-				
+
 				for (int i = 0; i < oblist_usuarios.size(); i++) {
 					Usuario u = oblist_usuarios.get(i);
 					if(u.getCpf().equals(cpf)){
@@ -604,54 +604,54 @@ public class UsuariosManagerController implements Initializable{
 				cod_update.setText(String.valueOf(p.getCodPessoa()));
 				nome_update.setText(p.getNome());
 				cpf_update.setText(p.getCpf());
-				
+
 				usuario_update.setText(user.getUser());
 				novaSenha.setText(ms.getSenha());
 				tipo_update.setText(user.getTipo());
-				
+
 				try {
 					c = daoContatos.getContato(p.getCodPessoa());
 				} catch (ExceptionUtil e) {
 					e.printStackTrace();
 				}
-				
+
 				if(c.getEmail() != null)email_update.setText(c.getEmail());
 				if(c.getTelefone() != null)telefone_update.setText(c.getTelefone());
 				if(c.getCelular() != null)celular_update.setText(c.getCelular());
-				
+
 			}
-		});	
-    	
+		});
+
     	table_cpf.setItems(oblist_cpf);
     	table_usuarios.setItems(oblist_usuarios);
     }
-       
+
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoUsuarios = new DaoUsuarios(Main.entityManager);
-		daoPessoas = new DaoPessoa(Main.entityManager);
-		daoMudarSenhas = new DaoMudarSenhas(Main.entityManager);
-		daoContatos = new DaoContatos(Main.entityManager);
-		daoEnderecos = new DaoEndereco(Main.entityManager);
-		
+		daoUsuarios = new DaoUsuarios();
+		daoPessoas = new DaoPessoa();
+		daoMudarSenhas = new DaoMudarSenhas();
+		daoContatos = new DaoContatos();
+		daoEnderecos = new DaoEndereco();
+
 		initTables();
 		populateBoxes();
-		
+
 		nomeUsuario.textProperty().addListener(
 			     (observable, old_value, new_value) -> {
-			    	 
+
 			          if(new_value.contains(" ")){
 			                //prevents from the new space char
-			        	  nomeUsuario.setText(old_value); 
+			        	  nomeUsuario.setText(old_value);
 			          }
 			          if(new_value.length() > 25){
 			        	  nomeUsuario.setText(old_value);
 			          }
-			          
+
 			     }
 			);
-		
+
 	}
 
 }

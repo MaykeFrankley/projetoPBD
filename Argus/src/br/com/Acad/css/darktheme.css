@@ -1,30 +1,30 @@
-/* 
+/*
     Created on : 11 Nov, 2017, 4:42:53 AM
     Author     : afsal villan
 */
 
 .close-btn{
-	-fx-background-color: transparent;	
+	-fx-background-color: transparent;
 }
 
 .close-btn:hover{
-	-fx-background-color: #E81123;	
+	-fx-background-color: #E81123;
 }
 
 .min-btn{
-	-fx-background-color: transparent;	
+	-fx-background-color: transparent;
 }
 
 .min-btn:hover{
-	-fx-background-color: white;	
+	-fx-background-color: white;
 }
 
 .max-btn{
-	-fx-background-color: transparent;	
+	-fx-background-color: transparent;
 }
 
 .max-btn:hover{
-	-fx-background-color: #5439F0;	
+	-fx-background-color: #5439F0;
 }
 
 .root{
@@ -33,11 +33,11 @@
 
 .button{
     -fx-text-fill: #B2B2B2;
-    -fx-background-color: #2A2E37;
+    -fx-background-color: derive(#2A2E37, 20%);
     -fx-border-color: #FFFF8D;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-font-size: 15pt;
+    -fx-font-size: 16pt;
 }
 
 .button:hover{
@@ -59,8 +59,6 @@
     -fx-text-fill: derive(#FFFF8D, 20%);
 }
 
-/*Login Screen Specific*/
-
 
 /*Main Screen CSS Styling starts here*/
 
@@ -77,7 +75,7 @@
 
 .tab-label{
     -fx-text-fill: #FFFF8D;
-    -fx-font-size: 10pt; 
+    -fx-font-size: 12pt;
 }
 
 
@@ -182,7 +180,7 @@
 /*TableView Default*/
 .table-view{
     -fx-background-color: derive(#2A2E37, 10%);
-    -fx-font-size: 16px; 
+    -fx-font-size: 18px;
     -fx-border-color: derive(#FFFF8D, -60%);
 }
 .table-view:focused{
@@ -213,7 +211,7 @@
     -fx-table-cell-border-color: transparent;
 }
 .table-column{
-    -fx-alignment: CENTER;  
+    -fx-alignment: CENTER;
 }
 .table-row-cell:even{
     -fx-background-color: derive(#2A2E37, 10%);
@@ -231,13 +229,13 @@
 }
 .table-view > .virtual-flow > .scroll-bar:vertical,
 .table-view > .virtual-flow > .scroll-bar:vertical > .track,
-.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background,
 .table-view > .virtual-flow > .scroll-bar:horizontal,
 .table-view > .virtual-flow > .scroll-bar:horizontal > .track,
 .table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
     -fx-background-color: transparent;
 }
-.table-view > .virtual-flow > .scroll-bar > .increment-button, 
+.table-view > .virtual-flow > .scroll-bar > .increment-button,
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-text-fill: white;
 }
@@ -260,7 +258,7 @@
 
 
 /*Dashboard label*/
-.not-available 
+.not-available
 {
     -fx-background-radius: 5px;
     -fx-fill: derive(blue, 80%);
@@ -270,7 +268,7 @@
 /*Checkbox*/
 
 .checkbox-main{
-    -fx-text-fill: #FFFF8D; 
+    -fx-text-fill: #FFFF8D;
     -jfx-checked-color: #2A2E37;
     -fx-font-size: 10pt;
 }
@@ -353,30 +351,30 @@
 
 .combo-box .arrow,
 .choice-box .arrow {
-    -fx-background-color: #FFFF8D;   
+    -fx-background-color: #FFFF8D;
 }
 
 .combo-box .text-field {
 	-fx-prompt-text-fill: #FFFF8D;
 	-fx-text-fill: #FFFF8D;
-    -fx-background-color: transparent 
+    -fx-background-color: transparent
 }
 .combo-box .text-field:focused {
 	-fx-prompt-text-fill: #FFFF8D;
 	-fx-text-fill: #FFFF8D;
-    -fx-background-color: transparent 
+    -fx-background-color: transparent
 }
 
 .combo-box > .arrow-button {
    -fx-background-color: transparent ;
   }
-  
+
  .combo-box-popup .list-view {
     -fx-background-color: #2A2E37;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
-    -fx-padding: 0.333333em 0.333333em 0.666667em 0.083333em; 
-   
+    -fx-padding: 0.333333em 0.333333em 0.666667em 0.083333em;
+
 }
 .combo-box-popup .list-view .list-cell {
 -fx-background-color: transparent;
@@ -398,7 +396,7 @@
 
  .dialog-pane{
 	-fx-border-color: black;
-	-fx-border-width:2.0px;	
+	-fx-border-width:2.0px;
  }
 
 /**Costumization of The Bar where the buttons are located**/
@@ -417,7 +415,7 @@
 /**Costumization of DialogPane Header**/
 .dialog-pane:header .header-panel {
   -fx-background-color: #2A2E37;
-  
+
 }
 
 .dialog-pane:header .header-panel .label{

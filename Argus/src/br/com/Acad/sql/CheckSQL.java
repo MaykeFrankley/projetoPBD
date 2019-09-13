@@ -6,14 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.mysql.cj.protocol.Resultset;
 
 public class CheckSQL {
-	
+
 	public Connection con;
-	public Resultset rs;
+	public ResultSet rs;
 	public PreparedStatement stmt;
-	
+
 	public boolean checkTableExists(String table) throws SQLException{
 
 		this.con = ConnectionClass.createConnection();
@@ -22,7 +21,7 @@ public class CheckSQL {
 		if (tables.next()) {
 			return true;
 		}
-		
+
 		this.con.close();
 
 		return false;
