@@ -2,6 +2,8 @@ package br.com.Acad.controller;
 
 import java.net.URL;
 import java.sql.Date;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,12 +19,15 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoEndereco;
+import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
+import br.com.Acad.model.LogSistema;
+import br.com.Acad.model.LogSistemaID;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
@@ -192,6 +197,8 @@ public class UsuariosManagerController implements Initializable{
 
     private DaoEndereco daoEnderecos;
 
+    private DaoLog daolog;
+
     private ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
 
     private ObservableList<MudarSenha> oblist_cpf = FXCollections.observableArrayList();
@@ -220,21 +227,30 @@ public class UsuariosManagerController implements Initializable{
     				break;
     			}
 			}
+    		if(user != null){
+            	user.setSenha(novaSenha.getText());
 
-        	user.setCodPessoa(Integer.valueOf(cod_update.getText()));
-        	user.setCpf(cpf_update.getText());
-        	user.setSenha(novaSenha.getText());
-        	user.setUser(usuario_update.getText());
-        	user.setTipo(tipo_update.getText());
-        	user.setStatus("Ativo");
+            	daoUsuarios.updateUsuario(user);
 
-        	daoUsuarios.updateUsuario(user);
+            	daoMudarSenhas.closeRequest(ms);
+            	initTables();
 
+            	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
 
-        	daoMudarSenhas.closeRequest(ms);
-        	initTables();
+            	LogSistema ls = new LogSistema();
 
-        	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
+            	Date data = new Date(Calendar.getInstance().getTime().getTime());
+    			Time hora = new Time(Calendar.getInstance().getTime().getTime());
+
+            	ls.setId(new LogSistemaID(MainTelaController.user.getCodPessoa(), data, hora));
+
+            	ls.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" autorizou mudança de senha de \""+user.getUser()+"\".");
+
+            	daolog.addLog(ls);
+
+            	limpar(new ActionEvent());
+    		}
+
     	}else{
     		Util.Alert("Selecione uma solicitação!");
     	}
@@ -408,6 +424,7 @@ public class UsuariosManagerController implements Initializable{
     @FXML
     void limpar(ActionEvent event) {
     	if(cadastrarTab.isSelected()){
+    		nome.clear();cpf.clear();
 			nome_update.clear();dt_nascimento.setValue(null);naturalidade.clear();cpf_update.clear();
 			nomeRua.clear();complemento.clear();numero.clear();email_update.clear();telefone_update.clear();
 			celular_update.clear();whatsapp.setSelected(false);cidade.getSelectionModel().clearSelection();
@@ -634,6 +651,7 @@ public class UsuariosManagerController implements Initializable{
 		daoMudarSenhas = new DaoMudarSenhas();
 		daoContatos = new DaoContatos();
 		daoEnderecos = new DaoEndereco();
+		daolog = new DaoLog();
 
 		initTables();
 		populateBoxes();

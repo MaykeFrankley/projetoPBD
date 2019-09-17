@@ -2,8 +2,11 @@ package br.com.Acad.util;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,35 +16,31 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 
+import br.com.Acad.controller.MainTelaController;
+import br.com.Acad.model.LogSistema;
+import br.com.Acad.model.LogSistemaID;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 public class Util {
 
 	public static StackPane contentPane;
-	
+
 	static JFXDialogLayout dialogLayout = new JFXDialogLayout();
 	static JFXDialog dialog;
-	
+
 
 
 	private static final String EMAIL_PATTERN
@@ -52,6 +51,15 @@ public class Util {
 		Pattern pattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
+	}
+
+	public static LogSistema prepareLog(){
+		LogSistema ls = new LogSistema();
+		Date data = new Date(Calendar.getInstance().getTime().getTime());
+		Time hora = new Time(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")).getTime().getTime());
+
+		ls.setId(new LogSistemaID(MainTelaController.user.getCodPessoa(), data, hora));
+		return ls;
 	}
 
 	public static void LoadWindow(URL loc,	Scene scene, String or) throws IOException{
@@ -119,16 +127,16 @@ public class Util {
 			contentPane.getChildren().get(0).setEffect(null);
 		});
 	}
-	
+
 	public static void confirmation(List<JFXButton> controls, String body) {
 		BoxBlur blur = new BoxBlur(3, 3, 3);
         if (controls.isEmpty()) {
             controls.add(new JFXButton("Okay"));
         }
         if(dialog != null)dialog.close();
-        
+
         dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
-     
+
         controls.forEach(controlButton -> {
             controlButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
                 dialog.close();
@@ -137,55 +145,31 @@ public class Util {
 
         dialogLayout.setHeading(new Label(body));
         dialogLayout.setActions(controls);
-        
+
         dialogLayout.setStyle(
         	   "-fx-background-color: #2A2E37;"
         	   +"-fx-text-fill:white;"
         	   +"-fx-font-size: 16px;"
         	   +"-fx-font-weight: bold;"
         	   );
-        
+
         dialog.setOverlayClose(false);
         dialog.show();
-        dialog.setOnDialogClosed(event1 -> {	
-        	
+        dialog.setOnDialogClosed(event1 -> {
+
         	contentPane.getChildren().get(0).setEffect(null);
         });
         if(contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);
     }
 
-	public static boolean confirmation(String message){
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Logout");
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.getButtonTypes();;
-		styleAlert(alert);
-		Optional<ButtonType> action = alert.showAndWait();
-		if(action.get() == ButtonType.OK){
-			return true;
-		}
-		return false;
-
-	}
-
-	private static void styleAlert(Alert alert) {
-		alert.initModality(Modality.APPLICATION_MODAL);
-		alert.initStyle(StageStyle.UNDECORATED);
-
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(Util.class.getResource("/br/com/Acad/css/darktheme.css").toExternalForm());
-        dialogPane.getStyleClass().add("dialog-pane");
-    }
-	
 	public static void AdminNotification(String message, String title) {
-		
+
 		Notifications not = Notifications.create()
 				.title(title)
 				.text(message)
 				.graphic(null)
 				.hideAfter(Duration.seconds(10))
-				.position(Pos.BOTTOM_RIGHT);		
+				.position(Pos.BOTTOM_RIGHT);
 		not.darkStyle();
 		not.showInformation();
 	}

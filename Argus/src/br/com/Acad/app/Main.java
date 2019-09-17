@@ -33,7 +33,7 @@ public class Main extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		TimeZone.setDefault(TimeZone.getTimeZone("America/Sao_Paulo"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
 
 		Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/br/com/Acad/view/MainTela.fxml")));
 

@@ -6,8 +6,6 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXButton;
@@ -116,12 +114,7 @@ public class LoginController implements Initializable{
     			mainTela.enableHamburger();
     			mainTela.enableNotificationTask();
 
-    			LogSistema log = new LogSistema();
-
-    			Date data = new Date(Calendar.getInstance().getTime().getTime());
-    			Time hora = new Time(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")).getTime().getTime());
-
-    			log.setId(new LogSistemaID(check.getCodPessoa(), data, hora));
+    			LogSistema log = Util.prepareLog();
     			log.setAcao("Usuário \""+check.getUser()+"\" fez o login.");
 
     			daoLog.addLog(log);
@@ -157,16 +150,10 @@ public class LoginController implements Initializable{
         			mainTela.enableHamburger();
         			mainTela.enableNotificationTask();
 
-        			LogSistema log = new LogSistema();
-
-        			Date data = new Date(Calendar.getInstance().getTime().getTime());
-        			Time hora = new Time(Calendar.getInstance().getTime().getTime());
-
-        			log.setId(new LogSistemaID(check.getCodPessoa(), data, hora));
+        			LogSistema log = Util.prepareLog();
         			log.setAcao("Usuário \""+check.getUser()+"\" fez o login.");
 
         			daoLog.addLog(log);
-
             	}
             	else{
             		label_error.setVisible(true);
@@ -214,7 +201,22 @@ public class LoginController implements Initializable{
 
     		Util.Alert("Solicitação enviada!\nAguarde um administrador confirmar.");
     		mudarSenhaMenu(event);
+
+    		LogSistema ls = new LogSistema();
+
+    		Date data = new Date(Calendar.getInstance().getTime().getTime());
+			Time hora = new Time(Calendar.getInstance().getTime().getTime());
+
+
+    		Usuario u = daoUsuarios.getUsuario(CPF.getText());
+
+    		ls.setId(new LogSistemaID(u.getCodPessoa(), data, hora));
+    		ls.setAcao("Usuário \""+u.getUser()+"\" solicitou troca de senha.");
+
+    		daoLog.addLog(ls);
+
     		CPF.clear();novaSenha.clear();confirmarSenha.clear();
+
     	}else{
     		Util.Alert("Verifique os campos e tente novamente!");
     	}

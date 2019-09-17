@@ -21,13 +21,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 public class MainTelaController implements Initializable{
 
@@ -57,7 +57,7 @@ public class MainTelaController implements Initializable{
 
 	private double yOffSet;
 
-	Usuario user;
+	public static Usuario user;
 
     @FXML
     void close_app(MouseEvent event) {
@@ -111,10 +111,10 @@ public class MainTelaController implements Initializable{
 
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/br/com/Acad/view/Dashboard_drawer.fxml"));
-			VBox box = loader.load();
+			ScrollPane pane = loader.load();
 			drawerController = loader.getController();
 			drawerController.setMainTela(this);
-			drawer.setSidePane(box);
+			drawer.setSidePane(pane);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -122,6 +122,7 @@ public class MainTelaController implements Initializable{
     }
 
     private void initializeMenu(){
+		Util.contentPane = contentPane;
 
     	HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(hamburger);
 		transition.setRate(-1);
@@ -147,7 +148,7 @@ public class MainTelaController implements Initializable{
     }
 
     void setUser(Usuario user){
-    	this.user = user;
+    	MainTelaController.user = user;
     	drawerController.setUser(user);
     }
 
@@ -209,12 +210,10 @@ public class MainTelaController implements Initializable{
 			contentPane.getChildren().add(root);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		initializeMenu();
-		Util.contentPane = contentPane;
 
 	}
 

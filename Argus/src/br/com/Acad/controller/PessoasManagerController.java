@@ -16,10 +16,12 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.Acad.app.Main;
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoEndereco;
+import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
+import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.TextFieldFormatter;
@@ -190,6 +192,16 @@ public class PessoasManagerController implements Initializable{
 
 	private DaoContatos daoContatos;
 
+	private DaoLog daolog;
+
+	private String oldCPF;
+
+	private Pessoa oldPessoa;
+
+	private Contato oldContato;
+
+	private Endereco oldEndereco;
+
 
 	@FXML
 	void minimize_stage(MouseEvent event) {
@@ -233,12 +245,15 @@ public class PessoasManagerController implements Initializable{
 			try {
 
 				oblist = daoPessoas.getAllPessoa();
-	    		for (int i = 0; i < oblist.size(); i++) {
-	    			String obCPF = oblist.get(i).getCpf();
+				for (int i = 0; i < oblist.size(); i++) {
+					String obCPF = oblist.get(i).getCpf();
 
-					if(obCPF != null && obCPF.equals(cpf_update.getText())){
-						Util.Alert("CPF já está cadastrado no sistema!");
-						return;
+					if((obCPF != null && oldCPF != null) || obCPF != null){
+						if(obCPF.equals(cpf_update.getText()) && !cpf_update.getText().equals(oldCPF)){
+							Util.Alert("CPF já está cadastrado no sistema!");
+							return;
+						}
+
 					}
 				}
 
@@ -256,6 +271,16 @@ public class PessoasManagerController implements Initializable{
 
 				int cod = daoPessoas.UpdatePessoa(p);
 
+				//LogSistema
+				if(!oldPessoa.getNome().equals(p.getNome())){
+					LogSistema ls = Util.prepareLog();
+					ls.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" atualizou dados da pessoa com o código: "+cod);
+					daolog.addLog(ls);
+					Thread.sleep(1000);
+				}
+
+				//endLogSistema
+
 				e.setCodPessoa(cod);
 				e.setRua(nomeRua_update.getText());
 				e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
@@ -264,7 +289,16 @@ public class PessoasManagerController implements Initializable{
 				e.setEstado(estado_update.getSelectionModel().getSelectedItem());
 				e.setCidade(cidade_update.getSelectionModel().getSelectedItem());
 
+
 				daoEnderecos.UpdateEndereco(e);
+				//LogSistema
+				if(!oldEndereco.equals(e)){
+					LogSistema ls1 = Util.prepareLog();
+					ls1.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" atualizou endereço da pessoa com o código: "+cod);
+					daolog.addLog(ls1);
+					Thread.sleep(1000);
+				}
+				//endLogSistema
 
 				c.setCodPessoa(cod);
 				if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
@@ -279,6 +313,14 @@ public class PessoasManagerController implements Initializable{
 
 				if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
 					daoContatos.UpdateContato(c);
+					//LogSistema
+					if(!oldContato.equals(c)){
+						LogSistema ls3 = Util.prepareLog();
+						ls3.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" atualizou contatos da pessoa com o código: "+cod);
+						daolog.addLog(ls3);
+						Thread.sleep(1000);
+					}
+					//endLogSistema
 				}
 
 				Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
@@ -298,6 +340,7 @@ public class PessoasManagerController implements Initializable{
 	void selecionarPessoa(ActionEvent event) throws ExceptionUtil {
 		Pessoa p = table_pessoas.getSelectionModel().getSelectedItem();
 		if(p != null){
+			oldPessoa = p;
 			limpar(event);
 
 			codigo_listar.setText(String.valueOf(p.getCodPessoa()));
@@ -307,7 +350,10 @@ public class PessoasManagerController implements Initializable{
 
 			nome_update.setText(p.getNome());
 			naturalidade_update.setText(p.getNaturalidade());
-			if(p.getCpf() != null)cpf_update.setText(p.getCpf());
+			if(p.getCpf() != null){
+				cpf_update.setText(p.getCpf());
+				oldCPF = p.getCpf();
+			}
 			LocalDate dt = LocalDate.parse(p.getDt_nascimento().toLocalDate().toString());
 			dt_nascimento_update.setValue(dt);
 
@@ -318,6 +364,7 @@ public class PessoasManagerController implements Initializable{
 			estado_update.getSelectionModel().select(e.getEstado());
 			cidade_update.getSelectionModel().select(e.getCidade());
 
+			oldEndereco = e;
 			if(c != null){
 				if(c.getEmail() != null)email_update.setText(c.getEmail());
 				if(c.getTelefone() != null)telefone_update.setText(c.getTelefone());
@@ -327,6 +374,8 @@ public class PessoasManagerController implements Initializable{
 				}else{
 					whatsapp_update.setSelected(false);
 				}
+
+				oldContato = c;
 			}
 
 			enableAtualizar();
@@ -563,7 +612,7 @@ public class PessoasManagerController implements Initializable{
 				}
 			}
 
-			if(naturalidade_update.getText().length() < 5 || naturalidade_update.getText() == null){
+			if(naturalidade_update.getText().length() < 1 || naturalidade_update.getText() == null){
 				Util.Alert("Verifique a naturalidade!");
 				return false;
 			}
@@ -573,7 +622,7 @@ public class PessoasManagerController implements Initializable{
 				return false;
 			}
 
-			if(nomeRua_update.getText().length() < 5){
+			if(nomeRua_update.getText().length() < 1){
 				Util.Alert("Verifique o nome da rua!");
 				return false;
 			}
@@ -669,6 +718,7 @@ public class PessoasManagerController implements Initializable{
 		daoPessoas = new DaoPessoa();
 		daoEnderecos = new DaoEndereco();
 		daoContatos = new DaoContatos();
+		daolog = new DaoLog();
 
 		populateBoxes();
 		initTables();

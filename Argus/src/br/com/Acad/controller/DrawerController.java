@@ -28,7 +28,7 @@ public class DrawerController implements Initializable{
 
     @FXML
     private Label label_user;
-    
+
     private MainTelaController mainController;
 
     @FXML
@@ -49,13 +49,19 @@ public class DrawerController implements Initializable{
 
     @FXML
     void gerenciar_alunos(ActionEvent event) {
-    	
+
     }
 
     @FXML
     void gerenciar_pessoas(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/PessoasManager.fxml"), scene, "x");
+    }
+
+    @FXML
+    void log_sistema(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/LogSistema.fxml"), scene, "y");
     }
 
     @FXML
@@ -69,17 +75,17 @@ public class DrawerController implements Initializable{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-    		
+
         	try {
         		FXMLLoader loader = new FXMLLoader();
     			loader.setLocation(getClass().getResource("/br/com/Acad/view/LoginTela.fxml"));
     			Parent root = loader.load();
     			LoginController control = loader.getController();
     			control.setMainTela(mainController);
-    			
+
 				Scene scene = ((Node) event.getSource()).getScene();
 				root.translateYProperty().set(scene.getHeight());
-	
+
 				Util.contentPane.getChildren().add(root);
 				Timeline timel = new Timeline();
 
@@ -94,17 +100,17 @@ public class DrawerController implements Initializable{
 					}
 				});
 				timel.play();
-				
+
 				mainController.cancelNotificationTask();
 				mainController.enableHamburger();
-				mainController.user = null;
-				
+				MainTelaController.user = null;
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
     	});
     	JFXButton cancel = new JFXButton("Cancelar");
-    	
+
     	Util.confirmation(Arrays.asList(yes, cancel),"Tem certeza que deseja sair?");
     }
 
@@ -112,11 +118,11 @@ public class DrawerController implements Initializable{
     void pagamentos(ActionEvent event) {
 
     }
-    
-    void setUser(Usuario user){	
+
+    void setUser(Usuario user){
     	this.label_user.setText(user.getUser());
     }
-    
+
     void setMainTela(MainTelaController mc){
     	this.mainController = mc;
     }
@@ -124,7 +130,7 @@ public class DrawerController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

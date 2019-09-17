@@ -291,6 +291,9 @@
 
 
 /*ScrollPane */
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
 
 .scroll-pane {
     -fx-background-color: #2A2E37;
@@ -314,7 +317,7 @@
 
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb {
-    -fx-background-color: white;
+    -fx-background-color: derive(#2A2E37, 20%);
     -fx-background-radius: 5em;
 }
 
@@ -429,4 +432,30 @@
 
 .jfx-layout-actions{
 	-fx-hgap: 10;
+}
+
+/*Log */
+
+.log-view{
+	-fx-background-color: #2A2E37;
+}
+
+.log-view .list-cell {
+    -fx-background-color: null;
+}
+
+.log-view .list-cell:debug {
+    -fx-text-fill: gray;
+}
+
+.log-view .list-cell:info {
+    -fx-text-fill: green;
+}
+
+.log-view .list-cell:warn {
+    -fx-text-fill: purple;
+}
+
+.log-view .list-cell:error {
+    -fx-text-fill: red;
 }
