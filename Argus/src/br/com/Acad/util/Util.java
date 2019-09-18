@@ -155,11 +155,9 @@ public class Util {
 
         dialog.setOverlayClose(false);
         dialog.show();
-        dialog.setOnDialogClosed(event1 -> {
 
-        	contentPane.getChildren().get(0).setEffect(null);
-        });
-        if(contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);
+        if(Util.contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);
+
     }
 
 	public static void AdminNotification(String message, String title) {

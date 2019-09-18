@@ -16,6 +16,7 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.Acad.dao.DaoLog;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.LogSistemaID;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,6 +24,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
@@ -82,7 +84,7 @@ public class LogSistemaController implements Initializable{
     void searchLog(KeyEvent event) {
     	campoPesquisa.textProperty().addListener((observableValue, oldValue,newValue)->{
 			filteredData.setPredicate(LogSistema->{
-				SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+				SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 				format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 				String time = format.format(LogSistema.getId().getHora());
 
@@ -119,6 +121,7 @@ public class LogSistemaController implements Initializable{
     		dialogPane.setVisible(true);
     		tabPane.setEffect(blur);
     		tabPane.setMouseTransparent(true);
+    		Platform.runLater(() -> passTextField.requestFocus());
     	}
     }
 
@@ -220,7 +223,7 @@ public class LogSistemaController implements Initializable{
 			public TableCell<LogSistema, LogSistemaID> call(TableColumn<LogSistema, LogSistemaID> param) {
 
 				final TableCell<LogSistema, LogSistemaID> cell = new TableCell<LogSistema, LogSistemaID>(){
-					private SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+					private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
 					@Override
 					protected void updateItem(LogSistemaID item, boolean empty) {

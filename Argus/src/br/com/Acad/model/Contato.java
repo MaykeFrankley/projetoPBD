@@ -11,24 +11,24 @@ import javax.persistence.Table;
 @Entity
 @Table(name="contatos")
 public class Contato {
-	
+
 	@Id
 	@ManyToOne
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "pessoas")
 	private int codPessoa;
-	
+
 	@Column
 	private String telefone;
-	
+
 	@Column
 	private String celular;
-	
+
 	@Column
 	private String email;
-	
+
 	@Column
 	private int whatsapp;
-	
+
 	public Contato() {
 		// TODO Auto-generated constructor stub
 	}
@@ -72,7 +72,29 @@ public class Contato {
 	public void setWhatsapp(int whatsapp) {
 		this.whatsapp = whatsapp;
 	}
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Contato)) return false;
+
+		Contato other = (Contato) obj;
+
+		if((this.celular != null && other.celular == null ) || (this.celular == null && other.celular != null ) || (this.celular != null && this.celular != null && !this.celular.equals(other.celular))){
+			return false;
+		}
+		if((this.telefone != null && other.telefone == null ) || (this.telefone == null && other.telefone != null ) || (this.telefone != null && other.telefone != null && !this.telefone.equals(other.telefone))){
+			return false;
+		}
+		if((this.email == null && other.email != null ) || (this.email != null && other.email == null ) || (this.email != null && other.email != null && !this.email.equals(other.email))){
+			return false;
+		}
+		if(!String.valueOf(this.whatsapp).equals(String.valueOf(other.whatsapp))){
+			return false;
+		}
+
+		return true;
+	}
+
+
 
 }

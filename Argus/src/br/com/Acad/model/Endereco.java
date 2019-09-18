@@ -16,25 +16,25 @@ public class Endereco {
 	@ManyToOne
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "pessoas")
 	private int codPessoa;
-	
+
 	@Column
 	private String rua;
-	
+
 	@Column
 	private int numero;
-	
+
 	@Column
 	private String complemento;
-	
+
 	@Column
 	private String bairro;
-	
+
 	@Column
 	private String cidade;
-	
+
 	@Column
 	private String estado;
-	
+
 	public Endereco() {
 		// TODO Auto-generated constructor stub
 	}
@@ -94,6 +94,22 @@ public class Endereco {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Endereco))
+			return false;
+
+		Endereco other = (Endereco) obj;
+
+		if(!this.bairro.equals(other.bairro) || !this.cidade.equals(other.cidade) ||
+		!this.estado.equals(other.estado) || !this.complemento.equals(other.complemento) ||
+		!this.rua.equals(other.rua) || !String.valueOf(this.numero).equals(String.valueOf(other.numero))){
+			return false;
+		}
+
+		return true;
+
+	}
+
 }

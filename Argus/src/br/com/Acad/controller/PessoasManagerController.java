@@ -272,9 +272,9 @@ public class PessoasManagerController implements Initializable{
 				int cod = daoPessoas.UpdatePessoa(p);
 
 				//LogSistema
-				if(!oldPessoa.getNome().equals(p.getNome())){
+				if(!oldPessoa.SameAs(p)){
 					LogSistema ls = Util.prepareLog();
-					ls.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" atualizou dados da pessoa com o código: "+cod);
+					ls.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" alterou dados pessoais de uma pessoa com o código: "+cod);
 					daolog.addLog(ls);
 					Thread.sleep(1000);
 				}
@@ -294,7 +294,7 @@ public class PessoasManagerController implements Initializable{
 				//LogSistema
 				if(!oldEndereco.equals(e)){
 					LogSistema ls1 = Util.prepareLog();
-					ls1.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" atualizou endereço da pessoa com o código: "+cod);
+					ls1.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" alterou o endereço da pessoa com o código: "+cod);
 					daolog.addLog(ls1);
 					Thread.sleep(1000);
 				}
@@ -316,7 +316,7 @@ public class PessoasManagerController implements Initializable{
 					//LogSistema
 					if(!oldContato.equals(c)){
 						LogSistema ls3 = Util.prepareLog();
-						ls3.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" atualizou contatos da pessoa com o código: "+cod);
+						ls3.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" alterou contatos da pessoa com o código: "+cod);
 						daolog.addLog(ls3);
 						Thread.sleep(1000);
 					}

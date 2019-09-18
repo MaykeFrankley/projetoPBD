@@ -13,28 +13,28 @@ import javax.persistence.Table;
 @Entity
 @Table(name="pessoas")
 public class Pessoa {
-	
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@JoinColumn(name="codPessoa")
 	private int codPessoa;
-	
+
 	@Column
 	private String nome;
-	
+
 	@Column
 	private String naturalidade;
-	
+
 	@Column
 	private Date dt_nascimento;
-	
+
 	@Column
 	private String cpf;
-	
+
 	@Column
 	private String status;
-	
+
 	public Pessoa() {
 		// TODO Auto-generated constructor stub
 	}
@@ -43,7 +43,7 @@ public class Pessoa {
 	public int getCodPessoa() {
 		return codPessoa;
 	}
-	
+
 
 	public String getNome() {
 		return nome;
@@ -53,17 +53,17 @@ public class Pessoa {
 	public String getNaturalidade() {
 		return naturalidade;
 	}
-	
+
 
 	public Date getDt_nascimento() {
 		return dt_nascimento;
 	}
-	
+
 
 	public String getCpf() {
 		return cpf;
 	}
-	
+
 
 	public String getStatus() {
 		return status;
@@ -99,9 +99,22 @@ public class Pessoa {
 	}
 
 	public String toString(){
-		
+
 		return "\nNome: "+nome;
 	}
-	
-	
+
+	public boolean SameAs(Object obj) {
+		if (!(obj instanceof Pessoa))
+			return false;
+		Pessoa other = (Pessoa) obj;
+		if (!this.nome.equals(other.nome) || !this.cpf.equals(other.cpf) ||
+				!String.valueOf(this.codPessoa).equals(String.valueOf(other.codPessoa)) ||
+				!this.naturalidade.equals(other.naturalidade) ||
+				!this.dt_nascimento.equals(other.dt_nascimento)){
+			return false;
+		}
+		return true;
+
+	}
+
 }
