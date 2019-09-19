@@ -51,6 +51,31 @@
 	-fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
 
+.options-btn{
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-font-size: 20px;
+}
+.options-btn .label{
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-font-size: 20px;
+}
+
+.options-btn:hover{
+    -fx-border-color: #FFFF8D;
+    -fx-background-color: #FFFF8D;
+    -fx-text-fill: #2A2E37;
+}
+
+.options-btn:pressed{
+	-fx-padding: 10,15,10,15;
+	-fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+
 .text-field
 {
     -fx-text-fill: #B2B2B2;

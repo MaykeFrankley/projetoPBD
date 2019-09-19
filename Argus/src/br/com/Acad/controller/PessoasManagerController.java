@@ -47,11 +47,8 @@ import javafx.scene.layout.VBox;
 
 public class PessoasManagerController implements Initializable{
 
-	// CADASTRO
-
 	@FXML
 	private JFXTextField nome_update;
-
 
 	@FXML
 	private JFXDatePicker dt_nascimento_update;

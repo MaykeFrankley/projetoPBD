@@ -9,6 +9,7 @@ import com.jfoenix.controls.JFXButton;
 
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.Util;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -20,16 +21,51 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class DrawerController implements Initializable{
 
+	@FXML
+    private FontAwesomeIconView icon_arrow;
+
     @FXML
     private Label label_user;
 
+    @FXML
+    private Button cadastrar_btn;
+
+    @FXML
+    private VBox box_cadastrar;
+
+    @FXML
+    private VBox box_buttons;
+
     private MainTelaController mainController;
+
+    @FXML
+    void cadastrarDropDown(ActionEvent event) throws IOException {
+
+    	if(!box_cadastrar.isVisible()){
+    		icon_arrow.setGlyphName("CHEVRON_DOWN");
+        	int idx = box_buttons.getChildren().indexOf(cadastrar_btn)+1;
+        	int from = box_buttons.getChildren().indexOf(box_cadastrar);
+
+        	box_buttons.getChildren().add(idx, box_buttons.getChildren().remove(from));
+        	box_cadastrar.setVisible(true);
+    	}else{
+    		icon_arrow.setGlyphName("CHEVRON_UP");
+    		int idx = box_buttons.getChildren().size()-1;
+    		int from = box_buttons.getChildren().indexOf(box_cadastrar);
+
+    		box_buttons.getChildren().add(idx, box_buttons.getChildren().remove(from));
+        	box_cadastrar.setVisible(false);
+    	}
+
+    }
 
     @FXML
     void boletim_escolar(ActionEvent event) {
