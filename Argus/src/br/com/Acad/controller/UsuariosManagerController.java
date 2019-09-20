@@ -1,14 +1,7 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -18,21 +11,16 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.dao.DaoContatos;
-import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
-import br.com.Acad.model.Endereco;
 import br.com.Acad.model.LogSistema;
-import br.com.Acad.model.LogSistemaID;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
-import br.com.Acad.util.AutoCompleteComboBoxListener;
-import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,7 +34,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
@@ -195,20 +182,13 @@ public class UsuariosManagerController implements Initializable{
 
     private DaoContatos daoContatos;
 
-    private DaoEndereco daoEnderecos;
-
     private DaoLog daolog;
 
     private ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
 
     private ObservableList<MudarSenha> oblist_cpf = FXCollections.observableArrayList();
 
-    private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
-
     public FilteredList<Usuario> filteredData;
-
-    int spaceCount = 0;
-
 
     @FXML
     void autorizar(ActionEvent event) throws ExceptionUtil {
@@ -237,147 +217,18 @@ public class UsuariosManagerController implements Initializable{
 
             	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
 
-            	LogSistema ls = new LogSistema();
+            	LogSistema ls = Util.prepareLog();
 
-            	Date data = new Date(Calendar.getInstance().getTime().getTime());
-    			Time hora = new Time(Calendar.getInstance().getTime().getTime());
-
-            	ls.setId(new LogSistemaID(MainTelaController.user.getCodPessoa(), data, hora));
-
-            	ls.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" autorizou mudança de senha de \""+user.getUser()+"\".");
+            	ls.setAcao("Usuário autorizou mudança de senha de \""+user.getUser()+"\".");
 
             	daolog.addLog(ls);
 
-            	limpar(new ActionEvent());
     		}
 
     	}else{
     		Util.Alert("Selecione uma solicitação!");
     	}
 
-    }
-
-
-    @FXML
-    void setUserName(KeyEvent event){
-
-    	String name = nome.getText();
-
-    	String[] part = name.split(" ");
-
-    	String teste = part[part.length - 1];
-
-    	String ultimoNome = teste;
-
-    	String pattern = "\\S+";
-
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(nome.getText());
-
-        String primeiroNome = "";
-
-        if (m.find( )) {
-        	primeiroNome = m.group(0);
-        }
-
-        if(primeiroNome.equals(ultimoNome)){
-        	nomeUsuario.clear();
-        	return;
-        }
-        nomeUsuario.setText(primeiroNome+ultimoNome);
-
-    }
-
-    @FXML
-    void confirmar(ActionEvent event) throws ExceptionUtil {
-
-    	if(checkTextFields()){
-
-    		oblist_pessoas = daoPessoas.getAllPessoa();
-    		for (int i = 0; i < oblist_pessoas.size(); i++) {
-    			String obCPF = oblist_pessoas.get(i).getCpf();
-
-				if(obCPF != null && obCPF.equals(cpf.getText())){
-					Util.Alert("CPF já está cadastrado no sistema!");
-					return;
-				}
-			}
-
-    		try {
-
-    			Pessoa p = new Pessoa();
-        		Endereco e = new Endereco();
-        		Usuario u = new Usuario();
-        		Contato c = new Contato();
-
-        		Pattern r = Pattern.compile("\\S+");
-                Matcher m = r.matcher(nome.getText());
-
-                String primeiroNome = "";
-
-                if (m.find( )) {
-                	primeiroNome = m.group(0);
-                }
-
-        		String passWord = primeiroNome+cpf.getText().substring(0, 3);
-
-        		String hashPass = DigestUtils.sha1Hex(passWord);
-
-        		senha.setText(passWord);
-
-        		p.setNome(nome.getText());
-        		p.setCpf(cpf.getText());
-        		Date date = Date.valueOf(dt_nascimento.getValue());
-        		p.setDt_nascimento(date);
-        		p.setNaturalidade(naturalidade.getText());
-        		p.setStatus("Ativo");
-
-        		int cod = daoPessoas.addPessoa(p);
-
-        		e.setCodPessoa(cod);
-        		e.setBairro(bairro.getText());
-        		e.setCidade(cidade.getSelectionModel().getSelectedItem());
-        		e.setEstado(estado.getSelectionModel().getSelectedItem());
-        		e.setNumero(Integer.valueOf(numero.getText().replaceAll("\\s+", "")));
-        		e.setRua(nomeRua.getText());
-        		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
-
-        		daoEnderecos.addEndereco(e);
-
-        		c.setCodPessoa(cod);
-        		if(email.getText().length() > 0)c.setEmail(email.getText());
-    			if(telefone.getText().length() > 0)c.setTelefone(telefone.getText());
-    			if(celular.getText().length() > 0)c.setCelular(celular.getText());
-    			if(whatsapp.isSelected()){
-    				c.setWhatsapp(1);
-    			}
-    			else{
-    				c.setWhatsapp(0);
-    			}
-
-    			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-    				daoContatos.UpdateContato(c);
-    			}
-
-    			u.setCodPessoa(cod);
-    			u.setCpf(cpf.getText());
-    			u.setUser(nomeUsuario.getText());
-    			u.setSenha(hashPass);
-    			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
-    			u.setStatus("Ativo");
-
-    			daoUsuarios.addUsuario(u);
-
-        		Util.Alert("Usuário cadastrado com sucesso!");
-
-    			initTables();
-			} catch (Exception e) {
-				Util.Alert("Erro ao concluir o cadastro!");
-				e.printStackTrace();
-				throw new ExceptionUtil("ERRO AO CADASTRAR USUARIO/PESSOA/ENDERECO/CONTATO!");
-			}
-
-    	}
     }
 
     @FXML
@@ -410,134 +261,6 @@ public class UsuariosManagerController implements Initializable{
 			Util.Alert("Selecione um usuario na tabela!");
 		}
 
-    }
-
-    @FXML
-    void formatNumeroTxt(KeyEvent event) {
-    	TextFieldFormatter tff = new TextFieldFormatter();
-		tff.setMask("#####");
-		tff.setCaracteresValidos("0123456789");
-		tff.setTf(numero);
-		tff.formatter();
-    }
-
-    @FXML
-    void limpar(ActionEvent event) {
-    	if(cadastrarTab.isSelected()){
-    		nome.clear();cpf.clear();
-			nome_update.clear();dt_nascimento.setValue(null);naturalidade.clear();cpf_update.clear();
-			nomeRua.clear();complemento.clear();numero.clear();email_update.clear();telefone_update.clear();
-			celular_update.clear();whatsapp.setSelected(false);cidade.getSelectionModel().clearSelection();
-			estado.getSelectionModel().clearSelection();bairro.clear();
-		}
-    }
-
-    boolean checkTextFields(){
-
-		if(cadastrarTab.isSelected()){
-			TextFieldFormatter tff = new TextFieldFormatter();
-
-			if(nome.getText().length() == 0 || nome.getText() == null){
-				Util.Alert("Verifique o nome!");
-				return false;
-			}
-
-			if(cpf.getText().length() < 11 || (cpf.getText().length() > 11 && cpf.getText().length() < 14)){
-				Util.Alert("Verifique o CPF!");
-				return false;
-			}else{
-				tff = new TextFieldFormatter();
-				tff.setMask("###.###.###-##");
-				tff.setCaracteresValidos("0123456789");
-				tff.setTf(cpf);
-				tff.formatter();
-			}
-
-			if(naturalidade.getText().length() < 5 || naturalidade.getText() == null){
-				Util.Alert("Verifique a naturalidade!");
-				return false;
-			}
-
-			if(dt_nascimento.getValue() == null){
-				Util.Alert("Verifique a Data de nascimento!");
-				return false;
-			}
-
-			if(nomeRua.getText().length() < 5){
-				Util.Alert("Verifique o nome da rua!");
-				return false;
-			}
-
-			if(numero.getText().length() < 1){
-				Util.Alert("Digite o número da residência!");
-				return false;
-			}
-
-			if(bairro.getText().length() < 1){
-				Util.Alert("Digite o nome do bairro!");
-				return false;
-			}
-
-			if(estado.getSelectionModel().getSelectedItem() == null || cidade.getSelectionModel().getSelectedItem() == null){
-				Util.Alert("Selecione cidade e estado!");
-				return false;
-			}
-
-			if(email.getText().length() > 0){
-				if(!Util.validarEmail(email.getText())){
-					Util.Alert("Verifique o email.\nPs: Email não é obrigatório no cadastro!");
-					return false;
-				}
-			}
-
-
-			if(celular.getText().length() > 0){
-				if(celular.getText().length() < 11 || (celular.getText().length() > 11 && celular.getText().length() < 14)){
-					Util.Alert("Verifique o número de celular.\nPs: celular não é obrigatório no cadastro!");
-					return false;
-				}else{
-					tff.setMask("(##)#####-####");
-					tff.setCaracteresValidos("0123456789");
-					tff.setTf(celular);
-					tff.formatter();
-				}
-			}
-
-			if(telefone.getText().length() > 0){
-				if(telefone.getText().length() < 10 || (telefone.getText().length() > 10 && telefone.getText().length() < 13)){
-					Util.Alert("Verifique o número de telefone.\nPs: telefone não é obrigatório no cadastro!");
-					return false;
-				}else{
-					tff.setMask("(##)####-####");
-					tff.setCaracteresValidos("0123456789");
-					tff.setTf(telefone);
-					tff.formatter();
-				}
-			}
-
-		}
-
-		return true;
-
-	}
-
-    void populateBoxes(){
-    	estado.getItems().addAll("Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal",
-				"Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba",
-				"Paraná","Pernambuco","Piauí","Rio de Janeiro",
-				"Rio Grande do Norte","Rio Grande do Sul","Rondônia",
-				"Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins");
-
-    	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "Pedagogo");
-		new AutoCompleteComboBoxListener<>(estado);
-		new AutoCompleteComboBoxListener<>(cidade);
-		new AutoCompleteComboBoxListener<>(tipoUsuario);
-    }
-
-    @FXML
-    void populateCidades(ActionEvent event) {
-
-		Util.populateCidade(estado, cidade);
     }
 
     @FXML
@@ -649,26 +372,9 @@ public class UsuariosManagerController implements Initializable{
 		daoUsuarios = new DaoUsuarios();
 		daoPessoas = new DaoPessoa();
 		daoMudarSenhas = new DaoMudarSenhas();
-		daoContatos = new DaoContatos();
-		daoEnderecos = new DaoEndereco();
 		daolog = new DaoLog();
 
 		initTables();
-		populateBoxes();
-
-		nomeUsuario.textProperty().addListener(
-			     (observable, old_value, new_value) -> {
-
-			          if(new_value.contains(" ")){
-			                //prevents from the new space char
-			        	  nomeUsuario.setText(old_value);
-			          }
-			          if(new_value.length() > 25){
-			        	  nomeUsuario.setText(old_value);
-			          }
-
-			     }
-			);
 
 	}
 

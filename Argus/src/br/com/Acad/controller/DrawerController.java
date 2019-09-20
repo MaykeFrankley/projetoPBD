@@ -44,6 +44,27 @@ public class DrawerController implements Initializable{
     @FXML
     private VBox box_buttons;
 
+    @FXML
+    private Button pessoas_btn;
+
+    @FXML
+    private Button usuarios_btn;
+
+    @FXML
+    private Button alunos_btn;
+
+    @FXML
+    private Button log_btn;
+
+    @FXML
+    private Button pagamentos_btn;
+
+    @FXML
+    private Button boletin_btn;
+
+    @FXML
+    private Button config_btn;
+
     private MainTelaController mainController;
 
     @FXML
@@ -70,6 +91,12 @@ public class DrawerController implements Initializable{
     @FXML
     void boletim_escolar(ActionEvent event) {
 
+    }
+
+    @FXML
+    void cadastrar_usuario(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarUsuario.fxml"), scene, "x");
     }
 
     @FXML

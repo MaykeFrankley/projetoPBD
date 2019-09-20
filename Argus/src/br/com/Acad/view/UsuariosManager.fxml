@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
-<?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
@@ -29,122 +26,6 @@
       </ImageView>
       <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <tabs>
-            <Tab fx:id="cadastrarTab" closable="false" text="Cadastrar Usuários">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <HBox fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
-                                 <children>
-                                    <VBox fillWidth="false" prefHeight="317.0" prefWidth="485.0" spacing="40.0">
-                                       <children>
-                                          <JFXTextField fx:id="nome" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" onKeyReleased="#setUserName" prefHeight="43.0" prefWidth="427.0" promptText="*Nome" style="-fx-font-size: 18px;" styleClass="text-field" unFocusColor="RED" />
-                                          <JFXDatePicker fx:id="dt_nascimento" defaultColor="RED" editable="false" promptText="*Data de Nascimento" style="-fx-font-size: 18px;" />
-                                          <JFXTextField fx:id="naturalidade" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" prefHeight="43.0" prefWidth="347.0" promptText="*Naturalidade" style="-fx-font-size: 18px;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="cpf" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" prefHeight="43.0" prefWidth="344.0" promptText="*CPF (Apenas Números)" style="-fx-font-size: 18px;" unFocusColor="RED" />
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox alignment="CENTER_LEFT" fillWidth="false" prefHeight="317.0" prefWidth="494.0" spacing="25.0">
-                                       <children>
-                                          <JFXTextField fx:id="nomeRua" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="*Rua" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="numero" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" onKeyPressed="#formatNumeroTxt" prefHeight="43.0" prefWidth="351.0" promptText="*Número" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="complemento" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Complemento" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="bairro" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Bairro" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <ComboBox fx:id="estado" onAction="#populateCidades" prefHeight="41.0" prefWidth="331.0" promptText="*Estado" style="-fx-font-size: 18;">
-                                             <VBox.margin>
-                                                <Insets left="10.0" />
-                                             </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="cidade" prefHeight="41.0" prefWidth="331.0" promptText="*Cidade" style="-fx-font-size: 18;">
-                                             <VBox.margin>
-                                                <Insets left="10.0" />
-                                             </VBox.margin>
-                                          </ComboBox>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox fillWidth="false" prefHeight="249.0" prefWidth="375.0" spacing="25.0">
-                                       <children>
-                                          <JFXTextField fx:id="email" focusColor="#c3c3c3" labelFloat="true" maxWidth="397.0" minWidth="351.0" prefHeight="43.0" prefWidth="397.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="telefone" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="celular" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="Celular (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXCheckBox fx:id="whatsapp" style="-fx-font-size: 18;" text="WhatsApp?" textFill="WHITE">
-                                             <font>
-                                                <Font size="16.0" />
-                                             </font>
-                                          </JFXCheckBox>
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets left="30.0" top="10.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              <HBox fillHeight="false" prefHeight="214.0" prefWidth="1264.0" spacing="35.0">
-                                 <children>
-                                    <VBox fillWidth="false" prefHeight="249.0" prefWidth="580.0" spacing="20.0">
-                                       <children>
-                                          <JFXTextField fx:id="nomeUsuario" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" prefHeight="43.0" prefWidth="480.0" promptText="*Nome de usuário (Gerado automaticamente)" style="-fx-font-size: 18;" styleClass="text-field" unFocusColor="RED">
-                                             <VBox.margin>
-                                                <Insets top="6.0" />
-                                             </VBox.margin>
-                                          </JFXTextField>
-                                          <JFXPasswordField fx:id="senha" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="418.0" prefHeight="43.0" prefWidth="418.0" promptText="*Senha (Gerado automaticamente)" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                       </children>
-                                    </VBox>
-                                    <VBox fillWidth="false">
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                       <children>
-                                          <ComboBox fx:id="tipoUsuario" prefHeight="41.0" prefWidth="485.0" promptText="*Tipo de usuário" />
-                                       </children>
-                                    </VBox>
-                                    <HBox alignment="BOTTOM_CENTER" fillHeight="false" prefHeight="197.0" prefWidth="565.0" spacing="30.0">
-                                       <children>
-                                          <JFXButton buttonType="RAISED" onAction="#confirmar" prefHeight="49.0" prefWidth="133.0" ripplerFill="WHITE" text="Confirmar">
-                                             <font>
-                                                <Font size="19.0" />
-                                             </font>
-                                          </JFXButton>
-                                          <JFXButton buttonType="RAISED" onAction="#limpar" ripplerFill="WHITE" text="Limpar">
-                                             <font>
-                                                <Font size="19.0" />
-                                             </font>
-                                          </JFXButton>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </HBox>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets left="30.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              <Label prefHeight="16.0" prefWidth="301.0" text="Campos com * são de prenchimento obrigatório" textFill="#f2f881" wrapText="true">
-                                 <font>
-                                    <Font name="Arial Bold" size="13.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" />
-                                 </VBox.margin>
-                              </Label>
-                           </children>
-                           <effect>
-                              <DropShadow />
-                           </effect>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-               </content>
-            </Tab>
             <Tab fx:id="listarTab" closable="false" text="Listar">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

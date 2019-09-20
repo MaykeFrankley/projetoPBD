@@ -2,10 +2,8 @@ package br.com.Acad.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.ResourceBundle;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXButton;
@@ -18,9 +16,9 @@ import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.LogSistema;
-import br.com.Acad.model.LogSistemaID;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Usuario;
+import br.com.Acad.util.ModifyPersistence;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.animation.FadeTransition;
@@ -101,7 +99,8 @@ public class LoginController implements Initializable{
     void handle_login(ActionEvent event) throws ExceptionUtil, IOException {
 
     	if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
-    		String hash = DigestUtils.sha1Hex(txt_senha.getText());
+    		String hash = DigestUtils.md5Hex(txt_senha.getText());
+    		new ModifyPersistence(txt_login.getText(), hash);
         	Usuario check = daoUsuarios.getUsuario(txt_login.getText(), hash);
         	label_error.setVisible(false);
 
@@ -136,8 +135,10 @@ public class LoginController implements Initializable{
     void handle_loginEnter(KeyEvent event) throws ExceptionUtil, IOException {
 
     	if(event.getCode().toString().equals("ENTER")){
+
     		if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
-        		String hash = DigestUtils.sha1Hex(txt_senha.getText());
+    			String hash = DigestUtils.md5Hex(txt_senha.getText());
+        		new ModifyPersistence(txt_login.getText(), hash);
             	Usuario check = daoUsuarios.getUsuario(txt_login.getText(), hash);
             	label_error.setVisible(false);
 
@@ -179,6 +180,8 @@ public class LoginController implements Initializable{
 			tff.setTf(CPF);
 			tff.formatter();
 
+			new ModifyPersistence("root", "9612");
+
 			Usuario user = daoUsuarios.getUsuario(CPF.getText());
 			if(user == null){
 				label_error2.setVisible(true);
@@ -202,15 +205,9 @@ public class LoginController implements Initializable{
     		Util.Alert("Solicitação enviada!\nAguarde um administrador confirmar.");
     		mudarSenhaMenu(event);
 
-    		LogSistema ls = new LogSistema();
-
-    		Date data = new Date(Calendar.getInstance().getTime().getTime());
-			Time hora = new Time(Calendar.getInstance().getTime().getTime());
-
-
+    		LogSistema ls = Util.prepareLog();
     		Usuario u = daoUsuarios.getUsuario(CPF.getText());
 
-    		ls.setId(new LogSistemaID(u.getCodPessoa(), data, hora));
     		ls.setAcao("Usuário \""+u.getUser()+"\" solicitou troca de senha.");
 
     		daoLog.addLog(ls);
