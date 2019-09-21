@@ -13,7 +13,7 @@ public class ConnectionClass {
 	public static Connection connection = null;
 	public static boolean dbExists = false;
 
-	public final static String URL = "jdbc:mysql://127.0.0.1:3306?autoReconnect=true&useSSL=false&"
+	public final static String URL = "jdbc:mysql://127.0.0.1:3306?autoReconnect=true&useSSL=true&"
 			+ "&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false";
 	public final static String USERNAME = "root";
 	public final static String PASSWORD = "9612";

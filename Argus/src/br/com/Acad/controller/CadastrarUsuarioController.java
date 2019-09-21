@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXCheckBox;
@@ -177,7 +178,7 @@ public class CadastrarUsuarioController implements Initializable{
     			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
     				daoContatos.addContato(c);
     				LogSistema ls3 = Util.prepareLog();
-            		ls3.setAcao("Usuário adicionou contato da pessoa de código: "+String.valueOf(cod));
+            		ls3.setAcao("Admin adicionou contato da pessoa de código: "+String.valueOf(cod));
 
     			}
 
@@ -188,13 +189,10 @@ public class CadastrarUsuarioController implements Initializable{
     			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
     			u.setStatus("Ativo");
 
-    			daoUsuarios.addUsuario(u);
-        		Util.Alert("Usuário cadastrado com sucesso!");
-
         		//Log de sistema
         		final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e1 -> {
         			LogSistema ls1 = Util.prepareLog();
-            		ls1.setAcao("Usuário adicionou uma pessoa de código: "+String.valueOf(cod));
+            		ls1.setAcao("Admin adicionou uma pessoa de código: "+String.valueOf(cod));
             		try {
 						daoLog.addLog(ls1);
 					} catch (ExceptionUtil e2) {
@@ -203,7 +201,7 @@ public class CadastrarUsuarioController implements Initializable{
         		});
         	    final KeyFrame kf2 = new KeyFrame(Duration.seconds(1), e1 -> {
         	    	LogSistema ls2 = Util.prepareLog();
-            		ls2.setAcao("Usuário adicionou um endereço da pessoa de código: "+String.valueOf(cod));
+            		ls2.setAcao("Admin adicionou um endereço da pessoa de código: "+String.valueOf(cod));
             		try {
 						daoLog.addLog(ls2);
 					} catch (ExceptionUtil e2) {
@@ -214,7 +212,7 @@ public class CadastrarUsuarioController implements Initializable{
         	    final KeyFrame kf3 = new KeyFrame(Duration.seconds(2), e1 -> {
         	    	if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
         				LogSistema ls3 = Util.prepareLog();
-                		ls3.setAcao("Usuário adicionou contato da pessoa de código: "+String.valueOf(cod));
+                		ls3.setAcao("Admin adicionou contato da pessoa de código: "+String.valueOf(cod));
                 		try {
 							daoLog.addLog(ls3);
 						} catch (ExceptionUtil e2) {
@@ -224,7 +222,7 @@ public class CadastrarUsuarioController implements Initializable{
         	    });
         	    final KeyFrame kf4 = new KeyFrame(Duration.seconds(3), e1 -> {
         	    	LogSistema ls4 = Util.prepareLog();
-            		ls4.setAcao("Usuário adicionou um usuário do tipo "+u.getTipo()+" com o código: "+String.valueOf(cod));
+            		ls4.setAcao("Admin adicionou um usuário do tipo "+u.getTipo()+" com o código: "+String.valueOf(cod));
             		try {
 						daoLog.addLog(ls4);
 					} catch (ExceptionUtil e2) {
@@ -246,13 +244,41 @@ public class CadastrarUsuarioController implements Initializable{
 					stmt = con.prepareStatement("grant all privileges on argus.* to ?@localhost;");
 	        	    stmt.setString(1, u.getUser());
 	    			stmt.execute();
-					break;
 
 				case "Direção":
 					stmt.close();
 					stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
 	        	    stmt.setString(1, u.getUser());
 	    			stmt.execute();
+
+					break;
+
+				case "Secretaria":
+					stmt.close();
+					stmt = con.prepareStatement("grant select, insert, update on argus.Disciplinas to ?@localhost;");
+	        	    stmt.setString(1, u.getUser());
+	    			stmt.execute();
+
+	    			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
+	        	    stmt.setString(1, u.getUser());
+	    			stmt.execute();
+
+	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+	        	    stmt.setString(1, u.getUser());
+	    			stmt.execute();
+
+					break;
+
+				case "Pedagogo":
+					stmt.close();
+					stmt = con.prepareStatement("grant select, insert update on argus.SessaoPedagogica to ?@localhost;");
+	        	    stmt.setString(1, u.getUser());
+	    			stmt.execute();
+
+	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+	        	    stmt.setString(1, u.getUser());
+	    			stmt.execute();
+
 					break;
 
 				default:
@@ -260,6 +286,9 @@ public class CadastrarUsuarioController implements Initializable{
 				}
 
         	    stmt.close();
+
+        	    daoUsuarios.addUsuario(u);
+        		Util.Alert("Usuário cadastrado com sucesso!");
 
 			} catch (Exception e) {
 				Util.Alert("Erro ao concluir o cadastro!\nContate o administrador!");

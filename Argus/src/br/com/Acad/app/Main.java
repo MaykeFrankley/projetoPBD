@@ -10,7 +10,6 @@ import javax.persistence.Persistence;
 import com.sun.javafx.application.LauncherImpl;
 
 import br.com.Acad.sql.FillDataBase;
-import br.com.Acad.util.ModifyPersistence;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.application.Preloader;
@@ -33,8 +32,6 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
-		new ModifyPersistence("root", "9612");
 
 		TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
 

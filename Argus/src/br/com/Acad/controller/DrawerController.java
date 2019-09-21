@@ -173,6 +173,9 @@ public class DrawerController implements Initializable{
 			}
     	});
     	JFXButton cancel = new JFXButton("Cancelar");
+    	cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event2) -> {
+    		Util.contentPane.getChildren().get(0).setEffect(null);
+    	});
 
     	Util.confirmation(Arrays.asList(yes, cancel),"Tem certeza que deseja sair?");
     }

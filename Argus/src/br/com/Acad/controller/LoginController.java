@@ -18,7 +18,7 @@ import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Usuario;
-import br.com.Acad.util.ModifyPersistence;
+import br.com.Acad.util.SetDbUser;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.animation.FadeTransition;
@@ -100,11 +100,12 @@ public class LoginController implements Initializable{
 
     	if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
     		String hash = DigestUtils.md5Hex(txt_senha.getText());
-    		new ModifyPersistence(txt_login.getText(), hash);
         	Usuario check = daoUsuarios.getUsuario(txt_login.getText(), hash);
         	label_error.setVisible(false);
 
         	if(check != null){
+
+        		new SetDbUser(txt_login.getText(), hash);
 
         		Util.contentPane.getChildren().remove(loginPane);
 
@@ -138,11 +139,12 @@ public class LoginController implements Initializable{
 
     		if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
     			String hash = DigestUtils.md5Hex(txt_senha.getText());
-        		new ModifyPersistence(txt_login.getText(), hash);
             	Usuario check = daoUsuarios.getUsuario(txt_login.getText(), hash);
             	label_error.setVisible(false);
 
             	if(check != null){
+
+            		new SetDbUser(txt_login.getText(), hash);
 
             		Util.contentPane.getChildren().remove(loginPane);
 
@@ -180,7 +182,7 @@ public class LoginController implements Initializable{
 			tff.setTf(CPF);
 			tff.formatter();
 
-			new ModifyPersistence("root", "9612");
+			new SetDbUser("root", "9612");
 
 			Usuario user = daoUsuarios.getUsuario(CPF.getText());
 			if(user == null){

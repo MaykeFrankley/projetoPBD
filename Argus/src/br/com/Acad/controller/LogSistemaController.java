@@ -129,7 +129,7 @@ public class LogSistemaController implements Initializable{
     void confirmar_limparLogs(ActionEvent event) {
     	if(event.getSource() == btn_confirmar){
     		if(!passTextField.getText().isEmpty()){
-    			String hash = DigestUtils.sha1Hex(passTextField.getText());
+    			String hash = DigestUtils.md5Hex(passTextField.getText());
     			if(hash.equals(MainTelaController.user.getSenha())){
     				daoLog.clearAllLogs();
     				initTable();
