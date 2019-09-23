@@ -15,7 +15,6 @@ import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoUsuarios;
-import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.MudarSenha;
@@ -191,7 +190,7 @@ public class UsuariosManagerController implements Initializable{
     public FilteredList<Usuario> filteredData;
 
     @FXML
-    void autorizar(ActionEvent event) throws ExceptionUtil {
+    void autorizar(ActionEvent event)  {
 
     	MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
 
@@ -232,7 +231,7 @@ public class UsuariosManagerController implements Initializable{
     }
 
     @FXML
-    void desativar_ativar_Pessoas(ActionEvent event) throws ExceptionUtil {
+    void desativar_ativar_Pessoas(ActionEvent event)  {
     	Usuario selected = table_usuarios.getSelectionModel().getSelectedItem();
     	if(selected != null){
 			if(event.getSource() == btn_ativar){
@@ -333,7 +332,7 @@ public class UsuariosManagerController implements Initializable{
 					if(u.getCpf().equals(cpf)){
 						try {
 							p = daoPessoas.getPessoa(u.getCodPessoa());
-						} catch (ExceptionUtil e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						user = u;
@@ -351,7 +350,7 @@ public class UsuariosManagerController implements Initializable{
 
 				try {
 					c = daoContatos.getContato(p.getCodPessoa());
-				} catch (ExceptionUtil e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 

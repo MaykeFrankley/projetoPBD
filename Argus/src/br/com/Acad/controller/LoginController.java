@@ -11,14 +11,12 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoUsuarios;
-import br.com.Acad.exceptions.ExceptionUtil;
-import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.SetDbUser;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.animation.FadeTransition;
@@ -86,8 +84,6 @@ public class LoginController implements Initializable{
 
     private DaoMudarSenhas daoMudarSenhas;
 
-    private DaoLog daoLog;
-
     private MainTelaController mainTela;
 
     @FXML
@@ -96,7 +92,7 @@ public class LoginController implements Initializable{
     }
 
     @FXML
-    void handle_login(ActionEvent event) throws ExceptionUtil, IOException {
+    void handle_login(ActionEvent event) throws IOException {
 
     	if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
     		String hash = DigestUtils.md5Hex(txt_senha.getText());
@@ -114,10 +110,8 @@ public class LoginController implements Initializable{
     			mainTela.enableHamburger();
     			mainTela.enableNotificationTask();
 
-    			LogSistema log = Util.prepareLog();
-    			log.setAcao("Usuário \""+check.getUser()+"\" fez o login.");
-
-    			daoLog.addLog(log);
+    			SysLog.addLog(SysLog.login(check.getUser()));
+    			SysLog.complete();;
         	}
 
         	else{
@@ -133,7 +127,7 @@ public class LoginController implements Initializable{
     }
 
     @FXML
-    void handle_loginEnter(KeyEvent event) throws ExceptionUtil, IOException {
+    void handle_loginEnter(KeyEvent event) throws IOException {
 
     	if(event.getCode().toString().equals("ENTER")){
 
@@ -153,10 +147,8 @@ public class LoginController implements Initializable{
         			mainTela.enableHamburger();
         			mainTela.enableNotificationTask();
 
-        			LogSistema log = Util.prepareLog();
-        			log.setAcao("Usuário \""+check.getUser()+"\" fez o login.");
-
-        			daoLog.addLog(log);
+        			SysLog.addLog(SysLog.login(check.getUser()));
+        			SysLog.complete();
             	}
             	else{
             		label_error.setVisible(true);
@@ -172,7 +164,7 @@ public class LoginController implements Initializable{
     }
 
     @FXML
-    void handle_request(ActionEvent event) throws ExceptionUtil {
+    void handle_request(ActionEvent event) {
 
     	if(CPF.getText().length() == 11 && novaSenha.getText().length() >= 6 && novaSenha.getText().equals(confirmarSenha.getText())){
     		TextFieldFormatter tff = new TextFieldFormatter();
@@ -199,20 +191,16 @@ public class LoginController implements Initializable{
 			MudarSenha mudarSenha = new MudarSenha();
 			mudarSenha.setCpf(CPF.getText());
 
-			String hash = DigestUtils.sha1Hex(novaSenha.getText());
+			String hash = DigestUtils.md5Hex(novaSenha.getText());
 			mudarSenha.setSenha(hash);
 
 			daoMudarSenhas.addRequest(mudarSenha);
 
+			SysLog.addLog(SysLog.passWordChangeRequest(CPF.getText()));
+			SysLog.complete();;
+
     		Util.Alert("Solicitação enviada!\nAguarde um administrador confirmar.");
     		mudarSenhaMenu(event);
-
-    		LogSistema ls = Util.prepareLog();
-    		Usuario u = daoUsuarios.getUsuario(CPF.getText());
-
-    		ls.setAcao("Usuário \""+u.getUser()+"\" solicitou troca de senha.");
-
-    		daoLog.addLog(ls);
 
     		CPF.clear();novaSenha.clear();confirmarSenha.clear();
 
@@ -258,7 +246,6 @@ public class LoginController implements Initializable{
 
 		daoUsuarios = new DaoUsuarios();
 		daoMudarSenhas = new DaoMudarSenhas();
-		daoLog = new DaoLog();
 
 		txt_senha.textProperty().addListener(
 		     (observable, old_value, new_value) -> {

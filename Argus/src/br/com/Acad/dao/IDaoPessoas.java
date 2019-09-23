@@ -1,18 +1,16 @@
 package br.com.Acad.dao;
 
-import java.sql.SQLException;
-
-import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Pessoa;
 import javafx.collections.ObservableList;
 
 public interface IDaoPessoas {
 
-	public int addPessoa(Pessoa pessoa) throws ExceptionUtil;
-	public int UpdatePessoa(Pessoa pessoa) throws SQLException, ExceptionUtil;
-	public Pessoa getPessoa(Integer ID) throws ExceptionUtil;
-	public boolean desativarPessoa(Pessoa pessoa) throws ExceptionUtil;
-	public boolean ativarPessoa(Pessoa pessoa) throws ExceptionUtil;
-	public ObservableList<Pessoa> getAllPessoa() throws ExceptionUtil;
+	public int addPessoa(Pessoa pessoa);
+	public int UpdatePessoa(Pessoa pessoa);
+	public Pessoa getPessoa(Integer ID);
+	public boolean desativarPessoa(Pessoa pessoa);
+	public boolean ativarPessoa(Pessoa pessoa);
+	public boolean deletarPessoa(Pessoa pessoa);
+	public ObservableList<Pessoa> getAllPessoa();
 
 }

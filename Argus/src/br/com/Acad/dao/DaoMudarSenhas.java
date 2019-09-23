@@ -3,11 +3,11 @@ package br.com.Acad.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.exceptions.ExceptionUtil;
+import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.MudarSenha;
-import br.com.Acad.util.MensagensUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -24,7 +24,7 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 	}
 
 	@Override
-	public void addRequest(MudarSenha ms) throws ExceptionUtil {
+	public void addRequest(MudarSenha ms)  {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -35,15 +35,14 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.getTransaction().commit();
 			entityMn.close();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
 	}
 
 	@Override
-	public void closeRequest(MudarSenha ms) throws ExceptionUtil {
+	public void closeRequest(MudarSenha ms)  {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -56,15 +55,14 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.getTransaction().commit();
 			entityMn.close();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
 	}
 
 	@Override
-	public MudarSenha getRequest(String cpf) throws ExceptionUtil {
+	public MudarSenha getRequest(String cpf)  {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -76,15 +74,15 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.close();
 			return get;
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return null;
 	}
 
 	@Override
-	public MudarSenha getRequest(int ID) throws ExceptionUtil {
+	public MudarSenha getRequest(int ID)  {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -96,22 +94,27 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.close();
 			return get;
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<MudarSenha> getAllRequests() {
 		createEM();
-		if(!entityMn.getTransaction().isActive())
-			entityMn.getTransaction().begin();
+		try {
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
 
-		List<MudarSenha> list = entityMn.createQuery("from MudarSenha").getResultList();
-		oblist = FXCollections.observableList(list);
+			List<MudarSenha> list = entityMn.createQuery("from MudarSenha").getResultList();
+			oblist = FXCollections.observableList(list);
+
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}
 
 		entityMn.close();
 		return oblist;

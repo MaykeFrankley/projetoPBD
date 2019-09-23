@@ -7,25 +7,27 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.app.Main;
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoEndereco;
-import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoPessoa;
-import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
-import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -34,6 +36,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -41,6 +44,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -176,6 +180,21 @@ public class PessoasManagerController implements Initializable{
 	@FXML
 	private JFXButton btn_deletar;
 
+	@FXML
+    private DialogPane dialogPane;
+
+    @FXML
+    private JFXPasswordField ConfirmPassword;
+
+    @FXML
+    private JFXButton confirmarDelete;
+
+    @FXML
+    private JFXButton btn_cancelarDelete;
+
+    @FXML
+    private Label label_delete;
+
 	public FilteredList<Pessoa> filteredData;
 	public FilteredList<Pessoa> filteredData2;
 
@@ -189,8 +208,6 @@ public class PessoasManagerController implements Initializable{
 
 	private DaoContatos daoContatos;
 
-	private DaoLog daolog;
-
 	private String oldCPF;
 
 	private Pessoa oldPessoa;
@@ -198,6 +215,8 @@ public class PessoasManagerController implements Initializable{
 	private Contato oldContato;
 
 	private Endereco oldEndereco;
+
+	private Pessoa pessoaToEdit;
 
 
 	@FXML
@@ -214,7 +233,29 @@ public class PessoasManagerController implements Initializable{
 	}
 
 	@FXML
-	void desativar_ativar_Pessoas(ActionEvent event) throws ExceptionUtil {
+    void confirmar_deletarPessoa(ActionEvent event) {
+    	if(event.getSource() == confirmarDelete){
+    		if(!ConfirmPassword.getText().isEmpty()){
+    			String hash = DigestUtils.md5Hex(ConfirmPassword.getText());
+    			if(hash.equals(MainTelaController.user.getSenha())){
+    				daoPessoas.deletarPessoa(pessoaToEdit);
+    				dialogPane.setVisible(false);
+    	    		tabPane.setEffect(null);
+    	    		tabPane.setMouseTransparent(false);
+    	    		initTables();
+    	    		pessoaToEdit = null;
+    			}
+    		}
+    	}else{
+    		dialogPane.setVisible(false);
+    		tabPane.setEffect(null);
+    		tabPane.setMouseTransparent(false);
+    	}
+    }
+
+
+	@FXML
+	void desativar_ativar_Pessoas(ActionEvent event)  {
 		Pessoa selected = table_pessoas2.getSelectionModel().getSelectedItem();
 		if(selected != null){
 			if(event.getSource() == btn_ativar){
@@ -222,10 +263,18 @@ public class PessoasManagerController implements Initializable{
 			}
 			else if(event.getSource() == btn_desativar){
 				daoPessoas.desativarPessoa(selected);
-
 			}
 			else if(event.getSource() == btn_deletar){
-
+				pessoaToEdit = selected;
+				label_delete.setText("Confirme sua senha para deletar a pessoa de Cod: "+selected.getCodPessoa()+" Nome: "+selected.getNome()
+				);
+				BoxBlur blur = new BoxBlur(3, 3, 3);
+		    	if(!dialogPane.isVisible()){
+		    		dialogPane.setVisible(true);
+		    		tabPane.setEffect(blur);
+		    		tabPane.setMouseTransparent(true);
+		    		Platform.runLater(() -> ConfirmPassword.requestFocus());
+		    	}
 			}
 
 			initTables();
@@ -237,47 +286,36 @@ public class PessoasManagerController implements Initializable{
 
 
 	@FXML
-	void atualizar(ActionEvent event) throws ExceptionUtil {
+	void atualizar(ActionEvent event) {
 		if(checkTextFields()){
-			try {
+			oblist = daoPessoas.getAllPessoa();
+			for (int i = 0; i < oblist.size(); i++) {
+				String obCPF = oblist.get(i).getCpf();
 
-				oblist = daoPessoas.getAllPessoa();
-				for (int i = 0; i < oblist.size(); i++) {
-					String obCPF = oblist.get(i).getCpf();
-
-					if((obCPF != null && oldCPF != null) || obCPF != null){
-						if(obCPF.equals(cpf_update.getText()) && !cpf_update.getText().equals(oldCPF)){
-							Util.Alert("CPF já está cadastrado no sistema!");
-							return;
-						}
-
+				if((obCPF != null && oldCPF != null) || obCPF != null){
+					if(obCPF.equals(cpf_update.getText()) && !cpf_update.getText().equals(oldCPF)){
+						Util.Alert("CPF já está cadastrado no sistema!");
+						return;
 					}
+
 				}
+			}
 
-				Date date = Date.valueOf(dt_nascimento_update.getValue());
-				Pessoa p = daoPessoas.getPessoa(Integer.valueOf(codigo_listar.getText()));
-				Endereco e = new Endereco();
-				Contato c = new Contato();
+			Date date = Date.valueOf(dt_nascimento_update.getValue());
+			Pessoa p = daoPessoas.getPessoa(Integer.valueOf(codigo_listar.getText()));
+			Endereco e = new Endereco();
+			Contato c = new Contato();
 
-				p.setNome(nome_update.getText());
-				p.setDt_nascimento(date);
-				p.setNaturalidade(naturalidade_update.getText());
-				p.setStatus("Ativo");
-				if(cpf_update.getText().length() > 0)p.setCpf(cpf_update.getText());
-				else p.setCpf(null);
+			p.setNome(nome_update.getText());
+			p.setDt_nascimento(date);
+			p.setNaturalidade(naturalidade_update.getText());
+			p.setStatus("Ativo");
+			if(cpf_update.getText().length() > 0)p.setCpf(cpf_update.getText());
+			else p.setCpf(null);
 
-				int cod = daoPessoas.UpdatePessoa(p);
+			int cod = daoPessoas.UpdatePessoa(p);
 
-				//LogSistema
-				if(!oldPessoa.SameAs(p)){
-					LogSistema ls = Util.prepareLog();
-					ls.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" alterou dados pessoais de uma pessoa com o código: "+cod);
-					daolog.addLog(ls);
-					Thread.sleep(1000);
-				}
-
-				//endLogSistema
-
+			if(cod > 0){
 				e.setCodPessoa(cod);
 				e.setRua(nomeRua_update.getText());
 				e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
@@ -288,14 +326,6 @@ public class PessoasManagerController implements Initializable{
 
 
 				daoEnderecos.UpdateEndereco(e);
-				//LogSistema
-				if(!oldEndereco.equals(e)){
-					LogSistema ls1 = Util.prepareLog();
-					ls1.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" alterou o endereço da pessoa com o código: "+cod);
-					daolog.addLog(ls1);
-					Thread.sleep(1000);
-				}
-				//endLogSistema
 
 				c.setCodPessoa(cod);
 				if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
@@ -310,31 +340,31 @@ public class PessoasManagerController implements Initializable{
 
 				if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
 					daoContatos.UpdateContato(c);
-					//LogSistema
-					if(!oldContato.equals(c)){
-						LogSistema ls3 = Util.prepareLog();
-						ls3.setAcao("Usuário \""+MainTelaController.user.getUser()+"\" alterou contatos da pessoa com o código: "+cod);
-						daolog.addLog(ls3);
-						Thread.sleep(1000);
-					}
-					//endLogSistema
 				}
 
 				Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
 
+				if(!oldPessoa.SameAs(p)){
+					SysLog.addLog(SysLog.updatePessoas("Dados", cod));
+				}
+
+				if(!oldEndereco.equals(e)){
+					SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
+				}
+
+				if(!oldContato.equals(c)){
+					SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
+				}
+
+				SysLog.complete();
+
 				initTables();
-
-			} catch (Exception e) {
-				Util.Alert("Erro ao concluir a atualização!");
-				e.printStackTrace();
-				throw new ExceptionUtil("ERRO AO ATUALIZAR PESSOA!");
-
 			}
 		}
 	}
 
 	@FXML
-	void selecionarPessoa(ActionEvent event) throws ExceptionUtil {
+	void selecionarPessoa(ActionEvent event)  {
 		Pessoa p = table_pessoas.getSelectionModel().getSelectedItem();
 		if(p != null){
 			oldPessoa = p;
@@ -476,11 +506,7 @@ public class PessoasManagerController implements Initializable{
 	void initTables(){
 		oblist.clear();
 
-		try {
-			oblist = daoPessoas.getAllPessoa();
-		} catch (ExceptionUtil e) {
-			e.printStackTrace();
-		}
+		oblist = daoPessoas.getAllPessoa();
 
 		filteredData = new FilteredList<>(oblist);
 		filteredData2 = new FilteredList<>(oblist);
@@ -518,37 +544,34 @@ public class PessoasManagerController implements Initializable{
 				this.oblistEnderecos.clear();
 
 				if(selectedPessoa != null){
-					try {
-						//Endereco
-						Endereco end = daoEnderecos.getEndereco(cod);
-						if(end != null){
+					//Endereco
+					Endereco end = daoEnderecos.getEndereco(cod);
+					if(end != null){
 
-							nomeRua_listar.setText(end.getRua());
-							numero_listar.setText(String.valueOf(end.getNumero()));
-							complemento_listar.clear();
-							complemento_listar.setText(end.getComplemento());
-							bairro_listar.setText(end.getBairro());
-							cidade_listar.setText(end.getCidade());
-							estado_listar.setText(end.getEstado());
-						}
-						//Contatos
-						Contato con = daoContatos.getContato(cod);
-						if(con != null){
-							celular_listar.clear();email_listar.clear();telefone_listar.clear();
-							if(con.getCelular() != null)celular_listar.setText(con.getCelular());
-							if(con.getEmail() != null)email_listar.setText(con.getEmail());
-							if(con.getTelefone() != null)telefone_listar.setText(con.getTelefone());
-							if(con.getWhatsapp() == 1){
-								whatsapp_listar.setSelected(true);
-							}else{
-								whatsapp_listar.setSelected(false);
-							}
-						}
-
-
-					} catch (ExceptionUtil e) {
-						e.printStackTrace();
+						nomeRua_listar.setText(end.getRua());
+						numero_listar.setText(String.valueOf(end.getNumero()));
+						complemento_listar.clear();
+						complemento_listar.setText(end.getComplemento());
+						bairro_listar.setText(end.getBairro());
+						cidade_listar.setText(end.getCidade());
+						estado_listar.setText(end.getEstado());
 					}
+					//Contatos
+					Contato con = daoContatos.getContato(cod);
+					if(con != null){
+						celular_listar.clear();email_listar.clear();telefone_listar.clear();
+						if(con.getCelular() != null)celular_listar.setText(con.getCelular());
+						if(con.getEmail() != null)email_listar.setText(con.getEmail());
+						if(con.getTelefone() != null)telefone_listar.setText(con.getTelefone());
+						if(con.getWhatsapp() == 1){
+							whatsapp_listar.setSelected(true);
+						}else{
+							whatsapp_listar.setSelected(false);
+						}
+					}
+
+
+
 
 				}
 
@@ -715,7 +738,6 @@ public class PessoasManagerController implements Initializable{
 		daoPessoas = new DaoPessoa();
 		daoEnderecos = new DaoEndereco();
 		daoContatos = new DaoContatos();
-		daolog = new DaoLog();
 
 		populateBoxes();
 		initTables();

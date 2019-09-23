@@ -169,7 +169,7 @@ public class MainTelaController implements Initializable{
     void enableNotificationTask(){
     	if(user != null && user.getTipo().equals("Admin")){
     		timer = new Timer();
-    		timer.scheduleAtFixedRate(new checkPasswordsRequest(), 1000, 30000);
+    		timer.scheduleAtFixedRate(new checkPasswordsRequest(), 1000, 10000);
     	}
     }
 

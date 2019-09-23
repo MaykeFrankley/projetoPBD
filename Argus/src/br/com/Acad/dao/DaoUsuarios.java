@@ -3,12 +3,12 @@ package br.com.Acad.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.exceptions.ExceptionUtil;
+import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Usuario;
-import br.com.Acad.util.MensagensUtil;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +24,7 @@ public class DaoUsuarios implements IDaoUsuarios{
 	}
 
 	@Override
-	public boolean addUsuario(Usuario usuario) throws ExceptionUtil{
+	public boolean addUsuario(Usuario usuario) {
 		try{
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -35,16 +35,16 @@ public class DaoUsuarios implements IDaoUsuarios{
 			entityMn.getTransaction().commit();
 			entityMn.close();
 			return true;
-		}catch (Exception e) {
-			e.printStackTrace();
+		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return false;
 
 	}
 
 	@Override
-	public int updateUsuario(Usuario usuario) throws ExceptionUtil{
+	public int updateUsuario(Usuario usuario) {
 		try{
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -55,17 +55,17 @@ public class DaoUsuarios implements IDaoUsuarios{
 			entityMn.clear();
 			entityMn.getTransaction().commit();
 			return id;
-		}catch (Exception e) {
-			e.printStackTrace();
+		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return 0;
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Usuario getUsuario(String usuario, String Senha) throws ExceptionUtil{
+	public Usuario getUsuario(String usuario, String Senha) {
 		createEM();
 		query = entityMn.createQuery("from Usuario where User = :user and Senha = :senha and Status = :s");
 		query.setParameter("user", usuario);
@@ -85,7 +85,7 @@ public class DaoUsuarios implements IDaoUsuarios{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Usuario getUsuario(String CPF) throws ExceptionUtil{
+	public Usuario getUsuario(String CPF) {
 		createEM();
 		query = entityMn.createQuery("from Usuario where CPF = :cpf and Status = :s");
 		query.setParameter("cpf", CPF);
@@ -102,7 +102,7 @@ public class DaoUsuarios implements IDaoUsuarios{
 	}
 
 	@Override
-	public boolean desativarUsuario(Usuario usuario) throws ExceptionUtil{
+	public boolean desativarUsuario(Usuario usuario) {
 		if(usuario.getStatus().equals("Ativo")){
 			usuario.setStatus("Inativo");
 		}else{
@@ -113,28 +113,35 @@ public class DaoUsuarios implements IDaoUsuarios{
 			updateUsuario(usuario);
 			return true;
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
 		}
 
 		return false;
 	}
 
 	@Override
-	public boolean deletarUsuario(Usuario usuario) throws ExceptionUtil{
+	public boolean deletarUsuario(Usuario usuario) {
 
 		return false;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObservableList<Usuario> getAllUsuarios() throws ExceptionUtil{
+	public ObservableList<Usuario> getAllUsuarios() {
 		createEM();
-		if(!entityMn.getTransaction().isActive())
-			entityMn.getTransaction().begin();
-		List<Usuario> list = entityMn.createQuery("from Usuario").getResultList();
-		ObservableList<Usuario> obs = FXCollections.observableList(list);
+		try {
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			List<Usuario> list = entityMn.createQuery("from Usuario").getResultList();
+			ObservableList<Usuario> obs = FXCollections.observableList(list);
+			return obs;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}
 		entityMn.close();
+
+		ObservableList<Usuario> obs = FXCollections.observableArrayList();
 		return obs;
 	}
 

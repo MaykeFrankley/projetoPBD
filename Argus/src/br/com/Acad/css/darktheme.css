@@ -80,7 +80,6 @@
 {
     -fx-text-fill: #B2B2B2;
     -fx-font-size : 12pt;
-    -jfx-focus-color: #FFFF8D;
     -fx-text-fill: derive(#FFFF8D, 20%);
 }
 
@@ -126,11 +125,7 @@
     -fx-background-color: derive(#2A2E37, -50%);
 }
 /*Menu bar Styling*/
-.menu-bar{
-    -fx-font-size: 14;
-    -fx-base : #2A2E37;
-    -fx-background-color: #2A2E37;
-}
+
 
 .context-menu
 {
@@ -202,7 +197,7 @@
     -fx-background-color: derive(#2A2E37, 5%);
 }
 
-/*TableView Default*/
+
 .table-view{
     -fx-background-color: derive(#2A2E37, 10%);
     -fx-font-size: 18px;
@@ -264,8 +259,8 @@
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-text-fill: white;
 }
-.scroll-bar:horizontal .thumb,
-.scroll-bar:vertical .thumb{
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb{
     -fx-background-color: derive(#2A2E37, 60%);
     -fx-border-color: transparent;
     -fx-background-radius: 5em;
@@ -279,16 +274,6 @@
     -fx-base: #2A2E37;
 }
 
-
-
-
-/*Dashboard label*/
-.not-available
-{
-    -fx-background-radius: 5px;
-    -fx-fill: derive(blue, 80%);
-    -fx-cursor: hand;
-}
 
 /*Checkbox*/
 

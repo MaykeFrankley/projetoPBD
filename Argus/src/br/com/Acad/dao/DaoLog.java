@@ -3,13 +3,13 @@ package br.com.Acad.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.exceptions.ExceptionUtil;
+import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.LogSistemaID;
-import br.com.Acad.util.MensagensUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -24,7 +24,7 @@ public class DaoLog implements IDaoLog{
 	}
 
 	@Override
-	public boolean addLog(LogSistema log) throws ExceptionUtil {
+	public boolean addLog(LogSistema log)  {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -36,11 +36,11 @@ public class DaoLog implements IDaoLog{
 			entityMn.getTransaction().commit();
 			entityMn.close();
 			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return false;
 	}
 
 	@Override
@@ -49,12 +49,6 @@ public class DaoLog implements IDaoLog{
 		LogSistema l = entityMn.find(LogSistema.class, id);
 		entityMn.close();
 		return l;
-	}
-
-	@Override
-	public void clearLog(LogSistema log) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -70,8 +64,9 @@ public class DaoLog implements IDaoLog{
 			entityMn.getTransaction().commit();
 			entityMn.close();
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
 		}
 
 	}
@@ -80,10 +75,16 @@ public class DaoLog implements IDaoLog{
 	@Override
 	public ObservableList<LogSistema> getAllLogs() {
 		createEM();
-		if(!entityMn.getTransaction().isActive())
-			entityMn.getTransaction().begin();
-		List<LogSistema> list = entityMn.createQuery("from LogSistema").getResultList();
-		oblist = FXCollections.observableList(list);
+		try {
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			List<LogSistema> list = entityMn.createQuery("from LogSistema order by Hora desc").getResultList();
+			oblist = FXCollections.observableList(list);
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}
+
 		entityMn.close();
 		return oblist;
 	}

@@ -3,11 +3,11 @@ package br.com.Acad.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.exceptions.ExceptionUtil;
+import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Contato;
-import br.com.Acad.util.MensagensUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -21,7 +21,7 @@ public class DaoContatos implements IDaoContatos{
 	}
 
 	@Override
-	public boolean addContato(Contato contato) throws ExceptionUtil{
+	public boolean addContato(Contato contato) {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -33,16 +33,16 @@ public class DaoContatos implements IDaoContatos{
 			entityMn.close();
 			return true;
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return false;
 
 	}
 
 	@Override
-	public boolean UpdateContato(Contato contato) throws ExceptionUtil{
+	public boolean UpdateContato(Contato contato) {
 		try{
 			createEM();
 			if(!entityMn.getTransaction().isActive())
@@ -54,15 +54,15 @@ public class DaoContatos implements IDaoContatos{
 			entityMn.close();
 
 			return true;
-		}catch (Exception e) {
-			e.printStackTrace();
+		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
-			throw new ExceptionUtil(MensagensUtil.ERRO_ACESSO_BANCO);
+			new HandleSQLException(e);
 		}
+		return false;
 	}
 
 	@Override
-	public Contato getContato(Integer ID) throws ExceptionUtil{
+	public Contato getContato(Integer ID) {
 		createEM();
 		Contato c = entityMn.find(Contato.class, ID);
 		entityMn.close();
@@ -70,19 +70,24 @@ public class DaoContatos implements IDaoContatos{
 	}
 
 	@Override
-	public boolean desativarContato(Contato contato) throws ExceptionUtil{
+	public boolean desativarContato(Contato contato) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObservableList<Contato> getAllContato() throws ExceptionUtil{
+	public ObservableList<Contato> getAllContato() {
 		createEM();
-		if(!entityMn.getTransaction().isActive())
-			entityMn.getTransaction().begin();
-		List<Contato> list = entityMn.createQuery("from Contato").getResultList();
-		oblist = FXCollections.observableList(list);
+		try {
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			List<Contato> list = entityMn.createQuery("from Contato").getResultList();
+			oblist = FXCollections.observableList(list);
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}
+
 		entityMn.close();
 		return oblist;
 	}

@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXCheckBox;
@@ -18,22 +17,17 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoEndereco;
-import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoUsuarios;
-import br.com.Acad.exceptions.ExceptionUtil;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
-import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,7 +35,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
-import javafx.util.Duration;
 
 public class CadastrarUsuarioController implements Initializable{
 
@@ -104,12 +97,10 @@ public class CadastrarUsuarioController implements Initializable{
 
     private DaoPessoa daoPessoas;
 
-    private DaoLog daoLog;
-
     private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
 
     @FXML
-    void confirmar(ActionEvent event) throws ExceptionUtil {
+    void confirmar(ActionEvent event) {
 
     	if(checkTextFields()){
 
@@ -153,6 +144,7 @@ public class CadastrarUsuarioController implements Initializable{
         		p.setStatus("Ativo");
 
         		int cod = daoPessoas.addPessoa(p);
+        		SysLog.addLog(SysLog.createPessoas(cod));
 
         		e.setCodPessoa(cod);
         		e.setBairro(bairro.getText());
@@ -163,6 +155,7 @@ public class CadastrarUsuarioController implements Initializable{
         		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
         		daoEnderecos.addEndereco(e);
+        		SysLog.addLog(SysLog.createDados("Endereço", cod));
 
         		c.setCodPessoa(cod);
         		if(email.getText().length() > 0)c.setEmail(email.getText());
@@ -177,9 +170,7 @@ public class CadastrarUsuarioController implements Initializable{
 
     			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
     				daoContatos.addContato(c);
-    				LogSistema ls3 = Util.prepareLog();
-            		ls3.setAcao("Admin adicionou contato da pessoa de código: "+String.valueOf(cod));
-
+    				SysLog.addLog(SysLog.createDados("Contato", cod));
     			}
 
     			u.setCodPessoa(cod);
@@ -189,48 +180,7 @@ public class CadastrarUsuarioController implements Initializable{
     			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
     			u.setStatus("Ativo");
 
-        		//Log de sistema
-        		final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e1 -> {
-        			LogSistema ls1 = Util.prepareLog();
-            		ls1.setAcao("Admin adicionou uma pessoa de código: "+String.valueOf(cod));
-            		try {
-						daoLog.addLog(ls1);
-					} catch (ExceptionUtil e2) {
-						e2.printStackTrace();
-					}
-        		});
-        	    final KeyFrame kf2 = new KeyFrame(Duration.seconds(1), e1 -> {
-        	    	LogSistema ls2 = Util.prepareLog();
-            		ls2.setAcao("Admin adicionou um endereço da pessoa de código: "+String.valueOf(cod));
-            		try {
-						daoLog.addLog(ls2);
-					} catch (ExceptionUtil e2) {
-						e2.printStackTrace();
-					}
-
-        	    });
-        	    final KeyFrame kf3 = new KeyFrame(Duration.seconds(2), e1 -> {
-        	    	if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-        				LogSistema ls3 = Util.prepareLog();
-                		ls3.setAcao("Admin adicionou contato da pessoa de código: "+String.valueOf(cod));
-                		try {
-							daoLog.addLog(ls3);
-						} catch (ExceptionUtil e2) {
-							e2.printStackTrace();
-						}
-        			}
-        	    });
-        	    final KeyFrame kf4 = new KeyFrame(Duration.seconds(3), e1 -> {
-        	    	LogSistema ls4 = Util.prepareLog();
-            		ls4.setAcao("Admin adicionou um usuário do tipo "+u.getTipo()+" com o código: "+String.valueOf(cod));
-            		try {
-						daoLog.addLog(ls4);
-					} catch (ExceptionUtil e2) {
-						e2.printStackTrace();
-					}
-        	    });
-        	    final Timeline timeline = new Timeline(kf1, kf2, kf3, kf4);
-        	    Platform.runLater(timeline::play);
+        	    SysLog.complete();
 
         	    Connection con;
         	    con = ConnectionClass.createConnection();
@@ -248,6 +198,10 @@ public class CadastrarUsuarioController implements Initializable{
 				case "Direção":
 					stmt.close();
 					stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
+	        	    stmt.setString(1, u.getUser());
+	    			stmt.execute();
+
+	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
 	        	    stmt.setString(1, u.getUser());
 	    			stmt.execute();
 
@@ -284,7 +238,6 @@ public class CadastrarUsuarioController implements Initializable{
 				default:
 					break;
 				}
-
         	    stmt.close();
 
         	    daoUsuarios.addUsuario(u);
@@ -293,7 +246,6 @@ public class CadastrarUsuarioController implements Initializable{
 			} catch (Exception e) {
 				Util.Alert("Erro ao concluir o cadastro!\nContate o administrador!");
 				e.printStackTrace();
-				throw new ExceptionUtil("ERRO AO CADASTRAR USUARIO/PESSOA/ENDERECO/CONTATO!");
 			}
 
     	}
@@ -459,7 +411,6 @@ public class CadastrarUsuarioController implements Initializable{
 		daoEnderecos = new DaoEndereco();
 		daoPessoas = new DaoPessoa();
 		daoUsuarios = new DaoUsuarios();
-		daoLog = new DaoLog();
 
 		populateBoxes();
 	}

@@ -244,7 +244,6 @@ public class LogSistemaController implements Initializable{
 
     	table_log.setItems(oblist);
 
-
     }
 
 
