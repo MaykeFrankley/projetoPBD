@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="768.0" prefWidth="1366.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.ProfessorManagerController">
+   <children>
+      <ImageView fitHeight="703.0" fitWidth="1280.0" opacity="0.1" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <image>
+            <Image url="@../../../../../Resources/images/argus_logo_transparent.png" />
+         </image>
+      </ImageView>
+      <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <tabs>
+            <Tab fx:id="listarTab" closable="false" text="Listar">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="986.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <JFXTextField fx:id="campo_pesquisa" labelFloat="true" maxWidth="1197.0" minWidth="1197.0" onKeyPressed="#searchPessoa" prefHeight="43.0" prefWidth="1197.0" promptText="Digite qualquer informação do professor" />
+                              <TableView fx:id="table_pessoas" editable="true" prefHeight="444.0" prefWidth="1860.0" tableMenuButtonVisible="true">
+                                 <columns>
+                                    <TableColumn fx:id="col_codPessoa" prefWidth="75.0" text="Cod" />
+                                    <TableColumn fx:id="col_nome" prefWidth="345.0" text="Nome" />
+                                    <TableColumn fx:id="col_cpf" prefWidth="298.0" text="CPF" />
+                                    <TableColumn fx:id="col_dt_nascimento" prefWidth="247.0" text="Data de Nascimento" />
+                                    <TableColumn fx:id="col_naturalidade" prefWidth="247.0" text="Naturalidade" />
+                                    <TableColumn fx:id="col_status" prefWidth="247.0" text="Status" />
+                                 </columns>
+                                 <tooltip>
+                                    <Tooltip contentDisplay="CENTER" text="Clique na pessoa para mostrar suas informações. Botão direito para atualizar uma pessoa." wrapText="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Tooltip>
+                                 </tooltip>
+                                 <contextMenu>
+                                    <ContextMenu style="-fx-font-size: 16;">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#selecionarPessoa" text="Atualizar dados da pessoa" />
+                                       </items>
+                                    </ContextMenu>
+                                 </contextMenu>
+                              </TableView>
+                              <HBox spacing="50.0">
+                                 <children>
+                                    <VBox fillWidth="false" prefHeight="274.0" prefWidth="727.0" spacing="25.0">
+                                       <children>
+                                          <JFXTextField fx:id="nomeRua_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Rua" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="numero_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Número" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="complemento_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Complemento" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="bairro_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Bairro" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="cidade_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Cidade" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="estado_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Estado" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="30.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox prefHeight="425.0" prefWidth="584.0" spacing="25.0">
+                                       <children>
+                                          <JFXTextField fx:id="email_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="512.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="telefone_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="512.0" promptText="Telefone" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="celular_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="512.0" promptText="Celular" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXCheckBox fx:id="whatsapp_listar" mouseTransparent="true" style="-fx-font-size: 18;" text="WhatsApp?" textFill="WHITE">
+                                             <font>
+                                                <Font size="20.0" />
+                                             </font>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="30.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="atualizarTab" closable="false" text="Atualizar">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox fx:id="vbox_atualizar" alignment="CENTER" disable="true" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="323.0" prefWidth="1280.0" spacing="20.0">
+                                 <children>
+                                    <VBox fillWidth="false" prefHeight="317.0" prefWidth="485.0" spacing="30.0">
+                                       <children>
+                                          <Label fx:id="codigo_listar" style="-fx-font-size: 20px;" textFill="#54e85b8e" wrapText="true">
+                                             <font>
+                                                <Font name="Arial Bold" size="16.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets left="12.0" />
+                                             </VBox.margin>
+                                             <graphic>
+                                                <Label style="-fx-font-size: 20px;" text="Código:" textFill="#54e85b8e" wrapText="true">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </graphic>
+                                          </Label>
+                                          <JFXTextField fx:id="nome_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="427.0" prefHeight="43.0" prefWidth="427.0" promptText="*Nome" style="-fx-font-size: 20px;" styleClass="text-field" unFocusColor="#54ea5e" />
+                                          <JFXDatePicker fx:id="dt_nascimento_update" defaultColor="#54ea5e" promptText="*Data de Nascimento" />
+                                          <JFXTextField fx:id="naturalidade_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="348.0" minWidth="275.0" prefHeight="43.0" prefWidth="348.0" promptText="*Naturalidade" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXTextField fx:id="cpf_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="CPF (Apenas números)" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox alignment="CENTER_LEFT" fillWidth="false" prefHeight="317.0" prefWidth="494.0" spacing="20.0">
+                                       <children>
+                                          <JFXTextField fx:id="nomeRua_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="*Rua" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXTextField fx:id="numero_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" onKeyReleased="#formatNumeroTxt" prefHeight="43.0" prefWidth="351.0" promptText="*Número" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXTextField fx:id="complemento_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Complemento" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXTextField fx:id="bairro_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Bairro" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <ComboBox fx:id="estado_update" onAction="#populateCidades" prefHeight="41.0" prefWidth="331.0" promptText="Estado" style="-fx-font-size: 20px;">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                          <ComboBox fx:id="cidade_update" prefHeight="41.0" prefWidth="331.0" promptText="Cidade" style="-fx-font-size: 20px;">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="80.0" right="40.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox alignment="CENTER" fillHeight="false" prefHeight="249.0" prefWidth="1187.0" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="CENTER_LEFT" fillWidth="false" prefHeight="314.0" prefWidth="501.0" spacing="20.0">
+                                       <children>
+                                          <JFXTextField fx:id="email_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="394.0" minWidth="351.0" prefHeight="43.0" prefWidth="394.0" promptText="Email" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXTextField fx:id="telefone_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXTextField fx:id="celular_update" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="Celular" style="-fx-font-size: 20px;" unFocusColor="#54ea5e" />
+                                          <JFXCheckBox fx:id="whatsapp_update" style="-fx-font-size: 20px;" text="WhatsApp?" textFill="WHITE">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </JFXCheckBox>
+                                       </children>
+                                    </VBox>
+                                    <HBox alignment="BOTTOM_CENTER" fillHeight="false" prefHeight="294.0" prefWidth="470.0" spacing="30.0">
+                                       <children>
+                                          <JFXButton buttonType="RAISED" onAction="#atualizar" prefHeight="46.0" prefWidth="123.0" ripplerFill="WHITE" text="Atualizar">
+                                             <font>
+                                                <Font size="19.0" />
+                                             </font>
+                                          </JFXButton>
+                                          <JFXButton buttonType="RAISED" onAction="#limpar" ripplerFill="WHITE" text="Limpar">
+                                             <font>
+                                                <Font size="19.0" />
+                                             </font>
+                                          </JFXButton>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </HBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="80.0" right="40.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <Label text="Campos com * são de prenchimento obrigatório" textFill="#f2f881" wrapText="true">
+                                 <font>
+                                    <Font name="Arial Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="desativarTab" closable="false" text="Disciplinas do professor">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="354.0" layoutY="32.0" prefHeight="645.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <JFXTextField fx:id="campo_pesquisa2" labelFloat="true" maxWidth="1197.0" minWidth="1197.0" onKeyPressed="#searchPessoa2" prefHeight="43.0" prefWidth="1197.0" promptText="Digite qualquer informação da pessoa" />
+                              <HBox prefHeight="415.0" prefWidth="1306.0" spacing="15.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" prefHeight="442.0" prefWidth="835.0">
+                                       <children>
+                                          <Label text="Professores" textFill="#ebeb39" underline="true">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                          <TableView fx:id="table_professores" editable="true" prefHeight="500.0" prefWidth="802.0" tableMenuButtonVisible="true">
+                                             <columns>
+                                                <TableColumn fx:id="col_codProfessor" prefWidth="85.0" text="Cod" />
+                                                <TableColumn fx:id="col_nomeProfessor" prefWidth="445.0" text="Nome" />
+                                                <TableColumn fx:id="col_cpf_prof" prefWidth="285.0" text="CPF" />
+                                                <TableColumn fx:id="col_formacao" prefWidth="285.0" text="Formação" />
+                                                <TableColumn fx:id="col_curso" prefWidth="285.0" text="Curso de formação" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="442.0" prefWidth="434.0">
+                                       <children>
+                                          <Label text="Disciplinas" textFill="#ebeb39" underline="true">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                          </Label>
+                                          <TableView fx:id="table_disciplinas" editable="true" prefHeight="416.0" prefWidth="466.0">
+                                             <columns>
+                                                <TableColumn fx:id="col_codDisciplina" prefWidth="98.0" text="Cod" />
+                                                <TableColumn fx:id="col_nomeDisciplina" prefWidth="322.0" text="Nome" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <JFXTextField fx:id="curriculo" editable="false" focusColor="#e4ff1b" labelFloat="true" maxWidth="389.0" minWidth="389.0" prefHeight="45.0" prefWidth="389.0" promptText="Curriculo:" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                    <JFXTextField fx:id="anoLetivo" editable="false" focusColor="#e4ff1b" labelFloat="true" layoutX="10.0" layoutY="10.0" maxWidth="389.0" minWidth="169.0" prefHeight="45.0" prefWidth="169.0" promptText="Ano letivo:" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                    <JFXTextField fx:id="cargahoraria" editable="false" focusColor="#e4ff1b" labelFloat="true" maxWidth="389.0" minWidth="362.0" prefHeight="45.0" prefWidth="375.0" promptText="Carga horária:" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox spacing="40.0">
+                                 <VBox.margin>
+                                    <Insets top="70.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <JFXButton buttonType="RAISED" onAction="#add_disciplina" text="Adicionar disciplina" />
+                                    <JFXButton buttonType="RAISED" onAction="#remover_disciplina" text="Remover disciplina" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+      <DialogPane fx:id="addDisciplinaPane" layoutX="256.0" layoutY="284.0" prefHeight="395.0" prefWidth="665.0" visible="false" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="284.0">
+         <content>
+            <AnchorPane prefHeight="338.0" prefWidth="455.0" style="-fx-background-color: #2A2E37;">
+               <children>
+                  <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="20.0" layoutY="20.0" prefHeight="316.0" prefWidth="716.0" spacing="10.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <children>
+                        <Label text="Disciplinas" textFill="#ebeb39" underline="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="table_disciplina_add" editable="true" prefHeight="270.0" prefWidth="611.0">
+                           <columns>
+                              <TableColumn fx:id="col_codDisciplinaAdd" prefWidth="77.0" text="Cod" />
+                              <TableColumn fx:id="col_nomeDisciplinaAdd" prefWidth="327.0" text="Nome" />
+                              <TableColumn fx:id="cod_curriculoAdd" prefWidth="201.0" text="Currículo" />
+                           </columns>
+                           <tooltip>
+                              <Tooltip text="Selecione uma disciplina para o professor">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Tooltip>
+                           </tooltip>
+                        </TableView>
+                        <HBox spacing="20.0">
+                           <children>
+                              <JFXButton onAction="#aplicar" prefHeight="49.0" prefWidth="103.0" text="Aplicar" />
+                              <JFXButton onAction="#cancelar" prefHeight="49.0" prefWidth="127.0" text="Cancelar" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </DialogPane>
+   </children>
+</AnchorPane>

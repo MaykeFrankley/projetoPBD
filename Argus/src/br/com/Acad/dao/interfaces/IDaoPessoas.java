@@ -1,4 +1,4 @@
-package br.com.Acad.dao;
+package br.com.Acad.dao.interfaces;
 
 import br.com.Acad.model.Pessoa;
 import javafx.collections.ObservableList;

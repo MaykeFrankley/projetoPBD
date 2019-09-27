@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.dao.interfaces.IDaoContatos;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Contato;
 import javafx.collections.FXCollections;
@@ -30,12 +31,14 @@ public class DaoContatos implements IDaoContatos{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
+
 			return true;
 
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 		return false;
 
@@ -51,12 +54,13 @@ public class DaoContatos implements IDaoContatos{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 
 			return true;
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 		return false;
 	}
@@ -66,13 +70,8 @@ public class DaoContatos implements IDaoContatos{
 		createEM();
 		Contato c = entityMn.find(Contato.class, ID);
 		entityMn.close();
-		return c;
-	}
 
-	@Override
-	public boolean desativarContato(Contato contato) {
-		// TODO Auto-generated method stub
-		return false;
+		return c;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -86,9 +85,11 @@ public class DaoContatos implements IDaoContatos{
 			oblist = FXCollections.observableList(list);
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 
-		entityMn.close();
+
 		return oblist;
 	}
 

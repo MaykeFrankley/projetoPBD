@@ -300,13 +300,8 @@ public class UsuariosManagerController implements Initializable{
     	oblist_usuarios.clear();
     	oblist_cpf.clear();
 
-    	try {
-			oblist_usuarios = daoUsuarios.getAllUsuarios();
-			oblist_cpf = daoMudarSenhas.getAllRequests();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		oblist_usuarios = daoUsuarios.getAllUsuarios();
+		oblist_cpf = daoMudarSenhas.getAllRequests();
 
     	filteredData = new FilteredList<>(oblist_usuarios);
 

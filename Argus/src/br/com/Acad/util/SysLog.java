@@ -20,6 +20,11 @@ public class SysLog {
 		return s;
 	}
 
+	public static String createTipoPessoa(String tipo, int cod){
+		String s = "O usuário \""+MainTelaController.user.getUser()+"\" cadastrou um novo "+tipo+" de código: "+cod;
+		return s;
+	}
+
 	public static String updatePessoas(String updated, int cod){
 		String s = "Um administrador \""+MainTelaController.user.getUser()+"\" alterou "+updated+" da pessoa de código: "+cod;
 		return s;

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.CadastrarDisciplinaController">
+   <children>
+      <ImageView fitHeight="703.0" fitWidth="1280.0" opacity="0.1" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <image>
+            <Image url="@../../../../../Resources/images/argus_logo_transparent.png" />
+         </image>
+      </ImageView>
+      <JFXTabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <tabs>
+            <Tab closable="false" text="Cadastrar Disciplina">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label prefHeight="27.0" prefWidth="196.0" text="Disciplinas Cadastradas" textFill="#e1d82c" wrapText="true">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="500.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
+                                 <children>
+                                    <VBox fillWidth="false" prefHeight="371.0" prefWidth="511.0" spacing="40.0">
+                                       <children>
+                                          <JFXTextField fx:id="codigo" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="188.0" prefHeight="45.0" prefWidth="201.0" promptText="*Código(Automático)" style="-fx-font-size: 18px;" styleClass="text-field" unFocusColor="RED" />
+                                          <JFXTextField fx:id="nome" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" onKeyReleased="#setCodigo" prefHeight="43.0" prefWidth="347.0" promptText="*Nome" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                          <JFXTextArea editable="false" focusColor="RED" maxWidth="513.0" minWidth="511.0" prefHeight="195.0" prefWidth="513.0" style="-fx-text-fill: ffff8d;" text="Só é nescessário cadastrar o nome de uma disciplina. As mesmas irão ser cadastradas nos seus respectivos curriculos e com sua carga horária para aquele curriculo e ano. Professores também serão associados às disciplinas de acordo com o ano e a grade curricular." wrapText="true">
+                                             <font>
+                                                <Font size="17.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </JFXTextArea>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <TableView fx:id="table_disciplinas" prefHeight="366.0" prefWidth="642.0">
+                                      <columns>
+                                        <TableColumn fx:id="col_cod" prefWidth="121.0" text="Código" />
+                                        <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="344.0" text="Nome" />
+                                          <TableColumn fx:id="col_status" prefWidth="166.0" text="Status" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="129.0" prefWidth="1250.0" spacing="35.0">
+                                 <children>
+                                    <VBox fillWidth="false">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <JFXButton buttonType="RAISED" onAction="#confirmar" prefHeight="49.0" prefWidth="133.0" ripplerFill="WHITE" text="Confirmar">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <JFXButton buttonType="RAISED" onAction="#limpar" ripplerFill="WHITE" text="Limpar">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </JFXButton>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="50.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </children>
+</AnchorPane>

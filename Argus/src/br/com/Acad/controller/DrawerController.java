@@ -94,6 +94,18 @@ public class DrawerController implements Initializable{
     }
 
     @FXML
+    void cadastrar_professor(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarProfessor.fxml"), scene, "x");
+    }
+
+    @FXML
+    void cadastrar_disciplinas(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarDisciplina.fxml"), scene, "y");
+    }
+
+    @FXML
     void cadastrar_usuario(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarUsuario.fxml"), scene, "x");
@@ -135,7 +147,6 @@ public class DrawerController implements Initializable{
     		try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 

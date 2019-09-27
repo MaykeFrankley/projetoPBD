@@ -1,12 +1,12 @@
 package br.com.Acad.dao;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.dao.interfaces.IDaoPessoas;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.util.SysLog;
@@ -19,8 +19,6 @@ public class DaoPessoa implements IDaoPessoas{
 	private EntityManager entityMn;
 
 	private ObservableList<Pessoa> oblist = FXCollections.observableArrayList();
-
-	Calendar calendar = Calendar.getInstance();
 
 	public void createEM() {
 		this.entityMn = Main.factory.createEntityManager();
@@ -37,11 +35,12 @@ public class DaoPessoa implements IDaoPessoas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 			return id;
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 		return 0;
 
@@ -58,12 +57,12 @@ public class DaoPessoa implements IDaoPessoas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 			return id;
-
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 		return 0;
 
@@ -93,6 +92,8 @@ public class DaoPessoa implements IDaoPessoas{
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 		return false;
 	}
@@ -113,6 +114,8 @@ public class DaoPessoa implements IDaoPessoas{
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 		return false;
 	}
@@ -127,7 +130,6 @@ public class DaoPessoa implements IDaoPessoas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 
 			Util.Alert(pessoa.getNome()+" foi removido do sistema!");
     		SysLog.addLog(SysLog.deletePessoas(pessoa.getCodPessoa()));
@@ -137,6 +139,8 @@ public class DaoPessoa implements IDaoPessoas{
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 
 		return false;
@@ -152,8 +156,9 @@ public class DaoPessoa implements IDaoPessoas{
 
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
-		entityMn.close();
 		return oblist;
 
 	}

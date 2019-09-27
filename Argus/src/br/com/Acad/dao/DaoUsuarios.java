@@ -7,6 +7,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.dao.interfaces.IDaoUsuarios;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.Util;

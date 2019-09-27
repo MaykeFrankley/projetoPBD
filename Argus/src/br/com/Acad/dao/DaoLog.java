@@ -7,6 +7,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.dao.interfaces.IDaoLog;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.LogSistemaID;
@@ -34,11 +35,13 @@ public class DaoLog implements IDaoLog{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
+
 			return true;
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 		return false;
 	}
@@ -62,11 +65,13 @@ public class DaoLog implements IDaoLog{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
+
 
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 
 	}
@@ -83,9 +88,11 @@ public class DaoLog implements IDaoLog{
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 
-		entityMn.close();
+
 		return oblist;
 	}
 

@@ -1,5 +1,6 @@
 package br.com.Acad.exceptions;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 
 import org.hibernate.exception.ExceptionUtils;
@@ -20,6 +21,11 @@ public class HandleSQLException {
 							Util.Alert("Acesso negado!\nContate o administrador");
 						}
 					});
+				}
+			}
+			else if(throwable instanceof SQLIntegrityConstraintViolationException){
+				if(((SQLIntegrityConstraintViolationException) throwable).getErrorCode() == 1062){
+					Util.Alert("O registro já está no sistema!");
 				}
 			}
 		}

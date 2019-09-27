@@ -15,6 +15,8 @@ import org.controlsfx.control.Notifications;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.validation.RequiredFieldValidator;
 
 import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.model.LogSistema;
@@ -23,6 +25,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -30,6 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -170,6 +174,21 @@ public class Util {
 				.position(Pos.BOTTOM_RIGHT);
 		not.darkStyle();
 		not.showInformation();
+	}
+
+	public static void requiredFieldSet(JFXTextField... args){
+		for (JFXTextField jfxTextField : args) {
+			RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+	    	requiredValidator.setIcon(new ImageView(Util.class.getResource("/images/requiredError.png").toString()));
+	    	requiredValidator.setMessage("Campo obrigatório");
+	    	jfxTextField.getValidators().add(requiredValidator);
+	    	jfxTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+	    	    if (!newValue) {
+	    	        jfxTextField.validate();
+	    	    }
+	    	});
+		}
+
 	}
 
 

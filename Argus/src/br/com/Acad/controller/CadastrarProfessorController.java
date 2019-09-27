@@ -1,30 +1,22 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoPessoa;
-import br.com.Acad.dao.DaoUsuarios;
+import br.com.Acad.dao.DaoProfessor;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
-import br.com.Acad.model.Usuario;
-import br.com.Acad.sql.ConnectionClass;
+import br.com.Acad.model.Professor;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
@@ -37,7 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
 
-public class CadastrarUsuarioController implements Initializable{
+public class CadastrarProfessorController implements Initializable{
 
     @FXML
     private JFXTextField nome;
@@ -82,32 +74,26 @@ public class CadastrarUsuarioController implements Initializable{
     private JFXCheckBox whatsapp;
 
     @FXML
-    private JFXTextField nomeUsuario;
+    private JFXTextField cursoFormacao;
 
     @FXML
-    private JFXPasswordField senha;
-
-    @FXML
-    private ComboBox<String> tipoUsuario;
+    private ComboBox<String> formacao;
 
     @FXML
     private JFXButton btn_confirmar;
 
-    private DaoContatos daoContatos;
+    private DaoPessoa daoPessoas;
 
     private DaoEndereco daoEnderecos;
 
-    private DaoUsuarios daoUsuarios;
+    private DaoContatos daoContatos;
 
-    private DaoPessoa daoPessoas;
+    private DaoProfessor daoProfessor;
 
     private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
 
-    ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
-
     @FXML
     void confirmar(ActionEvent event) {
-
     	if(checkTextFields()){
 
     		oblist_pessoas = daoPessoas.getAllPessoa();
@@ -124,23 +110,8 @@ public class CadastrarUsuarioController implements Initializable{
 
     			Pessoa p = new Pessoa();
         		Endereco e = new Endereco();
-        		Usuario u = new Usuario();
+        		Professor pr = new Professor();
         		Contato c = new Contato();
-
-        		Pattern r = Pattern.compile("\\S+");
-                Matcher m = r.matcher(nome.getText());
-
-                String primeiroNome = "";
-
-                if (m.find( )) {
-                	primeiroNome = m.group(0);
-                }
-
-        		String passWord = primeiroNome+cpf.getText().substring(0, 3);
-
-        		String hashPass = DigestUtils.md5Hex(passWord);
-
-        		senha.setText(passWord);
 
         		p.setNome(nome.getText());
         		p.setCpf(cpf.getText());
@@ -179,79 +150,16 @@ public class CadastrarUsuarioController implements Initializable{
     				SysLog.addLog(SysLog.createDados("Contato", cod));
     			}
 
-    			u.setCodPessoa(cod);
-    			u.setCpf(cpf.getText());
-    			u.setUser(nomeUsuario.getText());
-    			u.setSenha(hashPass);
-    			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
-    			u.setStatus("Ativo");
+    			pr.setCodPessoa(cod);
+    			pr.setNome(nome.getText());
+    			pr.setCpf(p.getCpf());
+    			pr.setCursoFormacao(cursoFormacao.getText());
+    			pr.setFormacao(formacao.getSelectionModel().getSelectedItem());
+    			daoProfessor.addProfessor(pr);
+    			SysLog.addLog(SysLog.createTipoPessoa("Professor", cod));
 
         	    SysLog.complete();
 
-        	    Connection con;
-        	    con = ConnectionClass.createConnection();
-        	    PreparedStatement stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
-        	    stmt.setString(1, u.getUser());
-        	    stmt.setString(2, u.getSenha());
-        	    stmt.execute();
-
-        	    switch (u.getTipo()) {
-				case "Admin":
-					stmt = con.prepareStatement("grant all privileges on argus.* to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-				case "Direção":
-					stmt.close();
-					stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-					break;
-
-				case "Secretaria":
-					stmt.close();
-					stmt = con.prepareStatement("grant select, insert, update on argus.Disciplinas to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-	    			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-	    			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-					break;
-
-				case "Pedagogo":
-					stmt.close();
-					stmt = con.prepareStatement("grant select, insert update on argus.SessaoPedagogica to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
-
-					break;
-
-				default:
-					break;
-				}
-        	    stmt.close();
-
-        	    daoUsuarios.addUsuario(u);
-        		Util.Alert("Usuário cadastrado com sucesso!");
 
 			} catch (Exception e) {
 				Util.Alert("Erro ao concluir o cadastro!\nContate o administrador!");
@@ -276,9 +184,9 @@ public class CadastrarUsuarioController implements Initializable{
 		dt_nascimento.setValue(null);naturalidade.clear();
 		nomeRua.clear();complemento.clear();numero.clear();
 		whatsapp.setSelected(false);cidade.getSelectionModel().clearSelection();cidade.getEditor().clear();
-		tipoUsuario.getSelectionModel().clearSelection();tipoUsuario.getEditor().clear();
+		formacao.getSelectionModel().clearSelection();formacao.getEditor().clear();
 		estado.getSelectionModel().clearSelection();estado.getEditor().clear();bairro.clear();
-		nomeUsuario.clear();senha.clear();
+		cursoFormacao.clear();
     }
 
     void populateBoxes(){
@@ -288,63 +196,15 @@ public class CadastrarUsuarioController implements Initializable{
 				"Rio Grande do Norte","Rio Grande do Sul","Rondônia",
 				"Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins");
 
-    	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "Pedagogo");
+    	formacao.getItems().addAll("Licenciatura", "Normal Superior", "Magistério", "Pedagogia", "Bacharelado");
 		new AutoCompleteComboBoxListener<>(estado);
 		new AutoCompleteComboBoxListener<>(cidade);
-		new AutoCompleteComboBoxListener<>(tipoUsuario);
+		new AutoCompleteComboBoxListener<>(formacao);
     }
 
     @FXML
     void populateCidades(ActionEvent event) {
-
-		Util.populateCidade(estado, cidade);
-    }
-
-    @FXML
-    void setUserName(KeyEvent event) {
-
-    	String name = nome.getText();
-
-    	String[] part = name.split(" ");
-
-    	String teste = part[part.length - 1];
-
-    	String ultimoNome = teste;
-
-    	String pattern = "\\S+";
-
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(nome.getText());
-
-        String primeiroNome = "";
-
-        if (m.find( )) {
-        	primeiroNome = m.group(0);
-        }
-
-        if(primeiroNome.equals(ultimoNome)){
-        	nomeUsuario.clear();
-        	return;
-        }
-
-        nomeUsuario.setText(primeiroNome+ultimoNome);
-
-        for (Usuario usuario : oblist_usuarios) {
-			if(usuario.getUser().equals(nomeUsuario.getText())){
-				Pattern p = Pattern.compile("\\d+");
-				Matcher ma = p.matcher(usuario.getUser());
-				if(ma.find()){
-					String s = ma.group();
-					int i = Integer.valueOf(s);
-					i++;
-					nomeUsuario.setText(primeiroNome+ultimoNome+String.valueOf(i));
-				}else{
-					nomeUsuario.setText(primeiroNome+ultimoNome+String.valueOf(1));
-				}
-			}
-		}
-
-
+    	Util.populateCidade(estado, cidade);
     }
 
     boolean checkTextFields(){
@@ -436,20 +296,20 @@ public class CadastrarUsuarioController implements Initializable{
 	}
 
     void initValidation(){
-    	Util.requiredFieldSet(nome, naturalidade, cpf, nomeRua, numero);
+    	Util.requiredFieldSet(nome, naturalidade, cpf, nomeRua, numero, cursoFormacao);
+
     }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoContatos = new DaoContatos();
-		daoEnderecos = new DaoEndereco();
-		daoPessoas = new DaoPessoa();
-		daoUsuarios = new DaoUsuarios();
-
-	    oblist_usuarios = daoUsuarios.getAllUsuarios();
-
 		populateBoxes();
 		initValidation();
+
+		daoPessoas = new DaoPessoa();
+		daoEnderecos = new DaoEndereco();
+		daoContatos = new DaoContatos();
+		daoProfessor = new DaoProfessor();
+
 	}
 
 }

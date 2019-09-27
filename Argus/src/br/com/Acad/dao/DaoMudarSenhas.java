@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.dao.interfaces.IDaoMudarSenhas;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.MudarSenha;
 import javafx.collections.FXCollections;
@@ -33,11 +34,12 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 	}
 
@@ -53,11 +55,12 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 	}
 
@@ -71,12 +74,13 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 			return get;
 
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 		return null;
 	}
@@ -91,12 +95,13 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 			return get;
 
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
 		return null;
 	}
@@ -114,9 +119,9 @@ public class DaoMudarSenhas implements IDaoMudarSenhas{
 
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
 		}
-
-		entityMn.close();
 		return oblist;
 	}
 

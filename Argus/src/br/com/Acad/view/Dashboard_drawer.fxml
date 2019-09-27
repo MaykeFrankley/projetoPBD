@@ -128,22 +128,27 @@
                <children>
                   <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_usuario" prefHeight="31.0" prefWidth="197.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Funcionários/Usuários">
                      <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="COFFEE" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="COFFEE" size="16" />
                      </graphic>
                   </JFXButton>
                   <JFXButton alignment="TOP_LEFT" prefHeight="31.0" prefWidth="193.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Alunos">
                      <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="CHILD" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="CHILD" size="16" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton alignment="TOP_LEFT" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Disciplinas">
+                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_disciplinas" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Disciplinas">
                      <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="LEANPUB" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="LEANPUB" size="16" />
                      </graphic>
                   </JFXButton>
                   <JFXButton alignment="TOP_LEFT" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Currículo escolar">
                      <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="TH_LIST" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="TH_LIST" size="16" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_professor" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Cadastrar Professor">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="BLACK_TIE" size="16" />
                      </graphic>
                   </JFXButton>
                </children>

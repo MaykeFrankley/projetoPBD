@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.dao.interfaces.IDaoEnderecos;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Endereco;
 import javafx.collections.FXCollections;
@@ -31,11 +32,13 @@ public class DaoEndereco implements IDaoEnderecos{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
+
 			return true;
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 		return false;
 
@@ -51,11 +54,12 @@ public class DaoEndereco implements IDaoEnderecos{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			entityMn.close();
 
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 		return true;
 	}
@@ -65,13 +69,8 @@ public class DaoEndereco implements IDaoEnderecos{
 		createEM();
 		Endereco e = entityMn.find(Endereco.class, ID);
 		entityMn.close();
-		return e;
-	}
 
-	@Override
-	public boolean desativarEndereco(Endereco endereco) {
-		// TODO Auto-generated method stub
-		return false;
+		return e;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -85,9 +84,11 @@ public class DaoEndereco implements IDaoEnderecos{
 			oblist = FXCollections.observableList(list);
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
 		}
 
-		entityMn.close();
+
 		return oblist;
 	}
 
