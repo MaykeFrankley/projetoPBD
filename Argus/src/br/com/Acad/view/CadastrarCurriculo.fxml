@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.CadastrarCurriculoController">
+   <children>
+      <ImageView fitHeight="703.0" fitWidth="1280.0" opacity="0.1" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <image>
+            <Image url="@../../../../../Resources/images/argus_logo_transparent.png" />
+         </image>
+      </ImageView>
+      <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <tabs>
+            <Tab closable="false" text="Cadastrar Currículo">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label prefHeight="27.0" prefWidth="196.0" text="Curriculos cadastrados" textFill="#e1d82c" wrapText="true">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="500.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
+                                 <children>
+                                    <VBox fillWidth="false" prefHeight="371.0" prefWidth="511.0" spacing="40.0">
+                                       <children>
+                                          <JFXTextField fx:id="txt_nome" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" onKeyReleased="#setCodigo" prefHeight="43.0" prefWidth="347.0" promptText="*Nome" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="txt_anoLetivo" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" prefHeight="43.0" prefWidth="347.0" promptText="*Ano letivo" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                          <ComboBox fx:id="box_tipo" prefHeight="41.0" prefWidth="325.0" promptText="*Tipo">
+                                             <VBox.margin>
+                                                <Insets left="11.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <TableView fx:id="table_curriculo" prefHeight="366.0" prefWidth="965.0">
+                                       <columns>
+                                          <TableColumn fx:id="col_cod" prefWidth="121.0" text="Código" />
+                                          <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="344.0" text="Nome" />
+                                          <TableColumn fx:id="col_anoLetivo" prefWidth="166.0" text="Ano letivo" />
+                                          <TableColumn fx:id="col_tipo" prefWidth="166.0" text="Tipo" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="129.0" prefWidth="1250.0" spacing="35.0">
+                                 <children>
+                                    <VBox fillWidth="false">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <JFXButton buttonType="RAISED" onAction="#cadastrar" prefHeight="49.0" prefWidth="133.0" ripplerFill="WHITE" text="Cadastrar">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <JFXButton buttonType="RAISED" onAction="#limpar" ripplerFill="WHITE" text="Limpar">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </JFXButton>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="50.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Adicionar disciplina">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Currículos cadastrados" textFill="#f1ff30">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <TableView fx:id="table_curriculo2" prefHeight="366.0" prefWidth="752.0">
+                                             <columns>
+                                                <TableColumn fx:id="col_cod2" prefWidth="73.0" text="Código" />
+                                                <TableColumn fx:id="col_nome2" minWidth="0.0" prefWidth="366.0" text="Nome" />
+                                                <TableColumn fx:id="col_anoLetivo2" prefWidth="115.0" text="Ano letivo" />
+                                                <TableColumn fx:id="col_tipo2" prefWidth="164.0" text="Tipo" />
+                                             </columns>
+                                             <tooltip>
+                                                <Tooltip style="-fx-font-size: 16px;" text="Selecione um curriculo para adicionar disciplinas." />
+                                             </tooltip>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                    <FontAwesomeIconView fill="#e9ff25" glyphName="ARROW_RIGHT" size="20">
+                                       <HBox.margin>
+                                          <Insets top="200.0" />
+                                       </HBox.margin>
+                                    </FontAwesomeIconView>
+                                    <VBox alignment="TOP_CENTER">
+                                       <children>
+                                          <Label text="Disciplinas cadastrados" textFill="#f1ff30">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <TableView fx:id="table_disciplinas" prefHeight="366.0" prefWidth="478.0">
+                                             <columns>
+                                                <TableColumn fx:id="col_codDisciplina" prefWidth="78.0" text="Código" />
+                                                <TableColumn fx:id="col_nomeDisciplina" minWidth="0.0" prefWidth="243.0" text="Nome" />
+                                                <TableColumn fx:id="col_serieDisciplina" prefWidth="111.0" text="Ano/Série" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="129.0" prefWidth="1250.0" spacing="35.0">
+                                 <children>
+                                    <JFXButton fx:id="add_button" buttonType="RAISED" onAction="#adicionar" prefHeight="49.0" prefWidth="229.0" ripplerFill="WHITE" text="Adicionar disciplina" visible="false">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </JFXButton>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="50.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </VBox>
+                        <DialogPane fx:id="addDisciplinaPane" prefHeight="384.0" prefWidth="545.0" visible="false" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="200.0">
+                           <content>
+                              <AnchorPane prefHeight="371.0" prefWidth="653.0" style="-fx-background-color: #2A2E37;">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="24.0" layoutY="30.0" prefHeight="345.0" prefWidth="627.0" spacing="10.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                       <children>
+                                          <Label text="Disciplinas" textFill="#ebeb39" underline="true">
+                                             <font>
+                                                <Font size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <TableView fx:id="table_disciplina_add" editable="true" prefHeight="165.0" prefWidth="460.0">
+                                             <columns>
+                                                <TableColumn fx:id="col_codDisciplinaAdd" prefWidth="88.0" text="Código" />
+                                                <TableColumn fx:id="col_nomeDisciplinaAdd" prefWidth="317.0" text="Nome" />
+                                             </columns>
+                                          </TableView>
+                                          <HBox>
+                                             <children>
+                                                <ComboBox fx:id="ano_add" prefHeight="41.0" prefWidth="104.0" promptText="Ano" visibleRowCount="5">
+                                                   <HBox.margin>
+                                                      <Insets top="20.0" />
+                                                   </HBox.margin>
+                                                </ComboBox>
+                                                <JFXTextField fx:id="cargaHoraria_add" alignment="TOP_LEFT" focusColor="#909090" labelFloat="true" maxWidth="244.0" minWidth="127.0" prefHeight="43.0" prefWidth="169.0" promptText="Carga Horária(horas)" style="-fx-alignment: CENTER;" unFocusColor="RED">
+                                                   <HBox.margin>
+                                                      <Insets top="20.0" />
+                                                   </HBox.margin></JFXTextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="20.0">
+                                             <children>
+                                                <JFXButton onAction="#aplicar" prefHeight="49.0" prefWidth="103.0" text="Aplicar" />
+                                                <JFXButton onAction="#cancelar" prefHeight="49.0" prefWidth="127.0" text="Cancelar" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </DialogPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </children>
+</AnchorPane>

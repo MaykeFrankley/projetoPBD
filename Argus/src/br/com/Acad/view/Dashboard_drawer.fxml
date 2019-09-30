@@ -6,124 +6,16 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+
 <ScrollPane focusTraversable="false" hbarPolicy="NEVER" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.DrawerController">
    <content>
-      <VBox fx:id="box_buttons" alignment="TOP_CENTER" fillWidth="false" prefHeight="695.0" prefWidth="280.0" spacing="15.0" style="-fx-background-color: #2A2E37;">
+      <AnchorPane>
          <children>
-            <StackPane prefHeight="51.0" prefWidth="45.0">
-               <children>
-                  <FontAwesomeIconView fill="WHITE" glyphName="CIRCLE_ALT" size="60" />
-                  <FontAwesomeIconView fill="WHITE" glyphName="USER" size="30" />
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </StackPane>
-            <Label fx:id="label_user" text="Login:" textFill="#fbff00">
-               <font>
-                  <Font name="System Bold" size="22.0" />
-               </font>
-            </Label>
-            <Button fx:id="cadastrar_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="20.0" mnemonicParsing="false" onAction="#cadastrarDropDown" prefHeight="44.0" prefWidth="269.0" styleClass="options-btn" text="Cadastrar" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fx:id="icon_arrow" fill="WHITE" glyphName="CHEVRON_UP" size="25" />
-               </graphic>
-            </Button>
-            <Button fx:id="pessoas_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="27.0" mnemonicParsing="false" onAction="#gerenciar_pessoas" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Pessoas" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="USERS" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="usuarios_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_usuarios" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Usuários" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="USER" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="alunos_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="20.0" mnemonicParsing="false" onAction="#gerenciar_alunos" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Alunos" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="GRADUATION_CAP" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="log_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#log_sistema" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Log do Sistema" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="BOOK" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="pagamentos_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#pagamentos" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Pagamentos" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="MONEY" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="boletin_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#boletim_escolar" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Boletim Escolar" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="LIST_ALT" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="config_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#configuracoes" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Configurações" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="GEAR" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
-            <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#logout_handler" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Logout" textFill="WHITE">
-               <font>
-                  <Font name="Verdana" size="12.0" />
-               </font>
-               <graphic>
-                  <FontAwesomeIconView fill="WHITE" glyphName="SIGN_OUT" size="18" />
-               </graphic>
-               <VBox.margin>
-                  <Insets right="20.0" />
-               </VBox.margin>
-            </Button>
             <VBox fx:id="box_cadastrar" alignment="CENTER" prefHeight="88.0" prefWidth="245.0" visible="false">
                <children>
                   <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_usuario" prefHeight="31.0" prefWidth="197.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Funcionários/Usuários">
@@ -141,7 +33,7 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="LEANPUB" size="16" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton alignment="TOP_LEFT" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Currículo escolar">
+                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_curriculo" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Currículo escolar">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="TH_LIST" size="16" />
                      </graphic>
@@ -153,10 +45,135 @@
                   </JFXButton>
                </children>
             </VBox>
+            <VBox fx:id="box_buttons" alignment="TOP_CENTER" fillWidth="false" prefHeight="695.0" prefWidth="280.0" spacing="15.0" style="-fx-background-color: #2A2E37;">
+               <children>
+                  <StackPane prefHeight="51.0" prefWidth="45.0">
+                     <children>
+                        <FontAwesomeIconView fill="WHITE" glyphName="CIRCLE_ALT" size="60" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="USER" size="30" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </StackPane>
+                  <Label fx:id="label_user" text="Login:" textFill="#fbff00">
+                     <font>
+                        <Font name="System Bold" size="22.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="cadastrar_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="20.0" mnemonicParsing="false" onAction="#cadastrarDropDown" prefHeight="44.0" prefWidth="269.0" styleClass="options-btn" text="Cadastrar" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fx:id="icon_arrow" fill="WHITE" glyphName="CHEVRON_UP" size="25" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="pessoas_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="27.0" mnemonicParsing="false" onAction="#gerenciar_pessoas" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Pessoas" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="USERS" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="usuarios_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_usuarios" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Usuários" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="USER" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="alunos_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="22.0" mnemonicParsing="false" onAction="#gerenciar_alunos" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Alunos" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="GRADUATION_CAP" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="professores_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#gerenciar_professores" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Gerenciar Professores" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="BLACK_TIE" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="log_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#log_sistema" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Log do Sistema" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="BOOK" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="pagamentos_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#pagamentos" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Pagamentos" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="MONEY" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="boletin_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#boletim_escolar" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Boletim Escolar" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="LIST_ALT" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="config_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#configuracoes" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Configurações" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="GEAR" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#logout_handler" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Logout" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="SIGN_OUT" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
          </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </VBox>
+      </AnchorPane>
    </content>
 </ScrollPane>

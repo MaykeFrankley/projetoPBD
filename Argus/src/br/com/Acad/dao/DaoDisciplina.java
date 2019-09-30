@@ -50,8 +50,10 @@ public class DaoDisciplina implements IDaoDisciplina{
 
 	@Override
 	public Disciplina getDisciplina(String ID) {
-		// TODO Auto-generated method stub
-		return null;
+		createEM();
+		Disciplina d= entityMn.find(Disciplina.class, ID);
+		entityMn.close();
+		return d;
 	}
 
 	@Override

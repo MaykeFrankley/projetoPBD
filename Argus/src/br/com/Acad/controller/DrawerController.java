@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.Timer;
 
 import com.jfoenix.controls.JFXButton;
 
 import br.com.Acad.model.Usuario;
+import br.com.Acad.util.SetDbUser;
 import br.com.Acad.util.Util;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.Interpolator;
@@ -54,6 +56,9 @@ public class DrawerController implements Initializable{
     private Button alunos_btn;
 
     @FXML
+    private Button professores_btn;
+
+    @FXML
     private Button log_btn;
 
     @FXML
@@ -73,52 +78,53 @@ public class DrawerController implements Initializable{
     	if(!box_cadastrar.isVisible()){
     		icon_arrow.setGlyphName("CHEVRON_DOWN");
         	int idx = box_buttons.getChildren().indexOf(cadastrar_btn)+1;
-        	int from = box_buttons.getChildren().indexOf(box_cadastrar);
+//        	int from = box_buttons.getChildren().indexOf(box_cadastrar);
 
-        	box_buttons.getChildren().add(idx, box_buttons.getChildren().remove(from));
+        	box_buttons.getChildren().add(idx, box_cadastrar);
         	box_cadastrar.setVisible(true);
     	}else{
     		icon_arrow.setGlyphName("CHEVRON_UP");
-    		int idx = box_buttons.getChildren().size()-1;
-    		int from = box_buttons.getChildren().indexOf(box_cadastrar);
+//    		int idx = box_buttons.getChildren().size()-1;
+//    		int from = box_buttons.getChildren().indexOf(box_cadastrar);
 
-    		box_buttons.getChildren().add(idx, box_buttons.getChildren().remove(from));
+    		box_buttons.getChildren().remove(box_cadastrar);
         	box_cadastrar.setVisible(false);
     	}
 
     }
 
-    @FXML
-    void boletim_escolar(ActionEvent event) {
 
+    @FXML
+    void cadastrar_curriculo(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarCurriculo.fxml"), scene, "y");
     }
 
     @FXML
     void cadastrar_professor(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarProfessor.fxml"), scene, "x");
+
     }
 
     @FXML
     void cadastrar_disciplinas(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarDisciplina.fxml"), scene, "y");
+
     }
 
     @FXML
     void cadastrar_usuario(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarUsuario.fxml"), scene, "x");
+
     }
 
     @FXML
     void gerenciar_usuarios(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/UsuariosManager.fxml"), scene, "y");
-    }
-
-    @FXML
-    void configuracoes(ActionEvent event) {
 
     }
 
@@ -131,12 +137,30 @@ public class DrawerController implements Initializable{
     void gerenciar_pessoas(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/PessoasManager.fxml"), scene, "x");
+
     }
+
+    @FXML
+    void gerenciar_professores(ActionEvent event) {
+
+    }
+
+    @FXML
+    void configuracoes(ActionEvent event) {
+
+    }
+
+    @FXML
+    void boletim_escolar(ActionEvent event) {
+
+    }
+
 
     @FXML
     void log_sistema(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/LogSistema.fxml"), scene, "y");
+
     }
 
     @FXML
@@ -178,6 +202,8 @@ public class DrawerController implements Initializable{
 				mainController.cancelNotificationTask();
 				mainController.enableHamburger();
 				MainTelaController.user = null;
+				Timer timer = new Timer();
+        		timer.schedule(new SetDbUser("root", "9612"), 0);
 
 			} catch (IOException e) {
 				e.printStackTrace();

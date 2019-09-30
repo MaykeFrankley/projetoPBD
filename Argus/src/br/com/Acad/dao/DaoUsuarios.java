@@ -74,12 +74,12 @@ public class DaoUsuarios implements IDaoUsuarios{
 		query.setParameter("s", "Ativo");
 
 		List<Usuario> list = query.getResultList();
+		entityMn.close();
 
 		if(list.size() > 0){
 			Usuario usu = list.get(0);
 			return usu;
 		}
-		entityMn.close();
 		return null;
 	}
 

@@ -57,7 +57,7 @@
     -fx-border-color: transparent;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-font-size: 20px;
+    -fx-font-size: 18px;
 }
 .options-btn .label{
     -fx-text-fill: white;
@@ -125,7 +125,6 @@
     -fx-background-color: derive(#2A2E37, -50%);
 }
 /*Menu bar Styling*/
-
 
 .context-menu
 {
@@ -259,6 +258,10 @@
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-text-fill: white;
 }
+
+.table-view > .virtual-flow > .corner{
+	-fx-background-color: transparent;
+}
 .table-view .scroll-bar:horizontal .thumb,
 .table-view .scroll-bar:vertical .thumb{
     -fx-background-color: derive(#2A2E37, 60%);
@@ -266,7 +269,11 @@
     -fx-background-radius: 5em;
 }
 .table-view .filler{
-    -fx-fill: #2A2E37;
+    -fx-fill: transparent;
+    -fx-background-color: transparent;
+}
+
+.table-view > .column-header-background > .show-hide-columns-button {
     -fx-background-color: #2A2E37;
 }
 .table-context
@@ -380,7 +387,11 @@
 
 .combo-box > .arrow-button {
    -fx-background-color: transparent ;
-  }
+}
+
+.combo-box-base .text{
+    -fx-fill: #FFFF8D;
+}
 
  .combo-box-popup .list-view {
     -fx-background-color: #2A2E37;
@@ -475,3 +486,19 @@
 .log-view .list-cell:error {
     -fx-text-fill: red;
 }
+
+.progress-indicator .percentage {
+    -fx-fill: #FFFF8D ;
+    -fx-font-size: 16px;
+}
+
+.progress-indicator .indicator {
+    -fx-background-color: #FFFF8D;
+}
+
+.progress-indicator {
+    -fx-progress-color: black;
+}
+
+
+

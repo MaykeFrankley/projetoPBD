@@ -49,7 +49,7 @@ public class MainTelaController implements Initializable{
     @FXML
     private ImageView background;
 
-    public Timer timer = new Timer();
+    public Timer timer;
 
     private DrawerController drawerController;
 
@@ -58,6 +58,8 @@ public class MainTelaController implements Initializable{
 	private double yOffSet;
 
 	public static Usuario user;
+
+	public static JFXDrawer dr;
 
     @FXML
     void close_app(MouseEvent event) {
@@ -200,6 +202,8 @@ public class MainTelaController implements Initializable{
 		background.setImage(new Image("/images/argus_logo_transparent.png"));
 
 		initDrawer();
+
+		dr = drawer;
 
 		makeStageDragable();
 

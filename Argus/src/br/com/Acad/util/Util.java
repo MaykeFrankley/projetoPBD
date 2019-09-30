@@ -96,9 +96,13 @@ public class Util {
 			if(contentPane.getChildren().size() > 1){
 				contentPane.getChildren().remove(0);
 			}
+		   	MainTelaController.dr.close();
+//		   	ScenicView.show(scene);
 
 		});
 		timel.play();
+
+
 	}
 
 	public static void Alert(String message){

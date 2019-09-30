@@ -1,45 +1,36 @@
 package br.com.Acad.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 
+@SuppressWarnings("serial")
 @Embeddable
-public class CurriculoID {
+public class CurriculoID implements Serializable{
 
 	@Column
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int codCurriculo;
+	private String codCurriculo;
 
 	@Column
-	private int anoLevito;
-
-	@Column
-	private String tipo;
+	private int anoLetivo;
 
 	public CurriculoID() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CurriculoID(int codCurriculo, int anoLevito, String tipo) {
+	public CurriculoID(String codCurriculo, int anoLetivo) {
 		this.codCurriculo = codCurriculo;
-		this.anoLevito = anoLevito;
-		this.tipo = tipo;
+		this.anoLetivo = anoLetivo;
 	}
 
-	public int getCodCurriculo() {
+	public String getCodCurriculo() {
 		return codCurriculo;
 	}
 
-	public int getAnoLevito() {
-		return anoLevito;
-	}
-
-	public String getTipo() {
-		return tipo;
+	public int getAnoLetivo() {
+		return anoLetivo;
 	}
 
 	@Override
@@ -48,13 +39,12 @@ public class CurriculoID {
 		if(!(obj instanceof CurriculoID)) return false;
 		CurriculoID that = (CurriculoID) obj;
 		return Objects.equals(getCodCurriculo(), that.getCodCurriculo()) &&
-				Objects.equals(getAnoLevito(), that.getAnoLevito()) &&
-				Objects.equals(getTipo(), that.getTipo());
+				Objects.equals(getAnoLetivo(), that.getAnoLetivo());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getAnoLevito(), getCodCurriculo(), getTipo());
+		return Objects.hash(getAnoLetivo(), getCodCurriculo());
 	}
 
 }

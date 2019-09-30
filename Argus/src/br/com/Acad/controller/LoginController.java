@@ -3,6 +3,7 @@ package br.com.Acad.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -21,11 +22,13 @@ import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -69,6 +72,9 @@ public class LoginController implements Initializable{
     private VBox Box_recovery;
 
     @FXML
+    private ProgressIndicator progressBar;
+
+    @FXML
     private JFXTextField CPF;
 
     @FXML
@@ -100,18 +106,43 @@ public class LoginController implements Initializable{
         	label_error.setVisible(false);
 
         	if(check != null){
+        		Timer timer = new Timer();
+        		timer.schedule(new SetDbUser(txt_login.getText(), hash), 0);
 
-        		new SetDbUser(txt_login.getText(), hash);
+        		progressBar.setVisible(true);
+        		Task<Void> tarefa = new Task<Void>() {
 
-        		Util.contentPane.getChildren().remove(loginPane);
+        		    @Override
+        		    protected Void call() throws Exception {
+        		        for(int i = 0; i < 10; i++) {
+        		            updateProgress(i, 9);
+        		            Thread.sleep(500);
+        		        }
 
-          		mainTela.enableDrawer();
-    			mainTela.setUser(check);
-    			mainTela.enableHamburger();
-    			mainTela.enableNotificationTask();
+        		        Platform.runLater(() -> {
 
-    			SysLog.addLog(SysLog.login(check.getUser()));
-    			SysLog.complete();;
+                        	Util.contentPane.getChildren().remove(loginPane);
+
+                    		mainTela.enableDrawer();
+                    		mainTela.setUser(check);
+                			mainTela.enableHamburger();
+                			mainTela.enableNotificationTask();
+
+                			SysLog.addLog(SysLog.login(check.getUser()));
+                			SysLog.complete();
+
+                        });
+        		        return null;
+        		    }
+        		};
+
+        		progressBar.progressProperty().bind(tarefa.progressProperty());
+        		final Thread thread = new Thread(tarefa, "task-thread");
+                thread.setDaemon(true);
+                thread.start();
+
+                box_login.setDisable(true);
+
         	}
 
         	else{
@@ -127,7 +158,7 @@ public class LoginController implements Initializable{
     }
 
     @FXML
-    void handle_loginEnter(KeyEvent event) throws IOException {
+    void handle_loginEnter(KeyEvent event) throws IOException, InterruptedException {
 
     	if(event.getCode().toString().equals("ENTER")){
 
@@ -138,17 +169,43 @@ public class LoginController implements Initializable{
 
             	if(check != null){
 
-            		new SetDbUser(txt_login.getText(), hash);
+            		Timer timer = new Timer();
+            		timer.schedule(new SetDbUser(txt_login.getText(), hash), 0);
 
-            		Util.contentPane.getChildren().remove(loginPane);
+            		progressBar.setVisible(true);
+            		Task<Void> tarefa = new Task<Void>() {
 
-            		mainTela.enableDrawer();
-            		mainTela.setUser(check);
-        			mainTela.enableHamburger();
-        			mainTela.enableNotificationTask();
+            		    @Override
+            		    protected Void call() throws Exception {
+            		        for(int i = 0; i < 10; i++) {
+            		            updateProgress(i, 9);
+            		            Thread.sleep(500);
+            		        }
 
-        			SysLog.addLog(SysLog.login(check.getUser()));
-        			SysLog.complete();
+            		        Platform.runLater(() -> {
+
+                            	Util.contentPane.getChildren().remove(loginPane);
+
+                        		mainTela.enableDrawer();
+                        		mainTela.setUser(check);
+                    			mainTela.enableHamburger();
+                    			mainTela.enableNotificationTask();
+
+                    			SysLog.addLog(SysLog.login(check.getUser()));
+                    			SysLog.complete();
+
+                            });
+            		        return null;
+            		    }
+            		};
+
+            		progressBar.progressProperty().bind(tarefa.progressProperty());
+            		final Thread thread = new Thread(tarefa, "task-thread");
+                    thread.setDaemon(true);
+                    thread.start();
+
+                    box_login.setDisable(true);
+
             	}
             	else{
             		label_error.setVisible(true);
@@ -251,7 +308,6 @@ public class LoginController implements Initializable{
 		     (observable, old_value, new_value) -> {
 
 		          if(new_value.contains(" ")){
-		                //prevents from the new space char
 		        	  txt_senha.setText(old_value);
 		          }
 		     }
