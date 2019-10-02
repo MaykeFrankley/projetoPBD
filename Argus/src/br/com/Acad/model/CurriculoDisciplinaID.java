@@ -18,28 +18,20 @@ public class CurriculoDisciplinaID implements Serializable{
 	private String codDisciplina;
 
 	@Column
-	private int cargaHoraria;
-
-	@Column
 	private int ano;
 
 	public CurriculoDisciplinaID() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CurriculoDisciplinaID(CurriculoID id, String codDisciplina, int cargaHoraria, int ano) {
+	public CurriculoDisciplinaID(CurriculoID id, String codDisciplina, int ano) {
 		this.curriculoID = id;
 		this.codDisciplina = codDisciplina;
-		this.cargaHoraria = cargaHoraria;
 		this.ano = ano;
 	}
 
 	public String getCodDisciplina() {
 		return codDisciplina;
-	}
-
-	public int getCargaHoraria() {
-		return cargaHoraria;
 	}
 
 	public int getAno() {
@@ -56,13 +48,12 @@ public class CurriculoDisciplinaID implements Serializable{
 		if(!(obj instanceof CurriculoDisciplinaID)) return false;
 		CurriculoDisciplinaID that = (CurriculoDisciplinaID) obj;
 		return Objects.equals(getCodDisciplina(), that.codDisciplina) &&
-				Objects.equals(getCargaHoraria(), that.getCargaHoraria()) &&
 				Objects.equals(getCurriculoID(), that.getCurriculoID());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getAno(), getCargaHoraria(), getCodDisciplina(), getCurriculoID());
+		return Objects.hash(getAno(), getCodDisciplina(), getCurriculoID());
 	}
 
 

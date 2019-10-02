@@ -5,26 +5,33 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.dao.DaoContatos;
+import br.com.Acad.dao.DaoCurriculo;
 import br.com.Acad.dao.DaoDisciplina;
 import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoProfessor;
 import br.com.Acad.model.Contato;
-import br.com.Acad.model.Disciplina;
+import br.com.Acad.model.Curriculo;
+import br.com.Acad.model.CurriculoDisciplina;
+import br.com.Acad.model.CurriculoDisciplinaID;
+import br.com.Acad.model.CurriculoID;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.DisciplinaProfessor;
 import br.com.Acad.model.DisciplinaProfessorID;
 import br.com.Acad.model.Professor;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
@@ -34,6 +41,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
@@ -43,13 +51,19 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 public class ProfessorManagerController implements Initializable{
 
 	@FXML
 	private JFXTabPane tabPane;
+
+	@FXML
+	private AnchorPane addDisciplinaContainer;
 
 	@FXML
 	private Tab listarTab;
@@ -184,13 +198,16 @@ public class ProfessorManagerController implements Initializable{
 	private TableColumn<Professor, String> col_curso;
 
 	@FXML
-	private TableView<Disciplina> table_disciplinas;
+	private TableView<DisciplinaProfessor> table_disciplinas;
 
 	@FXML
-	private TableColumn<Disciplina, String> col_codDisciplina;
+	private TableColumn<DisciplinaProfessor, DisciplinaProfessorID> col_codDisciplina;
 
 	@FXML
-	private TableColumn<Disciplina, String> col_nomeDisciplina;
+	private TableColumn<DisciplinaProfessor, String> col_nomeDisciplina;
+
+	@FXML
+	private TableColumn<DisciplinaProfessor, DisciplinaProfessorID> col_serieDisciplina;
 
 	@FXML
 	private JFXTextField curriculo;
@@ -205,24 +222,49 @@ public class ProfessorManagerController implements Initializable{
 	private DialogPane addDisciplinaPane;
 
 	@FXML
-	private TableView<DisciplinaProfessor> table_disciplina_add;
+	private TableView<CurriculoDisciplina> table_disciplinas_add;
 
 	@FXML
-	private TableColumn<DisciplinaProfessor, DisciplinaProfessorID> col_codDisciplinaAdd;
+	private TableColumn<CurriculoDisciplina, CurriculoDisciplinaID> col_codDisciplina_add;
 
 	@FXML
-	private TableColumn<DisciplinaProfessor, DisciplinaProfessorID> col_nomeDisciplinaAdd;
+	private TableColumn<CurriculoDisciplina, String> col_nomeDisciplina_add;
 
 	@FXML
-	private TableColumn<DisciplinaProfessor, DisciplinaProfessorID> cod_curriculoAdd;
+	private TableColumn<CurriculoDisciplina, CurriculoDisciplinaID> col_serieDisciplina_add;
+
+	@FXML
+	private TableColumn<CurriculoDisciplina, Integer> col_cargaHoraria_add;
+
+	@FXML
+	private TableView<Curriculo> table_curriculo;
+
+	@FXML
+	private TableColumn<Curriculo, CurriculoID> col_cod_cur;
+
+	@FXML
+	private TableColumn<Curriculo, String> col_nome_cur;
+
+	@FXML
+	private TableColumn<Curriculo, CurriculoID> col_anoLetivo_cur;
+
+	@FXML
+	private TableColumn<Curriculo, String> col_tipo_cur;
+
+	@FXML
+	private Button add_button;
 
 	private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
 
 	private ObservableList<Professor> oblist_professores = FXCollections.observableArrayList();
 
-	private ObservableList<Disciplina> oblist_disciplinas = FXCollections.observableArrayList();
+	private ObservableList<DisciplinaProfessor> oblist_disciplinas = FXCollections.observableArrayList();
+
+	private ObservableList<CurriculoDisciplina> oblist_disciplinas_add = FXCollections.observableArrayList();
 
 	private ObservableList<Endereco> oblist_enderecos = FXCollections.observableArrayList();
+
+	private ObservableList<Curriculo> oblist_curriculos = FXCollections.observableArrayList();
 
 	private FilteredList<Pessoa> filteredData;
 
@@ -234,30 +276,163 @@ public class ProfessorManagerController implements Initializable{
 
 	private DaoContatos daoContatos;
 
-	private DaoProfessor daoProfessores;
+	private DaoProfessor daoProfessor;
 
 	private DaoDisciplina daoDisciplinas;
+
+	private DaoCurriculo daoCurriculos;
 
 	private Pessoa oldPessoa;private Contato oldContato;private Endereco oldEndereco;private String oldCPF;
 
 	@FXML
-	void add_disciplina(ActionEvent event) {
+	void adicionar(ActionEvent event) {
+		BoxBlur blur = new BoxBlur(3, 3, 3);
+		addDisciplinaContainer.setEffect(blur);
+		Professor pr = table_professores.getSelectionModel().getSelectedItem();
+		if(pr == null){
+			Util.Alert("Selecione um professor!");
+			event.consume();
+			return;
+		}
+		addDisciplinaPane.setVisible(true);
+		table_professores.setMouseTransparent(true);
+		table_disciplinas.setMouseTransparent(true);
+		add_button.setVisible(false);
+	}
 
+	@FXML
+	void removerDisciplina(ActionEvent event) {
+		DisciplinaProfessor selected = table_disciplinas.getSelectionModel().getSelectedItem();
+		if(selected != null) {
+			selected.setNomeProfessor(table_professores.getSelectionModel().getSelectedItem().getNome());
+			JFXButton yes = new JFXButton("Remover");
+			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
+				daoProfessor.removeDisciplinaProfessor(selected);
+				SysLog.addLog(SysLog.message("removeu uma disciplina de cod: "+selected.getId().getCurriculoDisciplinaID().getCodDisciplina()+" do professor cod: ")
+						+selected.getId().getCodProfessor());
+				SysLog.complete();
+				initTables();
+			});
+			JFXButton cancel = new JFXButton("Cancelar");
+	    	cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event2) -> {
+	    		Util.contentPane.getChildren().get(0).setEffect(null);
+	    	});
+
+	    	Util.confirmation(Arrays.asList(yes, cancel),"Tem certeza que deseja remover a disciplina do professor?");
+		}else{
+			Util.Alert("Selecione uma disciplina do professor!");
+		}
 	}
 
 	@FXML
 	void aplicar(ActionEvent event) {
+		CurriculoDisciplina cd = table_disciplinas_add.getSelectionModel().getSelectedItem();
+		Professor pr = table_professores.getSelectionModel().getSelectedItem();
+		if(cd != null && pr != null){
 
+			DisciplinaProfessor dp = new DisciplinaProfessor();
+			dp.setId(new DisciplinaProfessorID(pr.getCodPessoa(), cd.getId()));
+			dp.setNomeProfessor(pr.getNome());
+
+			daoProfessor.addDisciplinaToProfessor(dp);
+			addDisciplinaPane.setVisible(false);
+			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getId().getCodProfessor());
+			SysLog.complete();
+
+			initTables();
+
+			cancelar(event);
+
+			table_professores.getSelectionModel().select(pr);
+		}
 	}
+
 
 	@FXML
 	void cancelar(ActionEvent event) {
-
+		addDisciplinaContainer.setEffect(null);
+		addDisciplinaPane.setVisible(false);
+		table_professores.setMouseTransparent(false);
+		table_disciplinas.setMouseTransparent(false);
+		add_button.setVisible(true);
 	}
 
 	@FXML
 	void atualizar(ActionEvent event) {
+		if(checkTextFields()){
+			oblist_pessoas = daoPessoas.getAllPessoa();
+			for (int i = 0; i < oblist_pessoas.size(); i++) {
+				String obCPF = oblist_pessoas.get(i).getCpf();
 
+				if((obCPF != null && oldCPF != null) || obCPF != null){
+					if(obCPF.equals(cpf_update.getText()) && !cpf_update.getText().equals(oldCPF)){
+						Util.Alert("CPF já está cadastrado no sistema!");
+						return;
+					}
+
+				}
+			}
+
+			Date date = Date.valueOf(dt_nascimento_update.getValue());
+			Pessoa p = daoPessoas.getPessoa(Integer.valueOf(codigo_listar.getText()));
+			Endereco e = new Endereco();
+			Contato c = new Contato();
+
+			p.setNome(nome_update.getText());
+			p.setDt_nascimento(date);
+			p.setNaturalidade(naturalidade_update.getText());
+			p.setStatus("Ativo");
+			if(cpf_update.getText().length() > 0)p.setCpf(cpf_update.getText());
+			else p.setCpf(null);
+
+			int cod = daoPessoas.UpdatePessoa(p);
+
+			if(cod > 0){
+				e.setCodPessoa(cod);
+				e.setRua(nomeRua_update.getText());
+				e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
+				if(complemento_update.getText() != null && complemento_update.getText().length() > 0)e.setComplemento(complemento_update.getText());
+				e.setBairro(bairro_update.getText());
+				e.setEstado(estado_update.getSelectionModel().getSelectedItem());
+				e.setCidade(cidade_update.getSelectionModel().getSelectedItem());
+
+
+				daoEnderecos.UpdateEndereco(e);
+
+				c.setCodPessoa(cod);
+				if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
+				if(telefone_update.getText().length() > 0)c.setTelefone(telefone_update.getText());
+				if(celular_update.getText().length() > 0)c.setCelular(celular_update.getText());
+				if(whatsapp_update.isSelected()){
+					c.setWhatsapp(1);
+				}
+				else{
+					c.setWhatsapp(0);
+				}
+
+				if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
+					daoContatos.UpdateContato(c);
+				}
+
+				Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
+
+				if(!oldPessoa.SameAs(p)){
+					SysLog.addLog(SysLog.updatePessoas("Dados", cod));
+				}
+
+				if(!oldEndereco.equals(e)){
+					SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
+				}
+
+				if(!oldContato.equals(c)){
+					SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
+				}
+
+				SysLog.complete();
+
+				initTables();
+			}
+		}
 	}
 
 	@FXML
@@ -285,7 +460,9 @@ public class ProfessorManagerController implements Initializable{
 
 	@FXML
 	void populateCidades(ActionEvent event) {
-
+		if(atualizarTab.isSelected()){
+			Util.populateCidade(estado_update, cidade_update);
+		}
 	}
 
 	void populateBoxes(){
@@ -299,7 +476,6 @@ public class ProfessorManagerController implements Initializable{
 		new AutoCompleteComboBoxListener<>(estado_update);
 		new AutoCompleteComboBoxListener<>(cidade_update);
 	}
-
 
 	@FXML
 	void remover_disciplina(ActionEvent event) {
@@ -345,7 +521,35 @@ public class ProfessorManagerController implements Initializable{
 
 	@FXML
 	void searchPessoa2(KeyEvent event) {
+		campo_pesquisa2.textProperty().addListener((observableValue, oldValue,newValue)->{
+			filteredData2.setPredicate(professor->{
+				if(newValue==null || newValue.isEmpty()){
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				if(professor.getNome().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(professor.getCpf().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(String.valueOf(professor.getCodPessoa()).contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(professor.getCursoFormacao().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
 
+				else if(professor.getFormacao().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				return false;
+			});
+		});
+		SortedList<Professor> sortedData = new SortedList<>(filteredData2);
+		sortedData.comparatorProperty().bind(table_professores.comparatorProperty());
+		table_professores.setItems(sortedData);
 	}
 
 	@FXML
@@ -412,13 +616,15 @@ public class ProfessorManagerController implements Initializable{
 		vbox_atualizar.setDisable(false);
 	}
 
-	void initiTables(){
+	void initTables(){
 
 		oblist_disciplinas.clear();
 		oblist_pessoas.clear();
 		oblist_professores.clear();
 
-		oblist_professores = daoProfessores.getAllProfessores();
+		oblist_curriculos = daoCurriculos.getAllCurriculo();
+
+		oblist_professores = daoProfessor.getAllProfessores();
 		for (Professor professor : oblist_professores) {
 			int cod = professor.getCodPessoa();
 			oblist_pessoas.add(daoPessoas.getPessoa(cod));
@@ -434,6 +640,7 @@ public class ProfessorManagerController implements Initializable{
 		col_naturalidade.setCellValueFactory(new PropertyValueFactory<>("naturalidade"));
 		col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
 		col_codPessoa.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
+		col_dt_nascimento.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
 
 		col_dt_nascimento.setCellFactory(column -> {
 			TableCell<Pessoa, Date> cell = new TableCell<Pessoa, Date>() {
@@ -452,6 +659,8 @@ public class ProfessorManagerController implements Initializable{
 			};
 			return cell;
 		});
+
+		table_pessoas.setItems(oblist_pessoas);
 
 		table_pessoas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -492,15 +701,203 @@ public class ProfessorManagerController implements Initializable{
 			}
 		});
 
+		col_codProfessor.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
+		col_nomeProfessor.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		col_cpf_prof.setCellValueFactory(new PropertyValueFactory<>("cpf"));
+		col_formacao.setCellValueFactory(new PropertyValueFactory<>("formacao"));
+		col_curso.setCellValueFactory(new PropertyValueFactory<>("cursoFormacao"));
+
+		table_professores.setItems(oblist_professores);
+		Util.autoFitTable(table_professores);
+
 		table_professores.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-			if (newSelection != null) {
-				int codProfessor = table_professores.getSelectionModel().getSelectedItem().getCodPessoa();
-				oblist_disciplinas.clear();
-				ObservableList<DisciplinaProfessor> ob = FXCollections.observableArrayList();
-				ob = daoProfessores.getDisciplinaOfProfessor(codProfessor);
-				table_disciplina_add.setItems(ob);
+			if(newSelection != null){
+				Professor selected = table_professores.getSelectionModel().getSelectedItem();
+				if(selected != null){
+					oblist_disciplinas.clear();
+					oblist_disciplinas = daoProfessor.getDisciplinaOfProfessor(selected.getCodPessoa());
+					for(DisciplinaProfessor dp: oblist_disciplinas){
+						dp.setNomeDisciplina(daoDisciplinas.getDisciplina(dp.getId().getCurriculoDisciplinaID().getCodDisciplina()).getNome());
+					}
+					table_disciplinas.setItems(oblist_disciplinas);
+
+					curriculo.clear();anoLetivo.clear();
+				}
+			}
+
+		});
+
+
+		col_codDisciplina.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_nomeDisciplina.setCellValueFactory(new PropertyValueFactory<>("nomeDisciplina"));
+		col_serieDisciplina.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+		col_codDisciplina.setCellFactory(column -> {
+			final TableCell<DisciplinaProfessor, DisciplinaProfessorID> cell = new TableCell<DisciplinaProfessor, DisciplinaProfessorID>(){
+				@Override
+				protected void updateItem(DisciplinaProfessorID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(item.getCurriculoDisciplinaID().getCodDisciplina());
+					}
+
+				}
+
+			};
+			return cell;
+		});
+
+		col_serieDisciplina.setCellFactory(column -> {
+			final TableCell<DisciplinaProfessor, DisciplinaProfessorID> cell = new TableCell<DisciplinaProfessor, DisciplinaProfessorID>(){
+				@Override
+				protected void updateItem(DisciplinaProfessorID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getCurriculoDisciplinaID().getAno())+"º ano");
+					}
+
+				}
+
+			};
+			return cell;
+		});
+
+		table_disciplinas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if(newSelection != null){
+				DisciplinaProfessor selected = table_disciplinas.getSelectionModel().getSelectedItem();
+				if(selected != null) {
+					curriculo.setText(daoCurriculos.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID())
+							.getNome());
+					anoLetivo.setText(String.valueOf(daoCurriculos.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID())
+							.getId().getAnoLetivo()));
+				}
 			}
 		});
+
+		col_cod_cur.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_nome_cur.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		col_anoLetivo_cur.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_tipo_cur.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+
+		col_cod_cur.setCellFactory(column -> {
+			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>() {
+
+				@Override
+				protected void updateItem(CurriculoID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(item.getCodCurriculo());
+					}
+				}
+			};
+			return cell;
+		});
+
+		col_anoLetivo_cur.setCellFactory(column -> {
+			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>() {
+
+				@Override
+				protected void updateItem(CurriculoID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getAnoLetivo()));
+					}
+				}
+			};
+			return cell;
+		});
+
+		table_curriculo.setItems(oblist_curriculos);
+
+		table_curriculo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if(newSelection != null){
+				Curriculo selected = table_curriculo.getSelectionModel().getSelectedItem();
+				if(selected != null){
+					oblist_disciplinas_add.clear();
+					oblist_disciplinas_add = daoCurriculos.getAllDisciplinas(selected.getId().getCodCurriculo());
+
+					for(CurriculoDisciplina c : oblist_disciplinas_add){
+						c.setNomeDisciplina(daoDisciplinas.getDisciplina(c.getId().getCodDisciplina()).getNome());
+					}
+
+					table_disciplinas_add.setItems(oblist_disciplinas_add);
+					table_disciplinas_add.getSortOrder().add(col_serieDisciplina_add);
+
+				}
+			}
+		});
+
+		col_codDisciplina_add.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_nomeDisciplina_add.setCellValueFactory(new PropertyValueFactory<>("nomeDisciplina"));
+		col_serieDisciplina_add.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_cargaHoraria_add.setCellValueFactory(new PropertyValueFactory<>("cargaHoraria"));
+
+		col_codDisciplina_add.setCellFactory(column -> {
+			final TableCell<CurriculoDisciplina, CurriculoDisciplinaID> cell = new TableCell<CurriculoDisciplina, CurriculoDisciplinaID>(){
+				@Override
+				protected void updateItem(CurriculoDisciplinaID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(item.getCodDisciplina());
+					}
+
+				}
+
+			};
+			return cell;
+		});
+
+		col_serieDisciplina_add.setCellFactory(column -> {
+			final TableCell<CurriculoDisciplina, CurriculoDisciplinaID> cell = new TableCell<CurriculoDisciplina, CurriculoDisciplinaID>(){
+				@Override
+				protected void updateItem(CurriculoDisciplinaID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getAno())+"ª ano");
+					}
+
+				}
+
+			};
+			return cell;
+		});
+
+		col_cargaHoraria_add.setCellFactory(column -> {
+			final TableCell<CurriculoDisciplina, Integer> cell = new TableCell<CurriculoDisciplina, Integer>(){
+				@Override
+				protected void updateItem(Integer item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item)+"H");
+					}
+
+				}
+
+			};
+			return cell;
+		});
+
 
 
 	}
@@ -602,10 +999,20 @@ public class ProfessorManagerController implements Initializable{
 		daoDisciplinas = new DaoDisciplina();
 		daoEnderecos = new DaoEndereco();
 		daoPessoas = new DaoPessoa();
-		daoProfessores = new DaoProfessor();
+		daoProfessor = new DaoProfessor();
+		daoCurriculos = new DaoCurriculo();
+
+		atualizarTab.setOnSelectionChanged(e ->{
+			if(atualizarTab.isSelected()){
+				if(nome_update.getText().isEmpty()){
+					Util.Alert("Selecione um professor na aba \"Listar\"");
+				}
+			}
+
+		});
 
 		populateBoxes();
-		initiTables();
+		initTables();
 
 	}
 

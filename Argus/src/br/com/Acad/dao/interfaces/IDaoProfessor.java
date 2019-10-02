@@ -10,7 +10,9 @@ public interface IDaoProfessor {
 	public void updateProfessor(Professor professor);
 	public Professor getProfessor(int ID);
 	public ObservableList<Professor> getAllProfessores();
-	public void addDisciplinaToProfessor(String codDiciplina, String codCurriculo, int codProfessor);
+	public void addDisciplinaToProfessor(DisciplinaProfessor dp);
+	public void removeDisciplinaProfessor(DisciplinaProfessor dp);
 	public ObservableList<DisciplinaProfessor> getDisciplinaOfProfessor(int codProfessor);
+
 
 }

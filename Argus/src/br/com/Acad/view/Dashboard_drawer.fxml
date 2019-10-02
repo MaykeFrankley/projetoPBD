@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <ScrollPane focusTraversable="false" hbarPolicy="NEVER" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.DrawerController">
    <content>
       <AnchorPane>
@@ -38,7 +37,7 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="TH_LIST" size="16" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_professor" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Cadastrar Professor">
+                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_professor" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Professores">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="BLACK_TIE" size="16" />
                      </graphic>

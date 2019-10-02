@@ -7,7 +7,7 @@
             <!-- Conexão com o banco de dados -->
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
 			<property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
-			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/argus?useSSL=true&amp;useTimezone=true&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
+			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/argus?useSSL=true&amp;useTimezone=true&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;characterEncoding=UTF-8"/>
 			<property name="hibernate.connection.user" value="root"/>
 			<property name="hibernate.connection.password" value="9612"/>
 			<property name="hibernate.hbm2ddl.auto" value="update"/>

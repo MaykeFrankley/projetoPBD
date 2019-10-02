@@ -8,7 +8,6 @@ import javax.persistence.PersistenceException;
 import br.com.Acad.app.Main;
 import br.com.Acad.dao.interfaces.IDaoProfessor;
 import br.com.Acad.exceptions.HandleSQLException;
-import br.com.Acad.model.Disciplina;
 import br.com.Acad.model.DisciplinaProfessor;
 import br.com.Acad.model.Professor;
 import br.com.Acad.util.Util;
@@ -91,8 +90,40 @@ public class DaoProfessor implements IDaoProfessor{
 	}
 
 	@Override
-	public void addDisciplinaToProfessor(String codDiciplina, String codCurriculo, int codProfessor) {
-		// TODO Auto-generated method stub
+	public void addDisciplinaToProfessor(DisciplinaProfessor dp) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.persist(dp);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Disciplina cadastrada ao professor "+dp.getNomeProfessor()+".");
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
+		}
+
+	}
+
+	@Override
+	public void removeDisciplinaProfessor(DisciplinaProfessor dp) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.remove(entityMn.getReference(DisciplinaProfessor.class, dp.getId()));
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Disciplina removida do professor "+dp.getNomeProfessor()+".");
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		} finally {
+			entityMn.close();
+		}
 
 	}
 

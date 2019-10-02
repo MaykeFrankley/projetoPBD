@@ -32,10 +32,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Util {
@@ -44,8 +46,6 @@ public class Util {
 
 	static JFXDialogLayout dialogLayout = new JFXDialogLayout();
 	static JFXDialog dialog;
-
-
 
 	private static final String EMAIL_PATTERN
 	= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -96,8 +96,8 @@ public class Util {
 			if(contentPane.getChildren().size() > 1){
 				contentPane.getChildren().remove(0);
 			}
-		   	MainTelaController.dr.close();
-//		   	ScenicView.show(scene);
+			MainTelaController.dr.close();
+			//		   	ScenicView.show(scene);
 
 		});
 		timel.play();
@@ -138,35 +138,35 @@ public class Util {
 
 	public static void confirmation(List<JFXButton> controls, String body) {
 		BoxBlur blur = new BoxBlur(3, 3, 3);
-        if (controls.isEmpty()) {
-            controls.add(new JFXButton("Okay"));
-        }
-        if(dialog != null)dialog.close();
+		if (controls.isEmpty()) {
+			controls.add(new JFXButton("Okay"));
+		}
+		if(dialog != null)dialog.close();
 
-        dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
+		dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
 
-        controls.forEach(controlButton -> {
-            controlButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
-                dialog.close();
-            });
-        });
+		controls.forEach(controlButton -> {
+			controlButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent mouseEvent) -> {
+				dialog.close();
+			});
+		});
 
-        dialogLayout.setHeading(new Label(body));
-        dialogLayout.setActions(controls);
+		dialogLayout.setHeading(new Label(body));
+		dialogLayout.setActions(controls);
 
-        dialogLayout.setStyle(
-        	   "-fx-background-color: #2A2E37;"
-        	   +"-fx-text-fill:white;"
-        	   +"-fx-font-size: 16px;"
-        	   +"-fx-font-weight: bold;"
-        	   );
+		dialogLayout.setStyle(
+				"-fx-background-color: #2A2E37;"
+						+"-fx-text-fill:white;"
+						+"-fx-font-size: 16px;"
+						+"-fx-font-weight: bold;"
+				);
 
-        dialog.setOverlayClose(false);
-        dialog.show();
+		dialog.setOverlayClose(false);
+		dialog.show();
 
-        if(Util.contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);
+		if(Util.contentPane.getChildren().size() > 1)contentPane.getChildren().get(0).setEffect(blur);
 
-    }
+	}
 
 	public static void AdminNotification(String message, String title) {
 
@@ -183,18 +183,49 @@ public class Util {
 	public static void requiredFieldSet(JFXTextField... args){
 		for (JFXTextField jfxTextField : args) {
 			RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
-	    	requiredValidator.setIcon(new ImageView(Util.class.getResource("/images/requiredError.png").toString()));
-	    	requiredValidator.setMessage("Campo obrigatório");
-	    	jfxTextField.getValidators().add(requiredValidator);
-	    	jfxTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-	    	    if (!newValue) {
-	    	        jfxTextField.validate();
-	    	    }
-	    	});
+			requiredValidator.setIcon(new ImageView(Util.class.getResource("/images/requiredError.png").toString()));
+			requiredValidator.setMessage("Campo obrigatório");
+			jfxTextField.getValidators().add(requiredValidator);
+			jfxTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+				if (!newValue) {
+					jfxTextField.validate();
+				}
+			});
 		}
 
 	}
 
+
+	public static void autoFitTable(TableView<?> tableView){
+
+		//Set the right policy
+		tableView.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
+		tableView.getColumns().stream().forEach( (column) ->
+		{
+			//Minimal width = columnheader
+			Text t = new Text( column.getText() );
+			double max = t.getLayoutBounds().getWidth();
+			for ( int i = 0; i < tableView.getItems().size(); i++ )
+			{
+				//cell must not be empty
+				if ( column.getCellData( i ) != null ){
+
+
+					t = new Text( column.getCellData( i ).toString() );
+					double calcwidth = t.getLayoutBounds().getWidth();
+					//remember new max-width
+					if ( calcwidth > max ){
+						max = calcwidth;
+					}
+				}
+			}
+
+			column.setPrefWidth( max );
+		} );
+
+
+
+	}
 
 	public static void populateCidade(ComboBox<String> estado, ComboBox<String> cidade){
 		if(estado.getSelectionModel().getSelectedItem() == "Acre"){

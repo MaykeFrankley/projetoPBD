@@ -181,19 +181,19 @@ public class PessoasManagerController implements Initializable{
 	private JFXButton btn_deletar;
 
 	@FXML
-    private DialogPane dialogPane;
+	private DialogPane dialogPane;
 
-    @FXML
-    private JFXPasswordField ConfirmPassword;
+	@FXML
+	private JFXPasswordField ConfirmPassword;
 
-    @FXML
-    private JFXButton confirmarDelete;
+	@FXML
+	private JFXButton confirmarDelete;
 
-    @FXML
-    private JFXButton btn_cancelarDelete;
+	@FXML
+	private JFXButton btn_cancelarDelete;
 
-    @FXML
-    private Label label_delete;
+	@FXML
+	private Label label_delete;
 
 	public FilteredList<Pessoa> filteredData;
 	public FilteredList<Pessoa> filteredData2;
@@ -233,25 +233,25 @@ public class PessoasManagerController implements Initializable{
 	}
 
 	@FXML
-    void confirmar_deletarPessoa(ActionEvent event) {
-    	if(event.getSource() == confirmarDelete){
-    		if(!ConfirmPassword.getText().isEmpty()){
-    			String hash = DigestUtils.md5Hex(ConfirmPassword.getText());
-    			if(hash.equals(MainTelaController.user.getSenha())){
-    				daoPessoas.deletarPessoa(pessoaToEdit);
-    				dialogPane.setVisible(false);
-    	    		tabPane.setEffect(null);
-    	    		tabPane.setMouseTransparent(false);
-    	    		initTables();
-    	    		pessoaToEdit = null;
-    			}
-    		}
-    	}else{
-    		dialogPane.setVisible(false);
-    		tabPane.setEffect(null);
-    		tabPane.setMouseTransparent(false);
-    	}
-    }
+	void confirmar_deletarPessoa(ActionEvent event) {
+		if(event.getSource() == confirmarDelete){
+			if(!ConfirmPassword.getText().isEmpty()){
+				String hash = DigestUtils.md5Hex(ConfirmPassword.getText());
+				if(hash.equals(MainTelaController.user.getSenha())){
+					daoPessoas.deletarPessoa(pessoaToEdit);
+					dialogPane.setVisible(false);
+					tabPane.setEffect(null);
+					tabPane.setMouseTransparent(false);
+					initTables();
+					pessoaToEdit = null;
+				}
+			}
+		}else{
+			dialogPane.setVisible(false);
+			tabPane.setEffect(null);
+			tabPane.setMouseTransparent(false);
+		}
+	}
 
 
 	@FXML
@@ -267,14 +267,14 @@ public class PessoasManagerController implements Initializable{
 			else if(event.getSource() == btn_deletar){
 				pessoaToEdit = selected;
 				label_delete.setText("Confirme sua senha para deletar a pessoa de Cod: "+selected.getCodPessoa()+" Nome: "+selected.getNome()
-				);
+						);
 				BoxBlur blur = new BoxBlur(3, 3, 3);
-		    	if(!dialogPane.isVisible()){
-		    		dialogPane.setVisible(true);
-		    		tabPane.setEffect(blur);
-		    		tabPane.setMouseTransparent(true);
-		    		Platform.runLater(() -> ConfirmPassword.requestFocus());
-		    	}
+				if(!dialogPane.isVisible()){
+					dialogPane.setVisible(true);
+					tabPane.setEffect(blur);
+					tabPane.setMouseTransparent(true);
+					Platform.runLater(() -> ConfirmPassword.requestFocus());
+				}
 			}
 
 			initTables();

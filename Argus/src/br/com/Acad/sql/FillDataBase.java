@@ -2,9 +2,11 @@ package br.com.Acad.sql;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -54,7 +56,9 @@ public class FillDataBase {
 				stmt.execute();
 			}
 
-			runner.runScript(new BufferedReader(new FileReader(file2)));
+			runner.runScript(new BufferedReader(
+					   new InputStreamReader(
+			                      new FileInputStream(file2), "UTF8")));
 			rs.close();
 
 			String hashPass = DigestUtils.md5Hex("admin9612");

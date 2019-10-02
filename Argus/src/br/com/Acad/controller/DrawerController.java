@@ -141,8 +141,9 @@ public class DrawerController implements Initializable{
     }
 
     @FXML
-    void gerenciar_professores(ActionEvent event) {
-
+    void gerenciar_professores(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/ProfessoresManager.fxml"), scene, "y");
     }
 
     @FXML

@@ -72,7 +72,7 @@
             </Tab>
          </tabs>
       </JFXTabPane>
-      <DialogPane fx:id="dialogPane" layoutX="600.0" layoutY="200.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="210.0" prefWidth="483.0" visible="false" AnchorPane.bottomAnchor="293.0" AnchorPane.topAnchor="200.0">
+      <DialogPane fx:id="dialogPane" layoutX="399.0" layoutY="237.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="210.0" prefWidth="483.0" AnchorPane.bottomAnchor="210.0" AnchorPane.topAnchor="210.0">
          <header>
             <Label alignment="CENTER" prefHeight="61.0" prefWidth="483.0" style="-fx-background-color: #2A2E37;" text="Confirme sua senha para limpar o log" textFill="#ffff8d">
                <font>

@@ -1,15 +1,14 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.ResourceBundle;
-
-import javax.persistence.PersistenceException;
 
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.dao.DaoDisciplina;
 import br.com.Acad.model.Disciplina;
-import br.com.Acad.util.Util;
+import br.com.Acad.util.SysLog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -52,6 +51,7 @@ public class CadastrarDisciplinaController implements Initializable{
     	d.setStatus("Ativo");
 
 		daoDisciplinas.addDisciplina(d);
+		SysLog.addLog(SysLog.message("cadastrou uma nova disciplina de cod: ")+d.getCodDisciplina());
 
     	initTable();
 
@@ -67,6 +67,22 @@ public class CadastrarDisciplinaController implements Initializable{
 
     	if(nome.getText().length() > 2){
     		String prefix = nome.getText().substring(0, 3).toUpperCase();
+    		prefix = Normalizer.normalize(prefix, Normalizer.Form.NFD);
+
+    		String str = nome.getText();
+
+    		String[] splited = str.split("\\s+");
+
+    		String primeiroNome = "";
+    		String segundoNome = "";
+
+    		if(splited.length > 1){
+    			primeiroNome = splited[0].substring(0, 2).toUpperCase();
+    			segundoNome = splited[1].substring(0, 1).toUpperCase();
+    			prefix = primeiroNome+segundoNome;
+    		}
+
+    		prefix = prefix.replaceAll("\\p{M}", "");
         	codigo.setText(prefix);
     	}else{
     		codigo.clear();

@@ -49,8 +49,10 @@ public class DaoCurriculo implements IDaoCurriculo{
 
 	@Override
 	public Curriculo getCurriculo(CurriculoID ID) {
-		// TODO Auto-generated method stub
-		return null;
+		createEM();
+		Curriculo c = entityMn.find(Curriculo.class, ID);
+		entityMn.close();
+		return c;
 	}
 
 	@Override
@@ -63,10 +65,9 @@ public class DaoCurriculo implements IDaoCurriculo{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			Util.Alert("Disciplina cod:"+cd.getId().getCodDisciplina()+" cadastrado no currículo cod:"+cd.getId().getCurriculoID().getCodCurriculo()+
-					"\npara o ano: "+cd.getId().getAno()+" carga horária:"+cd.getId().getCargaHoraria()+" Horas.");
+			Util.Alert("Disciplina "+cd.getNomeDisciplina()+" cadastrado no currículo "+cd.getNomeCurriculo()+
+					"\npara o "+cd.getId().getAno()+"º Ano"+" com carga horária de "+cd.getCargaHoraria()+" Horas.");
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
 		}finally {

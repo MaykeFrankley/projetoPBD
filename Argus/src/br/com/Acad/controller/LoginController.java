@@ -28,7 +28,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -72,7 +72,7 @@ public class LoginController implements Initializable{
     private VBox Box_recovery;
 
     @FXML
-    private ProgressIndicator progressBar;
+    private ProgressBar progressBar;
 
     @FXML
     private JFXTextField CPF;

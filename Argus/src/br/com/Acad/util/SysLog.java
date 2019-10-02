@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoUsuarios;
+import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.Usuario;
 
@@ -15,8 +16,18 @@ public class SysLog {
 
 	private static int ordem = 0;
 
+	public static String message(String message){
+		String s = "O usuário \""+MainTelaController.user.getUser()+"\""+message;
+		return s;
+	}
+
 	public static String createUser(int cod){
-		String s = "Um administrador \""+MainTelaController.user.getUser()+"\" criou um novo usuário de código: "+cod;
+		String s = "Um administrador \""+MainTelaController.user.getUser()+"\" cadastrou um novo usuário de código: "+cod;
+		return s;
+	}
+
+	public static String createCurriculo(Curriculo c){
+		String s = "Um administrador \""+MainTelaController.user.getUser()+"\" cadastrou um novo currículo de código: "+c.getId().getCodCurriculo()+" e ano letivo: "+c.getId().getAnoLetivo();
 		return s;
 	}
 

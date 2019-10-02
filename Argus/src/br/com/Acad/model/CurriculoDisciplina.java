@@ -1,5 +1,6 @@
 package br.com.Acad.model;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,8 +13,14 @@ public class CurriculoDisciplina {
 	@EmbeddedId
 	private CurriculoDisciplinaID id;
 
+	@Column
+	private int cargaHoraria;
+
 	@Transient
-	private String nome;
+	private String nomeDisciplina;
+
+	@Transient
+	private String nomeCurriculo;
 
 	public CurriculoDisciplina() {
 		// TODO Auto-generated constructor stub
@@ -27,12 +34,30 @@ public class CurriculoDisciplina {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public int getCargaHoraria() {
+		return cargaHoraria;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setCargaHoraria(int cargaHoraria) {
+		this.cargaHoraria = cargaHoraria;
 	}
+
+	public String getNomeDisciplina() {
+		return nomeDisciplina;
+	}
+
+	public void setNomeDisciplina(String nomeDisciplina) {
+		this.nomeDisciplina = nomeDisciplina;
+	}
+
+	public String getNomeCurriculo() {
+		return nomeCurriculo;
+	}
+
+	public void setNomeCurriculo(String nomeCurriculo) {
+		this.nomeCurriculo = nomeCurriculo;
+	}
+
+
 
 }

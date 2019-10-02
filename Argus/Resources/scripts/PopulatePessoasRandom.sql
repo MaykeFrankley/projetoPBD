@@ -5,8 +5,85 @@
 -- Target server version: 8.0.16
 -- Target connection string: User Id=root;Host=localhost;Database=argus;Character Set=AUTO
 --
-
+SET NAMES 'utf8';
+SET CHARACTER SET 'utf8';
 USE argus;
+
+--
+-- Inserting data into table curriculo
+--
+INSERT INTO curriculo(codCurriculo, anoLetivo, Nome, Tipo) VALUES
+('EFI', 2019, 'Ensino Fundamental Inicial', 'Bimestral');
+
+--
+-- Inserting data into table disciplinas
+--
+INSERT INTO disciplinas(codDisciplina, Nome, Status) VALUES
+('POR', 'Português', 'Ativo'),
+('MAT', 'Matemática', 'Ativo'),
+('GEO', 'Geografia', 'Ativo'),
+('HIS', 'História', 'Ativo'),
+('CIE', 'Ciências', 'Ativo'),
+('MUS', 'Música', 'Ativo'),
+('EDF', 'Educação Física', 'Ativo'),
+('ING', 'Inglês', 'Ativo'),
+('ART', 'Artes', 'Ativo'),
+('EXC', 'Expressão Corporal', 'Ativo');
+
+--
+-- Inserting data into table `curriculo-disciplina`
+--
+INSERT INTO `curriculo-disciplina`(codCurriculo, codDisciplina, ano, anoLetivo, cargaHoraria) VALUES
+('EFI', 'MAT', 5, 2019, 245),
+('EFI', 'HIS', 1, 2019, 161),
+('EFI', 'ING', 2, 2019, 251),
+('EFI', 'POR', 1, 2019, 186),
+('EFI', 'ING', 3, 2019, 254),
+('EFI', 'GEO', 5, 2019, 186),
+('EFI', 'CIE', 5, 2019, 100),
+('EFI', 'ING', 5, 2019, 78),
+('EFI', 'EDF', 5, 2019, 194),
+('EFI', 'MUS', 3, 2019, 257),
+('EFI', 'MUS', 2, 2019, 258),
+('EFI', 'HIS', 2, 2019, 44),
+('EFI', 'EXC', 5, 2019, 121),
+('EFI', 'POR', 2, 2019, 83),
+('EFI', 'GEO', 2, 2019, 138),
+('EFI', 'HIS', 5, 2019, 40),
+('EFI', 'CIE', 2, 2019, 45),
+('EFI', 'MAT', 4, 2019, 77),
+('EFI', 'MUS', 5, 2019, 57),
+('EFI', 'ART', 3, 2019, 125),
+('EFI', 'HIS', 3, 2019, 237),
+('EFI', 'ING', 4, 2019, 283),
+('EFI', 'GEO', 1, 2019, 166),
+('EFI', 'EDF', 2, 2019, 127),
+('EFI', 'CIE', 1, 2019, 124),
+('EFI', 'ART', 2, 2019, 67),
+('EFI', 'POR', 3, 2019, 197),
+('EFI', 'GEO', 3, 2019, 289),
+('EFI', 'CIE', 3, 2019, 211),
+('EFI', 'EXC', 3, 2019, 119),
+('EFI', 'POR', 5, 2019, 112),
+('EFI', 'EDF', 1, 2019, 96),
+('EFI', 'ART', 4, 2019, 261),
+('EFI', 'HIS', 4, 2019, 109),
+('EFI', 'EDF', 3, 2019, 259),
+('EFI', 'EXC', 4, 2019, 139),
+('EFI', 'MAT', 2, 2019, 192),
+('EFI', 'EXC', 2, 2019, 166),
+('EFI', 'ART', 1, 2019, 192),
+('EFI', 'POR', 4, 2019, 138),
+('EFI', 'GEO', 4, 2019, 49),
+('EFI', 'MAT', 3, 2019, 97),
+('EFI', 'MUS', 4, 2019, 241),
+('EFI', 'MAT', 1, 2019, 83),
+('EFI', 'CIE', 4, 2019, 64),
+('EFI', 'ART', 5, 2019, 130),
+('EFI', 'EDF', 4, 2019, 211),
+('EFI', 'EXC', 1, 2019, 54),
+('EFI', 'ING', 1, 2019, 135),
+('EFI', 'MUS', 1, 2019, 160);
 
 --
 -- Inserting data into table pessoas
@@ -29,11 +106,11 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (16, 'Sophia Driscoll', 'Roxbury', '2001-01-01', '210.966.183-06', 'Ativo'),
 (17, 'Dave Browder', 'Housatonic', '2015-09-08', NULL, 'Ativo'),
 (18, 'Randee Quinonez', 'Painesville', '2003-07-25', '756.530.267-07', 'Ativo'),
-(19, 'Terrell Fryer', 'Roy', '2004-11-21', NULL, 'Inativo'),
+(19, 'Terrell Fryer', 'Roy', '2004-11-21', NULL, 'Ativo'),
 (20, 'Nicola Neil', 'Loogootee', '2015-03-16', NULL, 'Ativo'),
 (21, 'Earleen Sessions', 'Waialua', '2015-08-06', NULL, 'Ativo'),
 (22, 'Daniele Hundley', 'Birchwood', '2001-01-04', '148.036.734-79', 'Ativo'),
-(23, 'Lucrecia Cason', 'Dresser', '1986-02-20', '022.043.228-96', 'Inativo'),
+(23, 'Lucrecia Cason', 'Dresser', '1986-02-20', '022.043.228-96', 'Ativo'),
 (24, 'Adeline Abraham', 'Cobb', '1949-01-05', '464.230.396-53', 'Ativo'),
 (25, 'Tresa Mallory', 'Sorrento', '2015-06-14', NULL, 'Ativo'),
 (26, 'Timika Leger', 'Waianae', '2002-07-31', '443.687.271-93', 'Ativo'),
@@ -44,7 +121,7 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (31, 'Mickey Brubaker', 'Drexel', '1979-10-21', '689.326.279-36', 'Ativo'),
 (32, 'Neville Triplett', 'Glen Riddle Lima', '1949-04-25', '509.692.909-29', 'Ativo'),
 (33, 'Agripina Mcclendon', 'Drexel Hill', '1949-03-20', '174.392.340-84', 'Ativo'),
-(34, 'Maxie Parnell', 'Soso', '1986-01-02', '542.982.023-74', 'Inativo'),
+(34, 'Maxie Parnell', 'Soso', '1986-01-02', '542.982.023-74', 'Ativo'),
 (35, 'Hue Reece', 'Glen Ridge', '2015-12-02', NULL, 'Ativo'),
 (36, 'Fay Matson', 'House Springs', '1950-10-19', '545.947.609-11', 'Ativo'),
 (37, 'Emiko Colbert', 'Paint Rock', '1974-10-28', '639.181.206-57', 'Ativo'),
@@ -305,3 +382,18 @@ INSERT INTO enderecos(codPessoa, Rua, Numero, Complemento, Bairro, Cidade, Estad
 (72, '28 North Quailwood Hwy', 182, '5th FL', 'Christiana', 'Lindale', 'Montana'),
 (59, '1462 Edgewood Ln', 25, NULL, 'Helenwood', 'West Portsmouth', 'Florida'),
 (93, '909 Beachwood Ct', 34, NULL, 'Fairview Heights', 'Conway', 'Delaware');
+
+--
+-- Inserting data into table professores
+--
+INSERT INTO professores(codPessoa, Nome, CPF, formacao, cursoFormacao) VALUES
+(94, 'Pandora Lindgren', '653.516.412-65', 'Normal Superior', 'Information Technology'),
+(2, 'Michael Johnson', '568.474.734-18', 'Bacharelado', 'Marketing'),
+(52, 'Gale Elliott', '318.317.425-35', 'Bacharelado', 'Sales'),
+(37, 'Emiko Colbert', '653.516.412-65', 'Normal Superior', 'Information Technology'),
+(81, 'Verena Allred', '914.828.762-20', 'Bacharelado', 'Research and Development'),
+(8, 'Cathrine Southerland', '071.000.448-85', 'Licenciatura', 'Finance'),
+(58, 'Alane Patrick', '687.090.333-66', 'Licenciatura', 'Executive'),
+(34, 'Maxie Parnell', '542.982.023-74', 'Bacharelado', 'Research and Development'),
+(84, 'Fermin Amaya', '682.826.086-50', 'Licenciatura', 'Finance'),
+(23, 'Lucrecia Cason', '022.043.228-96', 'Normal Superior', 'Operations');

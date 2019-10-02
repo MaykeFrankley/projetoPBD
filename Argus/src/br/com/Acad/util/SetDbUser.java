@@ -21,12 +21,18 @@ public class SetDbUser extends TimerTask {
 
 	@Override
 	public void run() {
-		Map<String, String> configOverrides = new HashMap<String, String>();
-		configOverrides.put("hibernate.connection.user", user);
-		configOverrides.put("hibernate.connection.password", pass);
+		try {
+			Map<String, String> configOverrides = new HashMap<String, String>();
+			configOverrides.put("hibernate.connection.user", user);
+			configOverrides.put("hibernate.connection.password", pass);
 
-		EntityManagerFactory fac = Persistence.createEntityManagerFactory("argusDB", configOverrides);
-		Main.factory = fac;
+			EntityManagerFactory fac = Persistence.createEntityManagerFactory("argusDB", configOverrides);
+			Main.factory = fac;
+		} catch (Throwable e) {
+			e.printStackTrace();
+			Util.Alert("Ocorreu um erro!\nReinicie o sistema ou contate o administrador!");
+		}
+
 
 	}
 
