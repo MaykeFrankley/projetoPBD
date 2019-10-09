@@ -7,11 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="pessoas")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Pessoa {
 
 	@Id
@@ -96,11 +99,6 @@ public class Pessoa {
 
 	public void setStatus(String Status) {
 		status = Status;
-	}
-
-	public String toString(){
-
-		return "\nNome: "+nome;
 	}
 
 	public boolean SameAs(Object obj) {

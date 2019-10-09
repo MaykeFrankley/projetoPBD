@@ -48,6 +48,44 @@ public class DaoCurriculo implements IDaoCurriculo{
 	}
 
 	@Override
+	public void updateCurriculo(Curriculo curriculo) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(curriculo);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Currículo atualizado com sucesso!");
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
+	@Override
+	public void removeCurriculo(Curriculo curriculo) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.remove(entityMn.getReference(Curriculo.class, curriculo.getId()));
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Currículo deletado com sucesso!");
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
+	@Override
 	public Curriculo getCurriculo(CurriculoID ID) {
 		createEM();
 		Curriculo c = entityMn.find(Curriculo.class, ID);

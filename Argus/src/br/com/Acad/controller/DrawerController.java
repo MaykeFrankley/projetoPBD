@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.Timer;
 
 import com.jfoenix.controls.JFXButton;
 
@@ -12,10 +11,6 @@ import br.com.Acad.model.Usuario;
 import br.com.Acad.util.SetDbUser;
 import br.com.Acad.util.Util;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 public class DrawerController implements Initializable{
 
@@ -78,15 +72,10 @@ public class DrawerController implements Initializable{
     	if(!box_cadastrar.isVisible()){
     		icon_arrow.setGlyphName("CHEVRON_DOWN");
         	int idx = box_buttons.getChildren().indexOf(cadastrar_btn)+1;
-//        	int from = box_buttons.getChildren().indexOf(box_cadastrar);
-
         	box_buttons.getChildren().add(idx, box_cadastrar);
         	box_cadastrar.setVisible(true);
     	}else{
     		icon_arrow.setGlyphName("CHEVRON_UP");
-//    		int idx = box_buttons.getChildren().size()-1;
-//    		int from = box_buttons.getChildren().indexOf(box_cadastrar);
-
     		box_buttons.getChildren().remove(box_cadastrar);
         	box_cadastrar.setVisible(false);
     	}
@@ -147,8 +136,9 @@ public class DrawerController implements Initializable{
     }
 
     @FXML
-    void configuracoes(ActionEvent event) {
-
+    void configuracoes(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/Settings.fxml"), scene, "x");
     }
 
     @FXML
@@ -169,6 +159,7 @@ public class DrawerController implements Initializable{
     	JFXButton yes = new JFXButton("LogOut");
     	yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
     		mainController.disableDrawer();
+    		new SetDbUser("root", "9612");
     		try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
@@ -182,29 +173,14 @@ public class DrawerController implements Initializable{
     			LoginController control = loader.getController();
     			control.setMainTela(mainController);
 
-				Scene scene = ((Node) event.getSource()).getScene();
-				root.translateYProperty().set(scene.getHeight());
-
 				Util.contentPane.getChildren().add(root);
-				Timeline timel = new Timeline();
-
-				KeyValue kv = new KeyValue(root.translateYProperty(), 0, Interpolator.EASE_IN);
-
-				KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
-
-				timel.getKeyFrames().add(kf);
-				timel.setOnFinished(e -> {
-					if(Util.contentPane.getChildren().size() > 1){
-						Util.contentPane.getChildren().remove(0);
-					}
-				});
-				timel.play();
+				if(Util.contentPane.getChildren().size() > 1){
+					Util.contentPane.getChildren().remove(0);
+				}
 
 				mainController.cancelNotificationTask();
 				mainController.enableHamburger();
 				MainTelaController.user = null;
-				Timer timer = new Timer();
-        		timer.schedule(new SetDbUser("root", "9612"), 0);
 
 			} catch (IOException e) {
 				e.printStackTrace();

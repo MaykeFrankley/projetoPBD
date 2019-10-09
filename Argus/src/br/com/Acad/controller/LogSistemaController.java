@@ -16,6 +16,7 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.Acad.dao.DaoLog;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.LogSistemaID;
+import br.com.Acad.util.UtilDao;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,12 +34,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
 public class LogSistemaController implements Initializable{
 
     @FXML
     private JFXTabPane tabPane;
+
+    @FXML
+    private AnchorPane anchorPane;
 
     @FXML
     private Tab visualizarTab;
@@ -72,7 +77,6 @@ public class LogSistemaController implements Initializable{
 
     @FXML
     private JFXButton btn_cancelar;
-
 
     private DaoLog daoLog;
 
@@ -119,8 +123,8 @@ public class LogSistemaController implements Initializable{
     	BoxBlur blur = new BoxBlur(3, 3, 3);
     	if(!dialogPane.isVisible()){
     		dialogPane.setVisible(true);
-    		tabPane.setEffect(blur);
-    		tabPane.setMouseTransparent(true);
+    		anchorPane.setEffect(blur);
+    		anchorPane.setMouseTransparent(true);
     		Platform.runLater(() -> passTextField.requestFocus());
     	}
     }
@@ -134,14 +138,14 @@ public class LogSistemaController implements Initializable{
     				daoLog.clearAllLogs();
     				initTable();
     				dialogPane.setVisible(false);
-    	    		tabPane.setEffect(null);
-    	    		tabPane.setMouseTransparent(false);
+    				anchorPane.setEffect(null);
+    				anchorPane.setMouseTransparent(false);
     			}
     		}
     	}else{
     		dialogPane.setVisible(false);
-    		tabPane.setEffect(null);
-    		tabPane.setMouseTransparent(false);
+    		anchorPane.setEffect(null);
+    		anchorPane.setMouseTransparent(false);
     	}
     }
 
@@ -157,7 +161,7 @@ public class LogSistemaController implements Initializable{
     	oblist.clear();
 
     	try {
-			oblist = daoLog.getAllLogs();
+			oblist = UtilDao.getLists(LogSistema.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

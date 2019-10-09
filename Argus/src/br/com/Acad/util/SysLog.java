@@ -1,20 +1,12 @@
 package br.com.Acad.util;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import br.com.Acad.controller.MainTelaController;
-import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.Usuario;
 
 public class SysLog {
-
-	private static DaoLog daoLog = new DaoLog();
-
-	private static int ordem = 0;
 
 	public static String message(String message){
 		String s = "O usuário \""+MainTelaController.user.getUser()+"\""+message;
@@ -75,29 +67,10 @@ public class SysLog {
 
 	public static void addLog(String... args){
 		for(String action : args){
-			new Timer().schedule(new TimerTask() {
-				@Override
-				public void run() {
-					LogSistema ls = Util.prepareLog();
-		    		ls.setAcao(action);
-		    		try {
-						daoLog.addLog(ls);
-					} catch (Exception e2) {
-						e2.printStackTrace();
-					}
-
-				}
-			}, ordem);
-
-			ordem += 1000;
-
+			LogSistema ls = Util.prepareLog();
+			ls.setAcao(action);
+			UtilDao.persist(ls);
 		}
-	}
-
-	public static void complete(){
-		ordem = 0;
-//	    Platform.runLater(timeline::play);
-
 	}
 
 }

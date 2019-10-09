@@ -17,8 +17,6 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.dao.DaoContatos;
-import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
@@ -27,6 +25,7 @@ import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -195,18 +194,13 @@ public class PessoasManagerController implements Initializable{
 	@FXML
 	private Label label_delete;
 
-	public FilteredList<Pessoa> filteredData;
-	public FilteredList<Pessoa> filteredData2;
+	private FilteredList<Pessoa> filteredData;
 
-	public ObservableList<Pessoa> oblist = FXCollections.observableArrayList();
+	private FilteredList<Pessoa> filteredData2;
 
-	public ObservableList<Endereco> oblistEnderecos = FXCollections.observableArrayList();
+	private ObservableList<Pessoa> oblist = FXCollections.observableArrayList();
 
-	private DaoPessoa daoPessoas;
-
-	private DaoEndereco daoEnderecos;
-
-	private DaoContatos daoContatos;
+	private ObservableList<Endereco> oblistEnderecos = FXCollections.observableArrayList();
 
 	private String oldCPF;
 
@@ -217,6 +211,8 @@ public class PessoasManagerController implements Initializable{
 	private Endereco oldEndereco;
 
 	private Pessoa pessoaToEdit;
+
+	private DaoPessoa daoPessoas;
 
 
 	@FXML
@@ -238,12 +234,17 @@ public class PessoasManagerController implements Initializable{
 			if(!ConfirmPassword.getText().isEmpty()){
 				String hash = DigestUtils.md5Hex(ConfirmPassword.getText());
 				if(hash.equals(MainTelaController.user.getSenha())){
-					daoPessoas.deletarPessoa(pessoaToEdit);
+					UtilDao.remove(pessoaToEdit);
 					dialogPane.setVisible(false);
 					tabPane.setEffect(null);
 					tabPane.setMouseTransparent(false);
 					initTables();
-					pessoaToEdit = null;
+
+					Util.Alert(pessoaToEdit.getNome()+" foi removido do sistema!");
+
+		    		SysLog.addLog(SysLog.deletePessoas(pessoaToEdit.getCodPessoa()));
+
+		    		pessoaToEdit = null;
 				}
 			}
 		}else{
@@ -266,8 +267,7 @@ public class PessoasManagerController implements Initializable{
 			}
 			else if(event.getSource() == btn_deletar){
 				pessoaToEdit = selected;
-				label_delete.setText("Confirme sua senha para deletar a pessoa de Cod: "+selected.getCodPessoa()+" Nome: "+selected.getNome()
-						);
+				label_delete.setText("Confirme sua senha para deletar a pessoa de Cod: "+selected.getCodPessoa()+" Nome: "+selected.getNome());
 				BoxBlur blur = new BoxBlur(3, 3, 3);
 				if(!dialogPane.isVisible()){
 					dialogPane.setVisible(true);
@@ -313,53 +313,51 @@ public class PessoasManagerController implements Initializable{
 			if(cpf_update.getText().length() > 0)p.setCpf(cpf_update.getText());
 			else p.setCpf(null);
 
-			int cod = daoPessoas.UpdatePessoa(p);
+			daoPessoas.UpdatePessoa(p);
+			int cod = p.getCodPessoa();
 
-			if(cod > 0){
-				e.setCodPessoa(cod);
-				e.setRua(nomeRua_update.getText());
-				e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
-				if(complemento_update.getText() != null && complemento_update.getText().length() > 0)e.setComplemento(complemento_update.getText());
-				e.setBairro(bairro_update.getText());
-				e.setEstado(estado_update.getSelectionModel().getSelectedItem());
-				e.setCidade(cidade_update.getSelectionModel().getSelectedItem());
+			e.setCodPessoa(cod);
+			e.setRua(nomeRua_update.getText());
+			e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
+			if(complemento_update.getText() != null && complemento_update.getText().length() > 0)e.setComplemento(complemento_update.getText());
+			e.setBairro(bairro_update.getText());
+			e.setEstado(estado_update.getSelectionModel().getSelectedItem());
+			e.setCidade(cidade_update.getSelectionModel().getSelectedItem());
 
 
-				daoEnderecos.UpdateEndereco(e);
+			UtilDao.update(e);
 
-				c.setCodPessoa(cod);
-				if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
-				if(telefone_update.getText().length() > 0)c.setTelefone(telefone_update.getText());
-				if(celular_update.getText().length() > 0)c.setCelular(celular_update.getText());
-				if(whatsapp_update.isSelected()){
-					c.setWhatsapp(1);
-				}
-				else{
-					c.setWhatsapp(0);
-				}
-
-				if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
-					daoContatos.UpdateContato(c);
-				}
-
-				Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
-
-				if(!oldPessoa.SameAs(p)){
-					SysLog.addLog(SysLog.updatePessoas("Dados", cod));
-				}
-
-				if(!oldEndereco.equals(e)){
-					SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
-				}
-
-				if(!oldContato.equals(c)){
-					SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
-				}
-
-				SysLog.complete();
-
-				initTables();
+			c.setCodPessoa(cod);
+			if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
+			if(telefone_update.getText().length() > 0)c.setTelefone(telefone_update.getText());
+			if(celular_update.getText().length() > 0)c.setCelular(celular_update.getText());
+			if(whatsapp_update.isSelected()){
+				c.setWhatsapp(1);
 			}
+			else{
+				c.setWhatsapp(0);
+			}
+
+			if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
+				UtilDao.update(c);
+			}
+
+			Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
+
+			if(!oldPessoa.SameAs(p)){
+				SysLog.addLog(SysLog.updatePessoas("Dados", cod));
+			}
+
+			if(!oldEndereco.equals(e)){
+				SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
+			}
+
+			if(!oldContato.equals(c)){
+				SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
+			}
+
+			initTables();
+
 		}
 	}
 
@@ -372,8 +370,8 @@ public class PessoasManagerController implements Initializable{
 
 			codigo_listar.setText(String.valueOf(p.getCodPessoa()));
 
-			Endereco e = daoEnderecos.getEndereco(p.getCodPessoa());
-			Contato c = daoContatos.getContato(p.getCodPessoa());
+			Endereco e = UtilDao.find(Endereco.class, p.getCodPessoa());
+			Contato c = UtilDao.find(Contato.class, p.getCodPessoa());
 
 			nome_update.setText(p.getNome());
 			naturalidade_update.setText(p.getNaturalidade());
@@ -545,7 +543,7 @@ public class PessoasManagerController implements Initializable{
 
 				if(selectedPessoa != null){
 					//Endereco
-					Endereco end = daoEnderecos.getEndereco(cod);
+					Endereco end = UtilDao.find(Endereco.class, cod);
 					if(end != null){
 
 						nomeRua_listar.setText(end.getRua());
@@ -557,9 +555,9 @@ public class PessoasManagerController implements Initializable{
 						estado_listar.setText(end.getEstado());
 					}
 					//Contatos
-					Contato con = daoContatos.getContato(cod);
+					Contato con = UtilDao.find(Contato.class, cod);
+					celular_listar.clear();email_listar.clear();telefone_listar.clear();
 					if(con != null){
-						celular_listar.clear();email_listar.clear();telefone_listar.clear();
 						if(con.getCelular() != null)celular_listar.setText(con.getCelular());
 						if(con.getEmail() != null)email_listar.setText(con.getEmail());
 						if(con.getTelefone() != null)telefone_listar.setText(con.getTelefone());
@@ -569,9 +567,6 @@ public class PessoasManagerController implements Initializable{
 							whatsapp_listar.setSelected(false);
 						}
 					}
-
-
-
 
 				}
 
@@ -736,8 +731,6 @@ public class PessoasManagerController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		daoPessoas = new DaoPessoa();
-		daoEnderecos = new DaoEndereco();
-		daoContatos = new DaoContatos();
 
 		populateBoxes();
 		initTables();

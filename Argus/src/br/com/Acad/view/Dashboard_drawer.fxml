@@ -44,7 +44,7 @@
                   </JFXButton>
                </children>
             </VBox>
-            <VBox fx:id="box_buttons" alignment="TOP_CENTER" fillWidth="false" prefHeight="695.0" prefWidth="280.0" spacing="15.0" style="-fx-background-color: #2A2E37;">
+            <VBox fx:id="box_buttons" alignment="TOP_CENTER" fillWidth="false" prefHeight="695.0" prefWidth="280.0" spacing="15.0">
                <children>
                   <StackPane prefHeight="51.0" prefWidth="45.0">
                      <children>

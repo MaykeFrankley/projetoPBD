@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 public interface IDaoCurriculo {
 
 	public void addCurriculo(Curriculo curriculo);
+	public void updateCurriculo(Curriculo curriculo);
+	public void removeCurriculo(Curriculo curriculo);
 	public Curriculo getCurriculo(CurriculoID ID);
 	public void addDisciplinaToCurriculo(CurriculoDisciplina dc);
 	public ObservableList<Curriculo> getAllCurriculo();

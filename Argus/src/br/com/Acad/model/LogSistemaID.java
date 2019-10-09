@@ -7,11 +7,18 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @SuppressWarnings("serial")
 @Embeddable
 public class LogSistemaID implements Serializable{
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="order")
+	private int order;
 
 	@Column
 	private int codPessoa;
@@ -25,10 +32,15 @@ public class LogSistemaID implements Serializable{
 	public LogSistemaID() {
 	}
 
-	public LogSistemaID(int codPessoa, Date data, Time hora) {
+	public LogSistemaID(int order, int codPessoa, Date data, Time hora) {
+		this.order = order;
 		this.codPessoa = codPessoa;
 		this.data = data;
 		this.hora = hora;
+	}
+
+	public int getOrder() {
+		return order;
 	}
 
 	public int getCodPessoa() {
@@ -48,14 +60,15 @@ public class LogSistemaID implements Serializable{
 		if(this == obj) return true;
 		if(!(obj instanceof LogSistemaID)) return false;
 		LogSistemaID that = (LogSistemaID) obj;
-		return Objects.equals(getCodPessoa(), that.getCodPessoa()) &&
+		return Objects.equals(getOrder(), that.getOrder()) &&
+				Objects.equals(getCodPessoa(), that.getCodPessoa()) &&
 				Objects.equals(getData(), that.getData()) && Objects.equals(getHora(), that.getHora());
 
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getCodPessoa(), getData(), getHora());
+		return Objects.hash(getOrder(), getCodPessoa(), getData(), getHora());
 	}
 
 

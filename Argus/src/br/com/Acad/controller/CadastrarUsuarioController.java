@@ -16,10 +16,6 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.dao.DaoContatos;
-import br.com.Acad.dao.DaoEndereco;
-import br.com.Acad.dao.DaoPessoa;
-import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
@@ -29,6 +25,7 @@ import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -93,14 +90,6 @@ public class CadastrarUsuarioController implements Initializable{
     @FXML
     private JFXButton btn_confirmar;
 
-    private DaoContatos daoContatos;
-
-    private DaoEndereco daoEnderecos;
-
-    private DaoUsuarios daoUsuarios;
-
-    private DaoPessoa daoPessoas;
-
     private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
 
     ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
@@ -110,7 +99,7 @@ public class CadastrarUsuarioController implements Initializable{
 
     	if(checkTextFields()){
 
-    		oblist_pessoas = daoPessoas.getAllPessoa();
+    		oblist_pessoas = UtilDao.getLists(Pessoa.class);
     		for (int i = 0; i < oblist_pessoas.size(); i++) {
     			String obCPF = oblist_pessoas.get(i).getCpf();
 
@@ -149,7 +138,7 @@ public class CadastrarUsuarioController implements Initializable{
         		p.setNaturalidade(naturalidade.getText());
         		p.setStatus("Ativo");
 
-        		int cod = daoPessoas.addPessoa(p);
+        		int cod = UtilDao.persist(p);
         		SysLog.addLog(SysLog.createPessoas(cod));
 
         		e.setCodPessoa(cod);
@@ -160,7 +149,7 @@ public class CadastrarUsuarioController implements Initializable{
         		e.setRua(nomeRua.getText());
         		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
-        		daoEnderecos.addEndereco(e);
+        		UtilDao.persist(e);
         		SysLog.addLog(SysLog.createDados("Endereço", cod));
 
         		c.setCodPessoa(cod);
@@ -175,7 +164,7 @@ public class CadastrarUsuarioController implements Initializable{
     			}
 
     			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-    				daoContatos.addContato(c);
+    				UtilDao.persist(c);
     				SysLog.addLog(SysLog.createDados("Contato", cod));
     			}
 
@@ -185,8 +174,6 @@ public class CadastrarUsuarioController implements Initializable{
     			u.setSenha(hashPass);
     			u.setTipo(tipoUsuario.getSelectionModel().getSelectedItem());
     			u.setStatus("Ativo");
-
-        	    SysLog.complete();
 
         	    Connection con;
         	    con = ConnectionClass.createConnection();
@@ -250,7 +237,7 @@ public class CadastrarUsuarioController implements Initializable{
 				}
         	    stmt.close();
 
-        	    daoUsuarios.addUsuario(u);
+        	    UtilDao.persist(u);
         		Util.Alert("Usuário cadastrado com sucesso!");
 
 			} catch (Exception e) {
@@ -291,7 +278,6 @@ public class CadastrarUsuarioController implements Initializable{
     	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "Pedagogo");
 		new AutoCompleteComboBoxListener<>(estado);
 		new AutoCompleteComboBoxListener<>(cidade);
-		new AutoCompleteComboBoxListener<>(tipoUsuario);
     }
 
     @FXML
@@ -441,12 +427,8 @@ public class CadastrarUsuarioController implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoContatos = new DaoContatos();
-		daoEnderecos = new DaoEndereco();
-		daoPessoas = new DaoPessoa();
-		daoUsuarios = new DaoUsuarios();
 
-	    oblist_usuarios = daoUsuarios.getAllUsuarios();
+	    oblist_usuarios = UtilDao.getLists(Usuario.class);
 
 		populateBoxes();
 		initValidation();

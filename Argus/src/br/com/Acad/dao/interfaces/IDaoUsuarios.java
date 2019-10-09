@@ -1,6 +1,7 @@
 package br.com.Acad.dao.interfaces;
 
 import br.com.Acad.model.Usuario;
+import br.com.Acad.model.ViewUsuario;
 import javafx.collections.ObservableList;
 
 public interface IDaoUsuarios {
@@ -13,5 +14,6 @@ public interface IDaoUsuarios {
 	public boolean desativarUsuario(Usuario usuario) ;
 	public boolean deletarUsuario(Usuario usuario) ;
 	public ObservableList<Usuario> getAllUsuarios() ;
+	public ObservableList<ViewUsuario> getAllUsuariosView() ;
 
 }

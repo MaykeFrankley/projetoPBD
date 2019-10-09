@@ -12,14 +12,14 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.dao.DaoMudarSenhas;
-import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.SetDbUser;
+import br.com.Acad.util.Settings;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -86,10 +86,6 @@ public class LoginController implements Initializable{
     @FXML
     private JFXButton solicitarAut;
 
-    private DaoUsuarios daoUsuarios;
-
-    private DaoMudarSenhas daoMudarSenhas;
-
     private MainTelaController mainTela;
 
     @FXML
@@ -102,7 +98,7 @@ public class LoginController implements Initializable{
 
     	if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
     		String hash = DigestUtils.md5Hex(txt_senha.getText());
-        	Usuario check = daoUsuarios.getUsuario(txt_login.getText(), hash);
+    		Usuario check = UtilDao.find(Usuario.class, txt_login.getText(), hash);
         	label_error.setVisible(false);
 
         	if(check != null){
@@ -129,7 +125,6 @@ public class LoginController implements Initializable{
                 			mainTela.enableNotificationTask();
 
                 			SysLog.addLog(SysLog.login(check.getUser()));
-                			SysLog.complete();
 
                         });
         		        return null;
@@ -164,7 +159,7 @@ public class LoginController implements Initializable{
 
     		if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
     			String hash = DigestUtils.md5Hex(txt_senha.getText());
-            	Usuario check = daoUsuarios.getUsuario(txt_login.getText(), hash);
+            	Usuario check = (Usuario) UtilDao.find(Usuario.class, txt_login.getText(), hash);
             	label_error.setVisible(false);
 
             	if(check != null){
@@ -192,7 +187,6 @@ public class LoginController implements Initializable{
                     			mainTela.enableNotificationTask();
 
                     			SysLog.addLog(SysLog.login(check.getUser()));
-                    			SysLog.complete();
 
                             });
             		        return null;
@@ -233,7 +227,12 @@ public class LoginController implements Initializable{
 
 			new SetDbUser("root", "9612");
 
-			Usuario user = daoUsuarios.getUsuario(CPF.getText());
+//			if(CPF.getText().equals("000.000.000-00")){
+//				event.consume();
+//				return;
+//			}
+
+			Usuario user = UtilDao.find(Usuario.class, CPF.getText());
 			if(user == null){
 				label_error2.setVisible(true);
         		FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.1), label_error2);
@@ -251,10 +250,7 @@ public class LoginController implements Initializable{
 			String hash = DigestUtils.md5Hex(novaSenha.getText());
 			mudarSenha.setSenha(hash);
 
-			daoMudarSenhas.addRequest(mudarSenha);
-
-			SysLog.addLog(SysLog.passWordChangeRequest(CPF.getText()));
-			SysLog.complete();;
+			UtilDao.persist(mudarSenha);
 
     		Util.Alert("Solicitação enviada!\nAguarde um administrador confirmar.");
     		mudarSenhaMenu(event);
@@ -296,13 +292,15 @@ public class LoginController implements Initializable{
 
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 
-		background.setImage(new Image("/images/argus_logo2.png"));
+		int[] options = Settings.get();
+		if(options[0] == 1){
+			background.setImage(new Image("/images/argus_logo2.png"));
+		}else{
+			background.setImage(new Image("/images/argus_logo_light.png"));
+		}
 
 		background.setFitWidth(screenBounds.getWidth());
 		background.setFitHeight(screenBounds.getHeight());
-
-		daoUsuarios = new DaoUsuarios();
-		daoMudarSenhas = new DaoMudarSenhas();
 
 		txt_senha.textProperty().addListener(
 		     (observable, old_value, new_value) -> {

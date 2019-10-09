@@ -14,12 +14,6 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.dao.DaoContatos;
-import br.com.Acad.dao.DaoCurriculo;
-import br.com.Acad.dao.DaoDisciplina;
-import br.com.Acad.dao.DaoEndereco;
-import br.com.Acad.dao.DaoPessoa;
-import br.com.Acad.dao.DaoProfessor;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
@@ -27,13 +21,16 @@ import br.com.Acad.model.CurriculoDisciplinaID;
 import br.com.Acad.model.CurriculoID;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
+import br.com.Acad.model.Disciplina;
 import br.com.Acad.model.DisciplinaProfessor;
 import br.com.Acad.model.DisciplinaProfessorID;
 import br.com.Acad.model.Professor;
+import br.com.Acad.model.ViewProfessor;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -72,25 +69,31 @@ public class ProfessorManagerController implements Initializable{
 	private JFXTextField campo_pesquisa;
 
 	@FXML
-	private TableView<Pessoa> table_pessoas;
+	private TableView<ViewProfessor> table_pessoas;
 
 	@FXML
-	private TableColumn<Pessoa, String> col_codPessoa;
+	private TableColumn<ViewProfessor, String> col_codPessoa;
 
 	@FXML
-	private TableColumn<Pessoa, String> col_nome;
+	private TableColumn<ViewProfessor, String> col_nome;
 
 	@FXML
-	private TableColumn<Pessoa, String> col_cpf;
+	private TableColumn<ViewProfessor, String> col_cpf;
 
 	@FXML
-	private TableColumn<Pessoa, Date> col_dt_nascimento;
+	private TableColumn<ViewProfessor, Date> col_dt_nascimento;
 
 	@FXML
-	private TableColumn<Pessoa, String> col_naturalidade;
+	private TableColumn<ViewProfessor, String> col_naturalidade;
 
 	@FXML
-	private TableColumn<Pessoa, String> col_status;
+	private TableColumn<ViewProfessor, String> col_formacao1;
+
+	@FXML
+	private TableColumn<ViewProfessor, String> col_curso1;
+
+	@FXML
+	private TableColumn<ViewProfessor, String> col_status;
 
 	@FXML
 	private JFXTextField nomeRua_listar;
@@ -254,7 +257,7 @@ public class ProfessorManagerController implements Initializable{
 	@FXML
 	private Button add_button;
 
-	private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
+	private ObservableList<ViewProfessor> oblist_pessoas = FXCollections.observableArrayList();
 
 	private ObservableList<Professor> oblist_professores = FXCollections.observableArrayList();
 
@@ -266,21 +269,9 @@ public class ProfessorManagerController implements Initializable{
 
 	private ObservableList<Curriculo> oblist_curriculos = FXCollections.observableArrayList();
 
-	private FilteredList<Pessoa> filteredData;
+	private FilteredList<ViewProfessor> filteredData;
 
 	private FilteredList<Professor> filteredData2;
-
-	private DaoPessoa daoPessoas;
-
-	private DaoEndereco daoEnderecos;
-
-	private DaoContatos daoContatos;
-
-	private DaoProfessor daoProfessor;
-
-	private DaoDisciplina daoDisciplinas;
-
-	private DaoCurriculo daoCurriculos;
 
 	private Pessoa oldPessoa;private Contato oldContato;private Endereco oldEndereco;private String oldCPF;
 
@@ -307,10 +298,9 @@ public class ProfessorManagerController implements Initializable{
 			selected.setNomeProfessor(table_professores.getSelectionModel().getSelectedItem().getNome());
 			JFXButton yes = new JFXButton("Remover");
 			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
-				daoProfessor.removeDisciplinaProfessor(selected);
+				UtilDao.remove(selected);
 				SysLog.addLog(SysLog.message("removeu uma disciplina de cod: "+selected.getId().getCurriculoDisciplinaID().getCodDisciplina()+" do professor cod: ")
 						+selected.getId().getCodProfessor());
-				SysLog.complete();
 				initTables();
 			});
 			JFXButton cancel = new JFXButton("Cancelar");
@@ -334,10 +324,9 @@ public class ProfessorManagerController implements Initializable{
 			dp.setId(new DisciplinaProfessorID(pr.getCodPessoa(), cd.getId()));
 			dp.setNomeProfessor(pr.getNome());
 
-			daoProfessor.addDisciplinaToProfessor(dp);
+			UtilDao.persist(dp);
 			addDisciplinaPane.setVisible(false);
 			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getId().getCodProfessor());
-			SysLog.complete();
 
 			initTables();
 
@@ -360,7 +349,7 @@ public class ProfessorManagerController implements Initializable{
 	@FXML
 	void atualizar(ActionEvent event) {
 		if(checkTextFields()){
-			oblist_pessoas = daoPessoas.getAllPessoa();
+			oblist_pessoas = UtilDao.getLists(Pessoa.class);
 			for (int i = 0; i < oblist_pessoas.size(); i++) {
 				String obCPF = oblist_pessoas.get(i).getCpf();
 
@@ -374,7 +363,7 @@ public class ProfessorManagerController implements Initializable{
 			}
 
 			Date date = Date.valueOf(dt_nascimento_update.getValue());
-			Pessoa p = daoPessoas.getPessoa(Integer.valueOf(codigo_listar.getText()));
+			Pessoa p = UtilDao.find(Pessoa.class, Integer.valueOf(codigo_listar.getText()));
 			Endereco e = new Endereco();
 			Contato c = new Contato();
 
@@ -385,53 +374,51 @@ public class ProfessorManagerController implements Initializable{
 			if(cpf_update.getText().length() > 0)p.setCpf(cpf_update.getText());
 			else p.setCpf(null);
 
-			int cod = daoPessoas.UpdatePessoa(p);
+			UtilDao.update(p);
+			int cod = p.getCodPessoa();
 
-			if(cod > 0){
-				e.setCodPessoa(cod);
-				e.setRua(nomeRua_update.getText());
-				e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
-				if(complemento_update.getText() != null && complemento_update.getText().length() > 0)e.setComplemento(complemento_update.getText());
-				e.setBairro(bairro_update.getText());
-				e.setEstado(estado_update.getSelectionModel().getSelectedItem());
-				e.setCidade(cidade_update.getSelectionModel().getSelectedItem());
+			e.setCodPessoa(cod);
+			e.setRua(nomeRua_update.getText());
+			e.setNumero(Integer.valueOf(numero_update.getText().replaceAll("\\s+", "")));
+			if(complemento_update.getText() != null && complemento_update.getText().length() > 0)e.setComplemento(complemento_update.getText());
+			e.setBairro(bairro_update.getText());
+			e.setEstado(estado_update.getSelectionModel().getSelectedItem());
+			e.setCidade(cidade_update.getSelectionModel().getSelectedItem());
 
 
-				daoEnderecos.UpdateEndereco(e);
+			UtilDao.update(e);
 
-				c.setCodPessoa(cod);
-				if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
-				if(telefone_update.getText().length() > 0)c.setTelefone(telefone_update.getText());
-				if(celular_update.getText().length() > 0)c.setCelular(celular_update.getText());
-				if(whatsapp_update.isSelected()){
-					c.setWhatsapp(1);
-				}
-				else{
-					c.setWhatsapp(0);
-				}
-
-				if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
-					daoContatos.UpdateContato(c);
-				}
-
-				Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
-
-				if(!oldPessoa.SameAs(p)){
-					SysLog.addLog(SysLog.updatePessoas("Dados", cod));
-				}
-
-				if(!oldEndereco.equals(e)){
-					SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
-				}
-
-				if(!oldContato.equals(c)){
-					SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
-				}
-
-				SysLog.complete();
-
-				initTables();
+			c.setCodPessoa(cod);
+			if(email_update.getText().length() > 0)c.setEmail(email_update.getText());
+			if(telefone_update.getText().length() > 0)c.setTelefone(telefone_update.getText());
+			if(celular_update.getText().length() > 0)c.setCelular(celular_update.getText());
+			if(whatsapp_update.isSelected()){
+				c.setWhatsapp(1);
 			}
+			else{
+				c.setWhatsapp(0);
+			}
+
+			if(email_update.getText().length() > 0 || telefone_update.getText().length() > 0 || celular_update.getText().length() > 0){
+				UtilDao.update(c);
+			}
+
+			Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
+
+			if(!oldPessoa.SameAs(p)){
+				SysLog.addLog(SysLog.updatePessoas("Dados", cod));
+			}
+
+			if(!oldEndereco.equals(e)){
+				SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
+			}
+
+			if(!oldContato.equals(c)){
+				SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
+			}
+
+			initTables();
+
 		}
 	}
 
@@ -514,7 +501,7 @@ public class ProfessorManagerController implements Initializable{
 				return false;
 			});
 		});
-		SortedList<Pessoa> sortedData = new SortedList<>(filteredData);
+		SortedList<ViewProfessor> sortedData = new SortedList<>(filteredData);
 		sortedData.comparatorProperty().bind(table_pessoas.comparatorProperty());
 		table_pessoas.setItems(sortedData);
 	}
@@ -561,8 +548,8 @@ public class ProfessorManagerController implements Initializable{
 
 			codigo_listar.setText(String.valueOf(p.getCodPessoa()));
 
-			Endereco e = daoEnderecos.getEndereco(p.getCodPessoa());
-			Contato c = daoContatos.getContato(p.getCodPessoa());
+			Endereco e = UtilDao.find(Endereco.class, p.getCodPessoa());
+			Contato c = UtilDao.find(Contato.class, p.getCodPessoa());
 
 			nome_update.setText(p.getNome());
 			naturalidade_update.setText(p.getNaturalidade());
@@ -622,12 +609,13 @@ public class ProfessorManagerController implements Initializable{
 		oblist_pessoas.clear();
 		oblist_professores.clear();
 
-		oblist_curriculos = daoCurriculos.getAllCurriculo();
+		oblist_pessoas = UtilDao.getLists(ViewProfessor.class);
 
-		oblist_professores = daoProfessor.getAllProfessores();
-		for (Professor professor : oblist_professores) {
-			int cod = professor.getCodPessoa();
-			oblist_pessoas.add(daoPessoas.getPessoa(cod));
+		oblist_curriculos = UtilDao.getLists(Curriculo.class);
+
+		oblist_professores = UtilDao.getLists(Professor.class);
+		for (int i = 0; i < oblist_pessoas.size(); i++) {
+			oblist_professores.get(i).setNome(oblist_pessoas.get(i).getNome());
 		}
 
 		filteredData = new FilteredList<>(oblist_pessoas);
@@ -641,9 +629,12 @@ public class ProfessorManagerController implements Initializable{
 		col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
 		col_codPessoa.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
 		col_dt_nascimento.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
+		col_formacao1.setCellValueFactory(new PropertyValueFactory<>("formacao"));
+		col_curso1.setCellValueFactory(new PropertyValueFactory<>("cursoFormacao"));
+
 
 		col_dt_nascimento.setCellFactory(column -> {
-			TableCell<Pessoa, Date> cell = new TableCell<Pessoa, Date>() {
+			TableCell<ViewProfessor, Date> cell = new TableCell<ViewProfessor, Date>() {
 				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
 				@Override
@@ -671,7 +662,7 @@ public class ProfessorManagerController implements Initializable{
 
 				if(selectedPessoa != null){
 					//Endereco
-					Endereco end = daoEnderecos.getEndereco(cod);
+					Endereco end = UtilDao.find(Endereco.class, cod);
 					if(end != null){
 
 						nomeRua_listar.setText(end.getRua());
@@ -683,9 +674,9 @@ public class ProfessorManagerController implements Initializable{
 						estado_listar.setText(end.getEstado());
 					}
 					//Contatos
-					Contato con = daoContatos.getContato(cod);
+					Contato con = UtilDao.find(Contato.class, cod);
+					celular_listar.clear();email_listar.clear();telefone_listar.clear();
 					if(con != null){
-						celular_listar.clear();email_listar.clear();telefone_listar.clear();
 						if(con.getCelular() != null)celular_listar.setText(con.getCelular());
 						if(con.getEmail() != null)email_listar.setText(con.getEmail());
 						if(con.getTelefone() != null)telefone_listar.setText(con.getTelefone());
@@ -715,9 +706,10 @@ public class ProfessorManagerController implements Initializable{
 				Professor selected = table_professores.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas.clear();
-					oblist_disciplinas = daoProfessor.getDisciplinaOfProfessor(selected.getCodPessoa());
+					oblist_disciplinas = UtilDao.getLists(DisciplinaProfessor.class, selected.getCodPessoa());
 					for(DisciplinaProfessor dp: oblist_disciplinas){
-						dp.setNomeDisciplina(daoDisciplinas.getDisciplina(dp.getId().getCurriculoDisciplinaID().getCodDisciplina()).getNome());
+						Disciplina d = UtilDao.find(Disciplina.class, dp.getId().getCurriculoDisciplinaID().getCodDisciplina());
+						dp.setNomeDisciplina(d.getNome());
 					}
 					table_disciplinas.setItems(oblist_disciplinas);
 
@@ -772,10 +764,9 @@ public class ProfessorManagerController implements Initializable{
 			if(newSelection != null){
 				DisciplinaProfessor selected = table_disciplinas.getSelectionModel().getSelectedItem();
 				if(selected != null) {
-					curriculo.setText(daoCurriculos.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID())
-							.getNome());
-					anoLetivo.setText(String.valueOf(daoCurriculos.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID())
-							.getId().getAnoLetivo()));
+					Curriculo c = UtilDao.find(Curriculo.class, selected.getId().getCurriculoDisciplinaID().getCurriculoID());
+					curriculo.setText(c.getNome());
+					anoLetivo.setText(String.valueOf(c.getId().getAnoLetivo()));
 				}
 			}
 		});
@@ -826,10 +817,10 @@ public class ProfessorManagerController implements Initializable{
 				Curriculo selected = table_curriculo.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas_add.clear();
-					oblist_disciplinas_add = daoCurriculos.getAllDisciplinas(selected.getId().getCodCurriculo());
+					oblist_disciplinas_add = UtilDao.getLists(CurriculoDisciplina.class, selected.getId().getCodCurriculo());
 
 					for(CurriculoDisciplina c : oblist_disciplinas_add){
-						c.setNomeDisciplina(daoDisciplinas.getDisciplina(c.getId().getCodDisciplina()).getNome());
+						c.setNomeDisciplina(((Disciplina)UtilDao.find(Disciplina.class, c.getId().getCodDisciplina())).getNome());
 					}
 
 					table_disciplinas_add.setItems(oblist_disciplinas_add);
@@ -995,12 +986,6 @@ public class ProfessorManagerController implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoContatos = new DaoContatos();
-		daoDisciplinas = new DaoDisciplina();
-		daoEnderecos = new DaoEndereco();
-		daoPessoas = new DaoPessoa();
-		daoProfessor = new DaoProfessor();
-		daoCurriculos = new DaoCurriculo();
 
 		atualizarTab.setOnSelectionChanged(e ->{
 			if(atualizarTab.isSelected()){

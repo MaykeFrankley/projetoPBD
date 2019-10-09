@@ -10,6 +10,7 @@ import br.com.Acad.app.Main;
 import br.com.Acad.dao.interfaces.IDaoUsuarios;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Usuario;
+import br.com.Acad.model.ViewUsuario;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -143,6 +144,25 @@ public class DaoUsuarios implements IDaoUsuarios{
 		entityMn.close();
 
 		ObservableList<Usuario> obs = FXCollections.observableArrayList();
+		return obs;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ObservableList<ViewUsuario> getAllUsuariosView() {
+		createEM();
+		try {
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			List<ViewUsuario> list = entityMn.createQuery("from ViewUsuario").getResultList();
+			ObservableList<ViewUsuario> obs = FXCollections.observableList(list);
+			return obs;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}
+		entityMn.close();
+
+		ObservableList<ViewUsuario> obs = FXCollections.observableArrayList();
 		return obs;
 	}
 

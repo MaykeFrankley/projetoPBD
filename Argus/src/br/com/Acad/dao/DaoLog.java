@@ -83,7 +83,9 @@ public class DaoLog implements IDaoLog{
 		try {
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
-			List<LogSistema> list = entityMn.createQuery("from LogSistema order by Hora desc").getResultList();
+
+			List<LogSistema> list = entityMn.createNativeQuery("SELECT logsistema.order, codPessoa, Acao, Data, Hora FROM argus.logsistema ORDER BY logsistema.order desc;",
+					LogSistema.class).getResultList();
 			oblist = FXCollections.observableList(list);
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();

@@ -59,11 +59,10 @@
                                           <Insets />
                                        </HBox.margin>
                                     </VBox>
-                                    <TableView fx:id="table_disciplinas" prefHeight="366.0" prefWidth="642.0">
+                                    <TableView fx:id="table_disciplinas" prefHeight="366.0" prefWidth="548.0">
                                       <columns>
-                                        <TableColumn fx:id="col_cod" prefWidth="121.0" text="Código" />
-                                        <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="344.0" text="Nome" />
-                                          <TableColumn fx:id="col_status" prefWidth="166.0" text="Status" />
+                                        <TableColumn fx:id="col_cod" prefWidth="128.0" text="Código" />
+                                        <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="337.0" text="Nome" />
                                       </columns>
                                     </TableView>
                                  </children>

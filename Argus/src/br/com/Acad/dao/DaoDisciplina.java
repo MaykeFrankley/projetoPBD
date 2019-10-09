@@ -44,7 +44,41 @@ public class DaoDisciplina implements IDaoDisciplina{
 
 	@Override
 	public void updateDisciplina(Disciplina disciplina) {
-		// TODO Auto-generated method stub
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(disciplina);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Disciplina atualizada com sucesso!");
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+
+	}
+
+	@Override
+	public void removeDisciplina(Disciplina disciplina) {
+		try{
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.remove(entityMn.getReference(Disciplina.class, disciplina.getCodDisciplina()));
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Disciplina deletada com sucesso!");
+		}catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
 
 	}
 

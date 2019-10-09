@@ -6,9 +6,9 @@ import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.dao.DaoDisciplina;
 import br.com.Acad.model.Disciplina;
 import br.com.Acad.util.SysLog;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,22 +36,30 @@ public class CadastrarDisciplinaController implements Initializable{
     @FXML
     private TableColumn<Disciplina, String> col_nome;
 
-    @FXML
-    private TableColumn<Disciplina, String> col_status;
+    private boolean update;
 
-    private DaoDisciplina daoDisciplinas;
+    private Disciplina updateDisciplina;
+
 
     private ObservableList<Disciplina> oblist = FXCollections.observableArrayList();
 
+
     @FXML
     void confirmar(ActionEvent event) {
-    	Disciplina d = new Disciplina();
-    	d.setCodDisciplina(codigo.getText());
-    	d.setNome(nome.getText());
-    	d.setStatus("Ativo");
+    	if(!update){
+    		Disciplina d = new Disciplina();
+        	d.setCodDisciplina(codigo.getText());
+        	d.setNome(nome.getText());
+        	d.setStatus("Ativo");
 
-		daoDisciplinas.addDisciplina(d);
-		SysLog.addLog(SysLog.message("cadastrou uma nova disciplina de cod: ")+d.getCodDisciplina());
+    		UtilDao.persist(d);
+    		SysLog.addLog(SysLog.message("cadastrou uma nova disciplina de cod: ")+d.getCodDisciplina());
+    	}else{
+    		updateDisciplina.setNome(nome.getText());
+    		UtilDao.update(updateDisciplina);
+    		SysLog.addLog(SysLog.message("atualizou uma disciplina de cod: ")+updateDisciplina.getCodDisciplina());
+    	}
+
 
     	initTable();
 
@@ -60,6 +68,7 @@ public class CadastrarDisciplinaController implements Initializable{
     @FXML
     void limpar(ActionEvent event) {
     	codigo.clear();nome.clear();
+    	update = false;
     }
 
     @FXML
@@ -90,21 +99,29 @@ public class CadastrarDisciplinaController implements Initializable{
 
     }
 
-    void initTable(){
+
+	void initTable(){
     	oblist.clear();
 
-    	oblist = daoDisciplinas.getAllDisciplinas();
+    	oblist = UtilDao.getLists(Disciplina.class);
 
     	col_cod.setCellValueFactory(new PropertyValueFactory<>("codDisciplina"));
     	col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-    	col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
     	table_disciplinas.setItems(oblist);
+
+    	table_disciplinas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+    		if(newSelection != null && MainTelaController.user.getTipo().equals("Admin")){
+    			updateDisciplina = table_disciplinas.getSelectionModel().getSelectedItem();
+    			update = true;
+    			codigo.setText(updateDisciplina.getCodDisciplina());
+    			nome.setText(updateDisciplina.getNome());
+    		}
+    	});
 
     }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoDisciplinas = new DaoDisciplina();
 
 		initTable();
 		nome.textProperty().addListener(

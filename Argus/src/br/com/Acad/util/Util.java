@@ -43,8 +43,10 @@ import javafx.util.Duration;
 public class Util {
 
 	public static StackPane contentPane;
+	private static int[] options = new int[2];
 
 	static JFXDialogLayout dialogLayout = new JFXDialogLayout();
+	static JFXDialogLayout dialogLayoutAlert = new JFXDialogLayout();
 	static JFXDialog dialog;
 
 	private static final String EMAIL_PATTERN
@@ -62,71 +64,94 @@ public class Util {
 		Date data = new Date(Calendar.getInstance().getTime().getTime());
 		Time hora = new Time(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")).getTime().getTime());
 
-		ls.setId(new LogSistemaID(MainTelaController.user.getCodPessoa(), data, hora));
+		ls.setId(new LogSistemaID(0, MainTelaController.user.getCodPessoa(), data, hora));
 		return ls;
 	}
 
 	public static void LoadWindow(URL loc,	Scene scene, String or) throws IOException{
+		options = Settings.get();
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(loc);
 		Parent root = loader.load();
 
-
-		if(or.equals("x")){
-			root.translateXProperty().set(scene.getWidth());
+		if(options[0] == 0){
+			root.setStyle("-fx-background-color: #ffffff;");
 		}else{
-			root.translateYProperty().set(scene.getHeight());
+			root.setStyle("-fx-background-color: #2A2E37;");
 		}
 
-		contentPane.getChildren().add(root);
-		Timeline timel = new Timeline();
+		if(options[1] == 1) {
+			if(or.equals("x")){
+				root.translateXProperty().set(scene.getWidth());
+			}else{
+				root.translateYProperty().set(scene.getHeight());
+			}
 
-		KeyValue kv;
-		if(or.equals("x")){
-			kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-		}else{
-			kv = new KeyValue(root.translateYProperty(), 0, Interpolator.EASE_IN);
+			contentPane.getChildren().add(root);
+			Timeline timel = new Timeline();
+
+			KeyValue kv;
+			if(or.equals("x")){
+				kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
+			}else{
+				kv = new KeyValue(root.translateYProperty(), 0, Interpolator.EASE_IN);
+			}
+
+			KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
+
+			timel.getKeyFrames().add(kf);
+			timel.setOnFinished(e -> {
+				if(contentPane.getChildren().size() > 1){
+					contentPane.getChildren().remove(0);
+				}
+				MainTelaController.dr.close();
+				//ScenicView.show(scene);
+
+			});
+			timel.play();
 		}
+		else{
+			contentPane.getChildren().add(root);
 
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
-
-		timel.getKeyFrames().add(kf);
-		timel.setOnFinished(e -> {
 			if(contentPane.getChildren().size() > 1){
 				contentPane.getChildren().remove(0);
 			}
+
 			MainTelaController.dr.close();
-			//		   	ScenicView.show(scene);
 
-		});
-		timel.play();
+		}
 
+	}
 
+	public static void setStyle(Parent root){
+		int[] options = Settings.get();
+		if(options[0] == 1){
+			root.getStylesheets().add("/br/com/Acad/css/darktheme.css");
+		}else{
+			root.getStylesheets().add("/br/com/Acad/css/lighttheme.css");
+		}
+
+		if(options[0] == 0){
+			root.setStyle("-fx-background-color: #ffffff;");
+		}else{
+			root.setStyle("-fx-background-color: #2A2E37;");
+		}
 	}
 
 	public static void Alert(String message){
 		BoxBlur blur = new BoxBlur(3, 3, 3);
 
-		JFXDialogLayout dialogLayout = new JFXDialogLayout();
 		JFXButton button = new JFXButton("Okay");
-		JFXDialog dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
+		JFXDialog dialog = new JFXDialog(contentPane, dialogLayoutAlert, JFXDialog.DialogTransition.TOP);
 
 		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
 			dialog.close();
 		});
 
-		Label label = new Label(message);
-		label.setStyle("-fx-font-size: 13pt;"
-				+ "-fx-text-fill: white;"
-				+"-fx-font-weight: bold;");
-
-		label.setWrapText(true);
-		dialogLayout.setBody(label);
-		dialogLayout.setHeading(new Label(""));
-		dialogLayout.setStyle("-fx-background-color: #2A2E37");
-		dialogLayout.setMinSize(400, 100);
-		dialogLayout.setActions(button);
+		dialogLayoutAlert.setHeading(new Label(message));
+		dialogLayoutAlert.setMinSize(400, 100);
+		dialogLayoutAlert.setActions(button);
 		dialog.show();
 
 		contentPane.getChildren().get(0).setEffect(blur);
@@ -141,7 +166,6 @@ public class Util {
 		if (controls.isEmpty()) {
 			controls.add(new JFXButton("Okay"));
 		}
-		if(dialog != null)dialog.close();
 
 		dialog = new JFXDialog(contentPane, dialogLayout, JFXDialog.DialogTransition.TOP);
 
@@ -153,13 +177,6 @@ public class Util {
 
 		dialogLayout.setHeading(new Label(body));
 		dialogLayout.setActions(controls);
-
-		dialogLayout.setStyle(
-				"-fx-background-color: #2A2E37;"
-						+"-fx-text-fill:white;"
-						+"-fx-font-size: 16px;"
-						+"-fx-font-weight: bold;"
-				);
 
 		dialog.setOverlayClose(false);
 		dialog.show();

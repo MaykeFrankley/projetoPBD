@@ -10,6 +10,7 @@ import javax.persistence.Persistence;
 import com.sun.javafx.application.LauncherImpl;
 
 import br.com.Acad.sql.FillDataBase;
+import br.com.Acad.util.Util;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.application.Preloader;
@@ -17,6 +18,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -36,7 +38,9 @@ public class Main extends Application{
 		TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
 
 		Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/br/com/Acad/view/MainTela.fxml")));
+		Parent root = scene.getRoot();
 
+		Util.setStyle(root);
 		Platform.setImplicitExit(false);
 
 		primaryStage.setMaximized(true);
@@ -66,11 +70,6 @@ public class Main extends Application{
 			}
 		});
 
-	}
-
-	@Override
-	public void init() throws Exception {
-
 		FillDataBase db = new FillDataBase();
 
 		try {
@@ -79,12 +78,19 @@ public class Main extends Application{
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void init() throws Exception {
+
 		Main.factory = Persistence.createEntityManagerFactory("argusDB");
 
 		for (int i = 0; i < COUNT_LIMIT; i++) {
 			double progress = (double) i/10;
 			LauncherImpl.notifyPreloader(this, new Preloader.ProgressNotification(progress));
 		}
+
+
 	}
 
 	public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package br.com.Acad.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -77,7 +79,7 @@ public class Contato {
 
 		Contato other = (Contato) obj;
 
-		if((this.celular != null && other.celular == null ) || (this.celular == null && other.celular != null ) || (this.celular != null && this.celular != null && !this.celular.equals(other.celular))){
+		if((this.celular != null && other.celular == null ) || (this.celular == null && other.celular != null ) || (this.celular != null && !this.celular.equals(other.celular))){
 			return false;
 		}
 		if((this.telefone != null && other.telefone == null ) || (this.telefone == null && other.telefone != null ) || (this.telefone != null && other.telefone != null && !this.telefone.equals(other.telefone))){
@@ -93,6 +95,10 @@ public class Contato {
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(getCelular(), getCodPessoa(), getEmail(), getTelefone(), getWhatsapp());
+	}
 
 
 }

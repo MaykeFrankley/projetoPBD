@@ -10,6 +10,7 @@ import br.com.Acad.dao.interfaces.IDaoProfessor;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.DisciplinaProfessor;
 import br.com.Acad.model.Professor;
+import br.com.Acad.model.ViewProfessor;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -141,6 +142,22 @@ public class DaoProfessor implements IDaoProfessor{
 			entityMn.close();
 		}
 		return oblist_DP;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public ObservableList<ViewProfessor> getAllProfessoresView() {
+		try {
+			createEM();
+			List<ViewProfessor> list = entityMn.createQuery("from ViewProfessor").getResultList();
+			ObservableList<ViewProfessor>oblist = FXCollections.observableList(list);
+			return oblist;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+		return null;
 	}
 
 }

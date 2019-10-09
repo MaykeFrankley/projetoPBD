@@ -1,26 +1,31 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.dao.DaoContatos;
-import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
-import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.model.Contato;
+import br.com.Acad.model.Endereco;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
+import br.com.Acad.model.ViewUsuario;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -28,8 +33,8 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -45,82 +50,67 @@ public class UsuariosManagerController implements Initializable{
     private Tab cadastrarTab;
 
     @FXML
-    private JFXTextField nome;
-
-    @FXML
-    private JFXDatePicker dt_nascimento;
-
-    @FXML
-    private JFXTextField naturalidade;
-
-    @FXML
-    private JFXTextField cpf;
-
-    @FXML
-    private JFXTextField nomeRua;
-
-    @FXML
-    private JFXTextField numero;
-
-    @FXML
-    private JFXTextField complemento;
-
-    @FXML
-    private JFXTextField bairro;
-
-    @FXML
-    private ComboBox<String> estado;
-
-    @FXML
-    private ComboBox<String> cidade;
-
-    @FXML
-    private JFXTextField email;
-
-    @FXML
-    private JFXTextField telefone;
-
-    @FXML
-    private JFXTextField celular;
-
-    @FXML
-    private JFXCheckBox whatsapp;
-
-    @FXML
-    private JFXTextField nomeUsuario;
-
-    @FXML
-    private JFXPasswordField senha;
-
-    @FXML
-    private ComboBox<String> tipoUsuario;
-
-    @FXML
     private Tab listarTab;
 
     @FXML
     private JFXTextField campo_pesquisa;
 
     @FXML
-    private TableView<Usuario> table_usuarios;
+    private TableView<ViewUsuario> table_usuarios;
 
     @FXML
-    private TableColumn<Usuario, String> col_codPessoa;
+    private TableColumn<ViewUsuario, String> col_codPessoa;
 
     @FXML
-    private TableColumn<Usuario, String> col_cpf;
+    private TableColumn<ViewUsuario, String> col_nome;
 
     @FXML
-    private TableColumn<Usuario, String> col_cpf_mud;
+    private TableColumn<ViewUsuario, String> col_cpf;
 
     @FXML
-    private TableColumn<Usuario, String> col_username;
+    private TableColumn<ViewUsuario, String> col_username;
 
     @FXML
-    private TableColumn<Usuario, String> col_tipo;
+    private TableColumn<ViewUsuario, String> col_tipo;
 
     @FXML
-    private TableColumn<Usuario, String> col_status;
+    private TableColumn<ViewUsuario, Date> col_dt_nascimento;
+
+    @FXML
+    private TableColumn<ViewUsuario, String> col_naturalidade;
+
+    @FXML
+    private TableColumn<ViewUsuario, String> col_status;
+
+    @FXML
+    private JFXTextField nomeRua_listar;
+
+    @FXML
+    private JFXTextField numero_listar;
+
+    @FXML
+    private JFXTextField complemento_listar;
+
+    @FXML
+    private JFXTextField bairro_listar;
+
+    @FXML
+    private JFXTextField cidade_listar;
+
+    @FXML
+    private JFXTextField estado_listar;
+
+    @FXML
+    private JFXTextField email_listar;
+
+    @FXML
+    private JFXTextField telefone_listar;
+
+    @FXML
+    private JFXTextField celular_listar;
+
+    @FXML
+    private JFXCheckBox whatsapp_listar;
 
     @FXML
     private Tab MudancaSenhasTab;
@@ -159,6 +149,9 @@ public class UsuariosManagerController implements Initializable{
     private TableView<MudarSenha> table_cpf;
 
     @FXML
+    private TableColumn<?, ?> col_cpf_mud;
+
+    @FXML
     private Tab desativarTab;
 
     @FXML
@@ -173,24 +166,16 @@ public class UsuariosManagerController implements Initializable{
     @FXML
     private JFXButton btn_deletar;
 
-    private DaoUsuarios daoUsuarios;
-
-    private DaoPessoa daoPessoas;
-
-    private DaoMudarSenhas daoMudarSenhas;
-
-    private DaoContatos daoContatos;
-
-    private DaoLog daolog;
-
     private ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
+
+    private ObservableList<ViewUsuario> oblist_usuarios_view = FXCollections.observableArrayList();
 
     private ObservableList<MudarSenha> oblist_cpf = FXCollections.observableArrayList();
 
-    public FilteredList<Usuario> filteredData;
+    public FilteredList<ViewUsuario> filteredData;
 
     @FXML
-    void autorizar(ActionEvent event)  {
+    void autorizar(ActionEvent event) throws SQLException  {
 
     	MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
 
@@ -209,18 +194,29 @@ public class UsuariosManagerController implements Initializable{
     		if(user != null){
             	user.setSenha(novaSenha.getText());
 
-            	daoUsuarios.updateUsuario(user);
+            	UtilDao.update(user);
 
+            	DaoMudarSenhas daoMudarSenhas = new DaoMudarSenhas();
             	daoMudarSenhas.closeRequest(ms);
-            	initTables();
+
+            	Connection con;
+        	    con = ConnectionClass.createConnection();
+        	    PreparedStatement stmt = con.prepareStatement("ALTER USER ?@'localhost' IDENTIFIED BY ?;");
+        	    stmt.setString(1, user.getUser());
+        	    stmt.setString(2, user.getSenha());
+        	    stmt.executeUpdate();
+        	    stmt.close();
+        	    con.close();
+
+        	    initTables();
 
             	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
 
             	LogSistema ls = Util.prepareLog();
 
-            	ls.setAcao("Usuário autorizou mudança de senha de \""+user.getUser()+"\".");
+            	ls.setAcao("O admin autorizou mudança de senha do usuário \""+user.getUser()+"\".");
 
-            	daolog.addLog(ls);
+            	UtilDao.persist(ls);
 
     		}
 
@@ -232,11 +228,15 @@ public class UsuariosManagerController implements Initializable{
 
     @FXML
     void desativar_ativar_Pessoas(ActionEvent event)  {
-    	Usuario selected = table_usuarios.getSelectionModel().getSelectedItem();
+    	ViewUsuario view = table_usuarios.getSelectionModel().getSelectedItem();
+    	Usuario selected = UtilDao.find(Usuario.class, view.getCpf());
     	if(selected != null){
+    		DaoPessoa daoPessoa = new DaoPessoa();
+
 			if(event.getSource() == btn_ativar){
-					daoUsuarios.desativarUsuario(selected);
-					initTables();
+				Pessoa p = UtilDao.find(Pessoa.class, selected.getCodPessoa());
+				daoPessoa.desativarPessoa(p);
+				initTables();
 			}
 			else if(event.getSource() == btn_desativar){
 
@@ -246,7 +246,7 @@ public class UsuariosManagerController implements Initializable{
 				}
 				if(selected.getStatus().equals("Ativo")){
 					selected.setStatus("Inativo");
-					daoUsuarios.updateUsuario(selected);
+					UtilDao.update(selected);
 					Util.Alert("Foi desativado do sistema e não poderá mais fazer login!\n");
 					initTables();
 				}else{
@@ -290,7 +290,7 @@ public class UsuariosManagerController implements Initializable{
     			return false;
     		});
     	});
-    	SortedList<Usuario> sortedData = new SortedList<>(filteredData);
+    	SortedList<ViewUsuario> sortedData = new SortedList<>(filteredData);
     	sortedData.comparatorProperty().bind(table_usuarios.comparatorProperty());
     	table_usuarios.setItems(sortedData);
     }
@@ -300,10 +300,11 @@ public class UsuariosManagerController implements Initializable{
     	oblist_usuarios.clear();
     	oblist_cpf.clear();
 
-		oblist_usuarios = daoUsuarios.getAllUsuarios();
-		oblist_cpf = daoMudarSenhas.getAllRequests();
+		oblist_usuarios = UtilDao.getLists(Usuario.class);
+		oblist_usuarios_view = UtilDao.getLists(ViewUsuario.class);
+		oblist_cpf = UtilDao.getLists(MudarSenha.class);
 
-    	filteredData = new FilteredList<>(oblist_usuarios);
+    	filteredData = new FilteredList<>(oblist_usuarios_view);
 
     	col_codPessoa.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
     	col_cpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
@@ -311,6 +312,27 @@ public class UsuariosManagerController implements Initializable{
     	col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
     	col_tipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
     	col_username.setCellValueFactory(new PropertyValueFactory<>("user"));
+    	col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+    	col_naturalidade.setCellValueFactory(new PropertyValueFactory<>("naturalidade"));
+    	col_dt_nascimento.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
+
+    	col_dt_nascimento.setCellFactory(column -> {
+			TableCell<ViewUsuario, Date> cell = new TableCell<ViewUsuario, Date>() {
+				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+				@Override
+				protected void updateItem(Date item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(format.format(item));
+					}
+				}
+			};
+			return cell;
+		});
 
     	table_cpf.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -318,15 +340,15 @@ public class UsuariosManagerController implements Initializable{
 				MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
 				String cpf = ms.getCpf();
 
-				Pessoa p = null;
-				Usuario user = null;
-				Contato c = null;
+				Pessoa p = new Pessoa();
+				Usuario user = new Usuario();
+				Contato c = new Contato();
 
 				for (int i = 0; i < oblist_usuarios.size(); i++) {
 					Usuario u = oblist_usuarios.get(i);
 					if(u.getCpf().equals(cpf)){
 						try {
-							p = daoPessoas.getPessoa(u.getCodPessoa());
+							p = UtilDao.find(Pessoa.class, u.getCodPessoa());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -343,31 +365,66 @@ public class UsuariosManagerController implements Initializable{
 				novaSenha.setText(ms.getSenha());
 				tipo_update.setText(user.getTipo());
 
-				try {
-					c = daoContatos.getContato(p.getCodPessoa());
-				} catch (Exception e) {
-					e.printStackTrace();
+				c = UtilDao.find(Contato.class, p.getCodPessoa());
+				celular_listar.clear();email_listar.clear();telefone_listar.clear();
+				if(c != null){
+					if(c.getCelular() != null)celular_listar.setText(c.getCelular());
+					if(c.getEmail() != null)email_listar.setText(c.getEmail());
+					if(c.getTelefone() != null)telefone_listar.setText(c.getTelefone());
+					if(c.getWhatsapp() == 1){
+						whatsapp_listar.setSelected(true);
+					}else{
+						whatsapp_listar.setSelected(false);
+					}
 				}
 
-				if(c.getEmail() != null)email_update.setText(c.getEmail());
-				if(c.getTelefone() != null)telefone_update.setText(c.getTelefone());
-				if(c.getCelular() != null)celular_update.setText(c.getCelular());
+			}
+		});
+
+    	table_usuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if (newSelection != null) {
+				ViewUsuario selectedPessoa = table_usuarios.getSelectionModel().getSelectedItem();
+				int cod = selectedPessoa.getCodPessoa();
+
+				if(selectedPessoa != null){
+					//Endereco
+					Endereco end = UtilDao.find(Endereco.class, cod);
+					if(end != null){
+
+						nomeRua_listar.setText(end.getRua());
+						numero_listar.setText(String.valueOf(end.getNumero()));
+						complemento_listar.clear();
+						complemento_listar.setText(end.getComplemento());
+						bairro_listar.setText(end.getBairro());
+						cidade_listar.setText(end.getCidade());
+						estado_listar.setText(end.getEstado());
+					}
+					//Contatos
+					Contato con = UtilDao.find(Contato.class, cod);
+					if(con != null){
+						celular_listar.clear();email_listar.clear();telefone_listar.clear();
+						if(con.getCelular() != null)celular_listar.setText(con.getCelular());
+						if(con.getEmail() != null)email_listar.setText(con.getEmail());
+						if(con.getTelefone() != null)telefone_listar.setText(con.getTelefone());
+						if(con.getWhatsapp() == 1){
+							whatsapp_listar.setSelected(true);
+						}else{
+							whatsapp_listar.setSelected(false);
+						}
+					}
+
+				}
 
 			}
 		});
 
     	table_cpf.setItems(oblist_cpf);
-    	table_usuarios.setItems(oblist_usuarios);
+    	table_usuarios.setItems(oblist_usuarios_view);
     }
 
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoUsuarios = new DaoUsuarios();
-		daoPessoas = new DaoPessoa();
-		daoMudarSenhas = new DaoMudarSenhas();
-		daolog = new DaoLog();
-
 		initTables();
 
 	}

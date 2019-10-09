@@ -10,17 +10,12 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.dao.DaoContatos;
-import br.com.Acad.dao.DaoCurriculo;
-import br.com.Acad.dao.DaoDisciplina;
-import br.com.Acad.dao.DaoEndereco;
-import br.com.Acad.dao.DaoPessoa;
-import br.com.Acad.dao.DaoProfessor;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.CurriculoDisciplinaID;
 import br.com.Acad.model.CurriculoID;
+import br.com.Acad.model.Disciplina;
 import br.com.Acad.model.DisciplinaProfessor;
 import br.com.Acad.model.DisciplinaProfessorID;
 import br.com.Acad.model.Endereco;
@@ -30,6 +25,7 @@ import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -182,18 +178,6 @@ public class CadastrarProfessorController implements Initializable{
 	@FXML
 	private Button add_button;
 
-	private DaoPessoa daoPessoas;
-
-	private DaoEndereco daoEnderecos;
-
-	private DaoContatos daoContatos;
-
-	private DaoProfessor daoProfessor;
-
-	private DaoCurriculo daoCurriculos;
-
-	private DaoDisciplina daoDisciplinas;
-
 	private ObservableList<Pessoa> oblist_pessoas = FXCollections.observableArrayList();
 
 	private ObservableList<Professor> oblist_professores = FXCollections.observableArrayList();
@@ -232,9 +216,8 @@ public class CadastrarProfessorController implements Initializable{
 			dp.setId(new DisciplinaProfessorID(pr.getCodPessoa(), cd.getId()));
 			dp.setNomeProfessor(pr.getNome());
 
-			daoProfessor.addDisciplinaToProfessor(dp);
+			UtilDao.persist(dp);
 			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getId().getCodProfessor());
-			SysLog.complete();
 
 			initTables();
 
@@ -248,7 +231,7 @@ public class CadastrarProfessorController implements Initializable{
 	void confirmar(ActionEvent event) {
 		if(checkTextFields()){
 
-			oblist_pessoas = daoPessoas.getAllPessoa();
+			oblist_pessoas = UtilDao.getLists(Pessoa.class);
 			for (int i = 0; i < oblist_pessoas.size(); i++) {
 				String obCPF = oblist_pessoas.get(i).getCpf();
 
@@ -272,7 +255,7 @@ public class CadastrarProfessorController implements Initializable{
 				p.setNaturalidade(naturalidade.getText());
 				p.setStatus("Ativo");
 
-				int cod = daoPessoas.addPessoa(p);
+				int cod = UtilDao.persist(p);
 				SysLog.addLog(SysLog.createPessoas(cod));
 
 				e.setCodPessoa(cod);
@@ -283,7 +266,7 @@ public class CadastrarProfessorController implements Initializable{
 				e.setRua(nomeRua.getText());
 				if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
-				daoEnderecos.addEndereco(e);
+				UtilDao.persist(e);
 				SysLog.addLog(SysLog.createDados("Endereço", cod));
 
 				c.setCodPessoa(cod);
@@ -298,7 +281,7 @@ public class CadastrarProfessorController implements Initializable{
 				}
 
 				if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-					daoContatos.addContato(c);
+					UtilDao.persist(c);
 					SysLog.addLog(SysLog.createDados("Contato", cod));
 				}
 
@@ -307,10 +290,8 @@ public class CadastrarProfessorController implements Initializable{
 				pr.setCpf(p.getCpf());
 				pr.setCursoFormacao(cursoFormacao.getText());
 				pr.setFormacao(formacao.getSelectionModel().getSelectedItem());
-				daoProfessor.addProfessor(pr);
+				UtilDao.persist(pr);
 				SysLog.addLog(SysLog.createTipoPessoa("Professor", cod));
-
-				SysLog.complete();
 
 				initTables();
 
@@ -394,7 +375,6 @@ public class CadastrarProfessorController implements Initializable{
 		formacao.getItems().addAll("Licenciatura", "Normal Superior", "Magistério", "Pedagogia", "Bacharelado");
 		new AutoCompleteComboBoxListener<>(estado);
 		new AutoCompleteComboBoxListener<>(cidade);
-		new AutoCompleteComboBoxListener<>(formacao);
 	}
 
 	@FXML
@@ -485,6 +465,15 @@ public class CadastrarProfessorController implements Initializable{
 		}
 
 
+		if(cursoFormacao.getText().isEmpty()){
+			Util.Alert("Verifique o curso de formação!");
+			return false;
+		}
+
+		if(formacao.getSelectionModel().getSelectedItem().isEmpty()){
+			Util.Alert("Selecione a formação do professor!");
+			return false;
+		}
 
 		return true;
 
@@ -498,8 +487,14 @@ public class CadastrarProfessorController implements Initializable{
 	void initTables(){
 		oblist_professores.clear();
 
-		oblist_professores = daoProfessor.getAllProfessores();
-		oblist_curriculos = daoCurriculos.getAllCurriculo();
+		oblist_professores = UtilDao.getLists(Professor.class);
+		filteredData = new FilteredList<>(oblist_professores);
+		oblist_curriculos = UtilDao.getLists(Curriculo.class);
+
+		for (Professor professor : oblist_professores) {
+			Pessoa p = UtilDao.find(Pessoa.class, professor.getCodPessoa());
+			professor.setNome(p.getNome());
+		}
 
 		col_codProfessor.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
 		col_nomeProfessor.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -515,9 +510,10 @@ public class CadastrarProfessorController implements Initializable{
 				Professor selected = table_professores.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas.clear();
-					oblist_disciplinas = daoProfessor.getDisciplinaOfProfessor(selected.getCodPessoa());
+					oblist_disciplinas = UtilDao.getLists(DisciplinaProfessor.class, selected.getCodPessoa());
 					for(DisciplinaProfessor dp: oblist_disciplinas){
-						dp.setNomeDisciplina(daoDisciplinas.getDisciplina(dp.getId().getCurriculoDisciplinaID().getCodDisciplina()).getNome());
+						Disciplina d = UtilDao.find(Disciplina.class, dp.getId().getCurriculoDisciplinaID().getCodDisciplina());
+						dp.setNomeDisciplina(d.getNome());
 					}
 					table_disciplinas.setItems(oblist_disciplinas);
 
@@ -572,10 +568,9 @@ public class CadastrarProfessorController implements Initializable{
 			if(newSelection != null){
 				DisciplinaProfessor selected = table_disciplinas.getSelectionModel().getSelectedItem();
 				if(selected != null) {
-					curriculo.setText(daoCurriculos.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID())
-							.getNome());
-					anoLetivo.setText(String.valueOf(daoCurriculos.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID())
-							.getId().getAnoLetivo()));
+					Curriculo c = UtilDao.find(Curriculo.class, selected.getId().getCurriculoDisciplinaID().getCurriculoID());
+					curriculo.setText(c.getNome());
+					anoLetivo.setText(String.valueOf(c.getId().getAnoLetivo()));
 				}
 			}
 		});
@@ -626,10 +621,11 @@ public class CadastrarProfessorController implements Initializable{
 				Curriculo selected = table_curriculo.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas_add.clear();
-					oblist_disciplinas_add = daoCurriculos.getAllDisciplinas(selected.getId().getCodCurriculo());
+					oblist_disciplinas_add = UtilDao.getLists(CurriculoDisciplina.class, selected.getId().getCodCurriculo());
 
 					for(CurriculoDisciplina c : oblist_disciplinas_add){
-						c.setNomeDisciplina(daoDisciplinas.getDisciplina(c.getId().getCodDisciplina()).getNome());
+						Disciplina d = UtilDao.find(Disciplina.class, c.getId().getCodDisciplina());
+						c.setNomeDisciplina(d.getNome());
 					}
 
 					table_disciplinas_add.setItems(oblist_disciplinas_add);
@@ -702,13 +698,6 @@ public class CadastrarProfessorController implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoPessoas = new DaoPessoa();
-		daoEnderecos = new DaoEndereco();
-		daoContatos = new DaoContatos();
-		daoProfessor = new DaoProfessor();
-		daoCurriculos = new DaoCurriculo();
-		daoDisciplinas = new DaoDisciplina();
-
 		populateBoxes();
 		initValidation();
 		initTables();

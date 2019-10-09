@@ -119,6 +119,8 @@ public class MainTelaController implements Initializable{
 			ScrollPane pane = loader.load();
 			drawerController = loader.getController();
 			drawerController.setMainTela(this);
+			Util.setStyle(pane);
+
 			drawer.setSidePane(pane);
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -211,6 +213,7 @@ public class MainTelaController implements Initializable{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/br/com/Acad/view/LoginTela.fxml"));
 			Parent root = loader.load();
+			Util.setStyle(root);
 			LoginController control = loader.getController();
 			control.setMainTela(this);
 

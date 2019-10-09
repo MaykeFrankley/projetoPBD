@@ -9,7 +9,6 @@ import br.com.Acad.app.Main;
 import br.com.Acad.dao.interfaces.IDaoPessoas;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Pessoa;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -130,10 +129,6 @@ public class DaoPessoa implements IDaoPessoas{
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-
-			Util.Alert(pessoa.getNome()+" foi removido do sistema!");
-    		SysLog.addLog(SysLog.deletePessoas(pessoa.getCodPessoa()));
-    		SysLog.complete();
 			return true;
 
 		}catch (PersistenceException e) {

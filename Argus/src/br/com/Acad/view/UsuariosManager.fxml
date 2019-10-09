@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
@@ -17,8 +18,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="695.0" prefWidth="1280.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.UsuariosManagerController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.UsuariosManagerController">
    <children>
+      <Label alignment="TOP_CENTER" opacity="0.51" text="Gerenciar Usuários" textFill="#ffff8d" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
       <ImageView fitHeight="703.0" fitWidth="1280.0" opacity="0.1" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <image>
             <Image url="@../../../../../Resources/images/argus_logo_transparent.png" />
@@ -30,18 +36,53 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <VBox alignment="TOP_CENTER" prefHeight="986.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox alignment="TOP_CENTER" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <JFXTextField fx:id="campo_pesquisa" labelFloat="true" minWidth="1197.0" onKeyPressed="#searchUsuario" prefHeight="43.0" prefWidth="1197.0" promptText="Digite qualquer informação da pessoa" />
-                              <TableView fx:id="table_usuarios" editable="true" prefHeight="570.0" prefWidth="1200.0" tableMenuButtonVisible="true">
+                              <TableView fx:id="table_usuarios" editable="true" prefWidth="1200.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa" prefWidth="75.0" text="Cod" />
-                                    <TableColumn fx:id="col_cpf" prefWidth="376.0" text="CPF" />
-                                    <TableColumn fx:id="col_username" prefWidth="247.0" text="Nome De usuario" />
-                                    <TableColumn fx:id="col_tipo" prefWidth="247.0" text="Tipo" />
-                                    <TableColumn fx:id="col_status" prefWidth="247.0" text="Status" />
+                                    <TableColumn fx:id="col_nome" minWidth="200.0" prefWidth="345.0" text="Nome" />
+                                    <TableColumn fx:id="col_cpf" minWidth="200.0" prefWidth="258.0" text="CPF" />
+                                    <TableColumn fx:id="col_username" minWidth="200.0" prefWidth="210.0" text="Nome De usuario" />
+                                    <TableColumn fx:id="col_tipo" minWidth="200.0" prefWidth="200.0" text="Tipo" />
+                                    <TableColumn fx:id="col_dt_nascimento" minWidth="200.0" prefWidth="247.0" text="Data de Nascimento" />
+                                    <TableColumn fx:id="col_naturalidade" minWidth="200.0" prefWidth="247.0" text="Naturalidade" />
+                                    <TableColumn fx:id="col_status" minWidth="200.0" prefWidth="247.0" text="Status" />
                                  </columns>
                               </TableView>
+                              <HBox spacing="50.0">
+                                 <children>
+                                    <VBox fillWidth="false" prefHeight="274.0" prefWidth="727.0" spacing="25.0">
+                                       <children>
+                                          <JFXTextField fx:id="nomeRua_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Rua" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="numero_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Número" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="complemento_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Complemento" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="bairro_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Bairro" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="cidade_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Cidade" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="estado_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Estado" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="30.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox prefHeight="425.0" prefWidth="584.0" spacing="25.0">
+                                       <children>
+                                          <JFXTextField fx:id="email_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="512.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="telefone_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="512.0" promptText="Telefone" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="celular_listar" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="512.0" promptText="Celular" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXCheckBox fx:id="whatsapp_listar" mouseTransparent="true" style="-fx-font-size: 18;" text="WhatsApp?" textFill="WHITE">
+                                             <font>
+                                                <Font size="20.0" />
+                                             </font>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="30.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                 </children>
+                              </HBox>
                               <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="464.0" spacing="40.0">
                                  <children>
                                     <JFXButton fx:id="btn_ativar" buttonType="RAISED" onAction="#desativar_ativar_Pessoas" prefHeight="46.0" prefWidth="111.0" text="Ativar" />
