@@ -1,7 +1,10 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +24,8 @@ import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
+import br.com.Acad.model.Usuario;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
@@ -229,11 +234,12 @@ public class PessoasManagerController implements Initializable{
 	}
 
 	@FXML
-	void confirmar_deletarPessoa(ActionEvent event) {
+	void confirmar_deletarPessoa(ActionEvent event) throws SQLException {
 		if(event.getSource() == confirmarDelete){
 			if(!ConfirmPassword.getText().isEmpty()){
 				String hash = DigestUtils.md5Hex(ConfirmPassword.getText());
 				if(hash.equals(MainTelaController.user.getSenha())){
+
 					UtilDao.remove(pessoaToEdit);
 					dialogPane.setVisible(false);
 					tabPane.setEffect(null);
@@ -244,7 +250,19 @@ public class PessoasManagerController implements Initializable{
 
 		    		SysLog.addLog(SysLog.deletePessoas(pessoaToEdit.getCodPessoa()));
 
+		    		Usuario u = UtilDao.find(Usuario.class, pessoaToEdit.getCpf());
+
+		    		if(u != null){
+		    			Connection con = ConnectionClass.createConnection();
+			    		PreparedStatement stmt = con.prepareStatement("DROP USER ?@'localhost';");
+			    		stmt.setString(1, u.getUser());
+			    		stmt.execute();
+			    		stmt.close();
+			    		con.close();
+		    		}
+
 		    		pessoaToEdit = null;
+
 				}
 			}
 		}else{

@@ -70,6 +70,11 @@ public class Main extends Application{
 			}
 		});
 
+	}
+
+	@Override
+	public void init() throws Exception {
+
 		FillDataBase db = new FillDataBase();
 
 		try {
@@ -78,12 +83,9 @@ public class Main extends Application{
 			e.printStackTrace();
 		}
 
-	}
-
-	@Override
-	public void init() throws Exception {
-
-		Main.factory = Persistence.createEntityManagerFactory("argusDB");
+		Platform.runLater(()-> {
+			Main.factory = Persistence.createEntityManagerFactory("argusDB");
+		});	
 
 		for (int i = 0; i < COUNT_LIMIT; i++) {
 			double progress = (double) i/10;

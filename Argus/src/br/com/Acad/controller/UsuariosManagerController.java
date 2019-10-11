@@ -149,7 +149,7 @@ public class UsuariosManagerController implements Initializable{
     private TableView<MudarSenha> table_cpf;
 
     @FXML
-    private TableColumn<?, ?> col_cpf_mud;
+    private TableColumn<MudarSenha, String> col_cpf_mud;
 
     @FXML
     private Tab desativarTab;
@@ -162,9 +162,6 @@ public class UsuariosManagerController implements Initializable{
 
     @FXML
     private JFXButton btn_desativar;
-
-    @FXML
-    private JFXButton btn_deletar;
 
     private ObservableList<Usuario> oblist_usuarios = FXCollections.observableArrayList();
 
@@ -252,9 +249,6 @@ public class UsuariosManagerController implements Initializable{
 				}else{
 					Util.Alert("Usuario já está desativada no sistema!");
 				}
-			}
-			else if(event.getSource() == btn_deletar){
-
 			}
 		}else{
 			Util.Alert("Selecione um usuario na tabela!");
