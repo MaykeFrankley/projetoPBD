@@ -614,9 +614,12 @@ public class ProfessorManagerController implements Initializable{
 		oblist_curriculos = UtilDao.getLists(Curriculo.class);
 
 		oblist_professores = UtilDao.getLists(Professor.class);
-		for (int i = 0; i < oblist_pessoas.size(); i++) {
-			oblist_professores.get(i).setNome(oblist_pessoas.get(i).getNome());
+		if(!oblist_pessoas.isEmpty()){
+			for (int i = 0; i < oblist_pessoas.size(); i++) {
+				oblist_professores.get(i).setNome(oblist_pessoas.get(i).getNome());
+			}
 		}
+
 
 		filteredData = new FilteredList<>(oblist_pessoas);
 		filteredData2 = new FilteredList<>(oblist_professores);

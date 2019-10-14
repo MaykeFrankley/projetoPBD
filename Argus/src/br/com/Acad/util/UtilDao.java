@@ -1,5 +1,6 @@
 package br.com.Acad.util;
 
+import br.com.Acad.dao.DaoAlunos;
 import br.com.Acad.dao.DaoContatos;
 import br.com.Acad.dao.DaoCurriculo;
 import br.com.Acad.dao.DaoDisciplina;
@@ -8,7 +9,9 @@ import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoProfessor;
+import br.com.Acad.dao.DaoResponsaveis;
 import br.com.Acad.dao.DaoUsuarios;
+import br.com.Acad.model.Aluno;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
@@ -21,8 +24,12 @@ import br.com.Acad.model.LogSistemaID;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Professor;
+import br.com.Acad.model.ResponsavelFinanceiro;
+import br.com.Acad.model.ResponsavelFinanceiroID;
 import br.com.Acad.model.Usuario;
+import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewProfessor;
+import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.model.ViewUsuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,6 +45,8 @@ public class UtilDao {
 	private static final DaoPessoa daoPessoa = new DaoPessoa();
 	private static final DaoProfessor daoProfessor = new DaoProfessor();
 	private static final DaoUsuarios daoUsuarios = new DaoUsuarios();
+	private static final DaoAlunos daoAlunos = new DaoAlunos();
+	private static final DaoResponsaveis daoResponsaveis = new DaoResponsaveis();
 
 	public static int persist(Object obj){
 		if(obj instanceof Pessoa){
@@ -73,6 +82,12 @@ public class UtilDao {
 		else if(obj instanceof DisciplinaProfessor){
 			daoProfessor.addDisciplinaToProfessor((DisciplinaProfessor) obj);
 		}
+		else if(obj instanceof Aluno){
+			daoAlunos.addAluno((Aluno) obj);
+		}
+		else if(obj instanceof ResponsavelFinanceiro){
+			daoResponsaveis.addResponsavel((ResponsavelFinanceiro) obj);
+		}
 		return 0;
 
 	}
@@ -98,6 +113,12 @@ public class UtilDao {
 		}
 		else if(obj instanceof Professor){
 			daoProfessor.updateProfessor((Professor) obj);
+		}
+		else if(obj instanceof Aluno){
+			daoAlunos.updateAluno((Aluno) obj);
+		}
+		else if(obj instanceof ResponsavelFinanceiro){
+			daoResponsaveis.updateResponsavel((ResponsavelFinanceiro) obj);
 		}
 	}
 
@@ -157,6 +178,20 @@ public class UtilDao {
 			Usuario u = daoUsuarios.getUsuario((String) id);
 			return (T) u;
 		}
+		else if(c == Aluno.class){
+			Aluno u = daoAlunos.getAluno((int) id);
+			return (T) u;
+		}
+
+		else if(c == ResponsavelFinanceiro.class){
+			ResponsavelFinanceiro res = daoResponsaveis.getResponsavelFinanceiro((ResponsavelFinanceiroID) id);
+			return (T) res;
+		}
+
+		else if(c == ViewResponsavelFinanceiro.class){
+			ViewResponsavelFinanceiro rf = daoAlunos.getResponsavel((int) id);
+			return (T) rf;
+		}
 
 		return null;
 	}
@@ -207,6 +242,12 @@ public class UtilDao {
 		}
 		else if(c == ViewProfessor.class){
 			oblist = daoProfessor.getAllProfessoresView();
+		}
+		else if(c == ViewAluno.class){
+			oblist = daoAlunos.getAllAlunosView();
+		}
+		else if(c == ViewResponsavelFinanceiro.class){
+			oblist = daoResponsaveis.getAllViewResponsavel();
 		}
 
 		return (T) oblist;

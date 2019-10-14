@@ -331,7 +331,7 @@ public class PessoasManagerController implements Initializable{
 			if(cpf_update.getText().length() > 0)p.setCpf(cpf_update.getText());
 			else p.setCpf(null);
 
-			daoPessoas.UpdatePessoa(p);
+			UtilDao.update(p);
 			int cod = p.getCodPessoa();
 
 			e.setCodPessoa(cod);

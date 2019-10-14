@@ -104,6 +104,12 @@ public class DrawerController implements Initializable{
     }
 
     @FXML
+    void cadastrar_alunos(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarAlunos.fxml"), scene, "x");
+    }
+
+    @FXML
     void cadastrar_usuario(ActionEvent event) throws IOException {
     	Scene scene = (Scene) ((Node) event.getSource()).getScene();
     	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarUsuario.fxml"), scene, "x");
@@ -159,7 +165,8 @@ public class DrawerController implements Initializable{
     	JFXButton yes = new JFXButton("LogOut");
     	yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
     		mainController.disableDrawer();
-    		new SetDbUser("root", "9612");
+    		new SetDbUser("root", "9612").run();
+
     		try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {

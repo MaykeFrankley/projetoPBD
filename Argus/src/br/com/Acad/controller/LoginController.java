@@ -217,20 +217,13 @@ public class LoginController implements Initializable{
     @FXML
     void handle_request(ActionEvent event) {
 
-    	if(CPF.getText().length() == 11 && novaSenha.getText().length() >= 6 && novaSenha.getText().equals(confirmarSenha.getText())){
+    	if((CPF.getText().length() == 11 || CPF.getText().length() == 14) && novaSenha.getText().length() >= 6 && novaSenha.getText().equals(confirmarSenha.getText())){
     		TextFieldFormatter tff = new TextFieldFormatter();
     		tff = new TextFieldFormatter();
 			tff.setMask("###.###.###-##");
 			tff.setCaracteresValidos("0123456789");
 			tff.setTf(CPF);
 			tff.formatter();
-
-			new SetDbUser("root", "9612");
-
-//			if(CPF.getText().equals("000.000.000-00")){
-//				event.consume();
-//				return;
-//			}
 
 			Usuario user = UtilDao.find(Usuario.class, CPF.getText());
 			if(user == null){

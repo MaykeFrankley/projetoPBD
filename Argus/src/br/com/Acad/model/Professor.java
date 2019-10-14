@@ -28,6 +28,9 @@ public class Professor {
 	@Column
 	private String cursoFormacao;
 
+	@Column
+	private String status;
+
 	public Professor() {
 		// TODO Auto-generated constructor stub
 	}
@@ -71,6 +74,16 @@ public class Professor {
 	public void setCursoFormacao(String cursoFormacao) {
 		this.cursoFormacao = cursoFormacao;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
 
 
 

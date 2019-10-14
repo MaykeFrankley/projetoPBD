@@ -247,7 +247,7 @@
                                  <children>
                                     <JFXButton fx:id="btn_ativar" buttonType="RAISED" onAction="#desativar_ativar_Pessoas" prefHeight="46.0" prefWidth="111.0" text="Ativar" />
                                     <JFXButton fx:id="btn_desativar" buttonType="RAISED" onAction="#desativar_ativar_Pessoas" text="Desativar" />
-                                    <JFXButton fx:id="btn_deletar" buttonType="RAISED" onAction="#desativar_ativar_Pessoas" prefHeight="46.0" prefWidth="101.0" style="-fx-background-color: red;" text="Deletar" />
+                                    <JFXButton fx:id="btn_deletar" buttonType="RAISED" disable="true" onAction="#desativar_ativar_Pessoas" prefHeight="46.0" prefWidth="101.0" style="-fx-background-color: red;" text="Deletar" visible="false" />
                                  </children>
                               </HBox>
                            </children>

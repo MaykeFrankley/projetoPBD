@@ -92,7 +92,8 @@ public class DaoPessoa implements IDaoPessoas{
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen())
+				entityMn.close();
 		}
 		return false;
 	}
@@ -114,7 +115,8 @@ public class DaoPessoa implements IDaoPessoas{
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen())
+				entityMn.close();
 		}
 		return false;
 	}

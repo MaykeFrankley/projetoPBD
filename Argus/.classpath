@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="Resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_201"/>
 	<classpathentry kind="lib" path="Libs/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="Libs/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="Libs/cglib-nodep-2.1_3.jar"/>
@@ -26,8 +25,7 @@
 	<classpathentry kind="lib" path="Libs/jta.jar"/>
 	<classpathentry kind="lib" path="Libs/log4j-1.2.11.jar"/>
 	<classpathentry kind="lib" path="Libs/mysql-connector-java-8.0.16.jar"/>
-	<classpathentry kind="lib" path="Libs/mysql-connector-java-8.0.17.jar"/>
-	<classpathentry kind="lib" path="Libs/scenicView.jar"/>
 	<classpathentry kind="lib" path="Libs/xstream-1.4.10.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

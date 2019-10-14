@@ -386,14 +386,14 @@ INSERT INTO enderecos(codPessoa, Rua, Numero, Complemento, Bairro, Cidade, Estad
 --
 -- Inserting data into table professores
 --
-INSERT INTO professores(codPessoa, CPF, formacao, cursoFormacao) VALUES
-(94, '653.516.412-65', 'Normal Superior', 'Information Technology'),
-(2, '568.474.734-18', 'Bacharelado', 'Marketing'),
-(52, '318.317.425-35', 'Bacharelado', 'Sales'),
-(37, '653.516.412-65', 'Normal Superior', 'Information Technology'),
-(81, '914.828.762-20', 'Bacharelado', 'Research and Development'),
-(8, '071.000.448-85', 'Licenciatura', 'Finance'),
-(58, '687.090.333-66', 'Licenciatura', 'Executive'),
-(34, '542.982.023-74', 'Bacharelado', 'Research and Development'),
-(84, '682.826.086-50', 'Licenciatura', 'Finance'),
-(23, '022.043.228-96', 'Normal Superior', 'Operations');
+INSERT INTO professores(codPessoa, CPF, formacao, cursoFormacao, Status) VALUES
+(94, '653.516.412-65', 'Normal Superior', 'Information Technology', 'Ativo'),
+(2, '568.474.734-18', 'Bacharelado', 'Marketing', 'Ativo'),
+(52, '318.317.425-35', 'Bacharelado', 'Sales', 'Ativo'),
+(37, '653.516.412-65', 'Normal Superior', 'Information Technology', 'Ativo'),
+(81, '914.828.762-20', 'Bacharelado', 'Research and Development', 'Ativo'),
+(8, '071.000.448-85', 'Licenciatura', 'Finance', 'Ativo'),
+(58, '687.090.333-66', 'Licenciatura', 'Executive', 'Ativo'),
+(34, '542.982.023-74', 'Bacharelado', 'Research and Development', 'Ativo'),
+(84, '682.826.086-50', 'Licenciatura', 'Finance', 'Ativo'),
+(23, '022.043.228-96', 'Normal Superior', 'Operations', 'Ativo');

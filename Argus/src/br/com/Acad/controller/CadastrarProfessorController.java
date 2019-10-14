@@ -290,6 +290,7 @@ public class CadastrarProfessorController implements Initializable{
 				pr.setCpf(p.getCpf());
 				pr.setCursoFormacao(cursoFormacao.getText());
 				pr.setFormacao(formacao.getSelectionModel().getSelectedItem());
+				pr.setStatus("Ativo");
 				UtilDao.persist(pr);
 				SysLog.addLog(SysLog.createTipoPessoa("Professor", cod));
 

@@ -22,7 +22,7 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="COFFEE" size="16" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton alignment="TOP_LEFT" prefHeight="31.0" prefWidth="193.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Alunos">
+                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_alunos" prefHeight="31.0" prefWidth="193.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Alunos">
                      <graphic>
                         <FontAwesomeIconView fill="WHITE" glyphName="CHILD" size="16" />
                      </graphic>

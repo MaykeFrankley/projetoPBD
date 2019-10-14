@@ -178,8 +178,11 @@ public class MainTelaController implements Initializable{
     }
 
     void cancelNotificationTask(){
-    	timer.cancel();
-    	timer.purge();
+    	if(timer != null){
+    		timer.cancel();
+        	timer.purge();
+    	}
+
     }
 
     void disableDrawer(){

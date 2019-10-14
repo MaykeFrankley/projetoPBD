@@ -23,7 +23,6 @@ public class Settings {
 			else {
 				file.delete();
 				file.createNewFile();
-				Runtime.getRuntime().exec("attrib " + "" + file.getAbsolutePath() + "" + " +R");
 			}
 
 			opcoesLista = opcoes;
