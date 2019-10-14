@@ -10,8 +10,10 @@ import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoProfessor;
 import br.com.Acad.dao.DaoResponsaveis;
+import br.com.Acad.dao.DaoTurmas;
 import br.com.Acad.dao.DaoUsuarios;
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
@@ -26,6 +28,7 @@ import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Professor;
 import br.com.Acad.model.ResponsavelFinanceiro;
 import br.com.Acad.model.ResponsavelFinanceiroID;
+import br.com.Acad.model.Turma;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewProfessor;
@@ -47,6 +50,7 @@ public class UtilDao {
 	private static final DaoUsuarios daoUsuarios = new DaoUsuarios();
 	private static final DaoAlunos daoAlunos = new DaoAlunos();
 	private static final DaoResponsaveis daoResponsaveis = new DaoResponsaveis();
+	private static final DaoTurmas daoTurmas = new DaoTurmas();
 
 	public static int persist(Object obj){
 		if(obj instanceof Pessoa){
@@ -88,6 +92,12 @@ public class UtilDao {
 		else if(obj instanceof ResponsavelFinanceiro){
 			daoResponsaveis.addResponsavel((ResponsavelFinanceiro) obj);
 		}
+		else if(obj instanceof Turma){
+			return daoTurmas.addTurma((Turma) obj);
+		}
+		else if(obj instanceof AlunoTurma){
+			daoTurmas.addAlunoTurma((AlunoTurma) obj);
+		}
 		return 0;
 
 	}
@@ -119,6 +129,9 @@ public class UtilDao {
 		}
 		else if(obj instanceof ResponsavelFinanceiro){
 			daoResponsaveis.updateResponsavel((ResponsavelFinanceiro) obj);
+		}
+		else if(obj instanceof Turma){
+			daoTurmas.updateTurma((Turma) obj);
 		}
 	}
 
@@ -193,6 +206,11 @@ public class UtilDao {
 			return (T) rf;
 		}
 
+		else if(c == Turma.class){
+			Turma tur = daoTurmas.getTurma((int) id);
+			return (T) tur;
+		}
+
 		return null;
 	}
 
@@ -249,6 +267,9 @@ public class UtilDao {
 		else if(c == ViewResponsavelFinanceiro.class){
 			oblist = daoResponsaveis.getAllViewResponsavel();
 		}
+		else if(c == Turma.class){
+			oblist = daoTurmas.getAllTurmas();
+		}
 
 		return (T) oblist;
 	}
@@ -262,6 +283,12 @@ public class UtilDao {
 		}
 		else if(c == DisciplinaProfessor.class){
 			oblist = daoProfessor.getDisciplinaOfProfessor((int) id);
+		}
+		else if(c == ViewAluno.class){
+			oblist = daoTurmas.getAlunos((int) id);
+		}
+		else if(c == AlunoTurma.class){
+			oblist = daoTurmas.getAlunos((int) id);
 		}
 
 		return (T) oblist;

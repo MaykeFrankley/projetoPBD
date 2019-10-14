@@ -134,7 +134,7 @@ public class DaoCurriculo implements IDaoCurriculo{
 	@Override
 	public ObservableList<CurriculoDisciplina> getAllDisciplinas(String codCurriculo) {
 		createEM();
-		query = entityMn.createQuery("from CurriculoDisciplina where codCurriculo = :c");
+		query = entityMn.createQuery("from CurriculoDisciplina where codCurriculo = :c order by ano");
 		query.setParameter("c", codCurriculo);
 
 		List<CurriculoDisciplina> list = query.getResultList();

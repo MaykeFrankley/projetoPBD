@@ -14,13 +14,17 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoTurma;
+import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
+import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.CurriculoID;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.ResponsavelFinanceiro;
 import br.com.Acad.model.ResponsavelFinanceiroID;
+import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.TextFieldFormatter;
@@ -315,6 +319,33 @@ public class CadastrarAlunoController implements Initializable{
 	    	a.setStatus("Ativo");
 
 	    	UtilDao.persist(a);
+
+	    	ObservableList<CurriculoDisciplina> disciplinas = UtilDao.getLists(CurriculoDisciplina.class, selectedCurriculo.getId().getCodCurriculo());
+	    	ObservableList<Turma> turmas = UtilDao.getLists(Turma.class);
+	    	for (Turma turma : turmas) {
+				if(turma.getCodCurriculo().equals(selectedCurriculo.getId().getCodCurriculo()) && turma.getAnoLetivo() == selectedCurriculo.getId().getAnoLetivo()){
+					if(turma.getAno() == disciplinas.get(0).getId().getAno()){
+						AlunoTurma at = new AlunoTurma();
+						at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
+						UtilDao.persist(at);
+
+						codResponsavel = 0;
+				    	initTable();
+						return;
+					}
+				}
+			}
+
+	    	Turma turma = new Turma();
+	    	turma.setCodCurriculo(selectedCurriculo.getId().getCodCurriculo());
+	    	turma.setAnoLetivo(selectedCurriculo.getId().getAnoLetivo());
+	    	turma.setAno(disciplinas.get(0).getId().getAno());
+
+	    	UtilDao.persist(turma);
+
+	    	AlunoTurma at = new AlunoTurma();
+			at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
+			UtilDao.persist(at);
 
 	    	codResponsavel = 0;
 	    	initTable();
