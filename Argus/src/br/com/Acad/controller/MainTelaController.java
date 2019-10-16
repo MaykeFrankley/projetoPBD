@@ -13,9 +13,9 @@ import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
 import br.com.Acad.app.Main;
-import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -235,9 +235,7 @@ public class MainTelaController implements Initializable{
 		@Override
 		public void run() {
 
-			DaoMudarSenhas daoMs = new DaoMudarSenhas();
-
-			if(daoMs.getAllRequests().size() > 0){
+			if(UtilDao.daoMudarSenhas.getAllRequests().size() > 0){
 				Platform.runLater(new Runnable() {
 
 					@Override

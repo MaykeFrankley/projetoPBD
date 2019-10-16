@@ -98,7 +98,7 @@ public class LoginController implements Initializable{
 
     	if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
     		String hash = DigestUtils.md5Hex(txt_senha.getText());
-    		Usuario check = UtilDao.find(Usuario.class, txt_login.getText(), hash);
+    		Usuario check = UtilDao.daoUsuarios.getUsuario(txt_login.getText(), hash);
         	label_error.setVisible(false);
 
         	if(check != null){
@@ -112,7 +112,7 @@ public class LoginController implements Initializable{
         		    protected Void call() throws Exception {
         		        for(int i = 0; i < 10; i++) {
         		            updateProgress(i, 9);
-        		            Thread.sleep(500);
+        		            Thread.sleep(1);
         		        }
 
         		        Platform.runLater(() -> {
@@ -154,64 +154,9 @@ public class LoginController implements Initializable{
 
     @FXML
     void handle_loginEnter(KeyEvent event) throws IOException, InterruptedException {
-
     	if(event.getCode().toString().equals("ENTER")){
-
-    		if(txt_senha.getText().length() > 0 && txt_login.getText().length() > 0){
-    			String hash = DigestUtils.md5Hex(txt_senha.getText());
-            	Usuario check = (Usuario) UtilDao.find(Usuario.class, txt_login.getText(), hash);
-            	label_error.setVisible(false);
-
-            	if(check != null){
-
-            		Timer timer = new Timer();
-            		timer.schedule(new SetDbUser(txt_login.getText(), hash), 0);
-
-            		progressBar.setVisible(true);
-            		Task<Void> tarefa = new Task<Void>() {
-
-            		    @Override
-            		    protected Void call() throws Exception {
-            		        for(int i = 0; i < 10; i++) {
-            		            updateProgress(i, 9);
-            		            Thread.sleep(500);
-            		        }
-
-            		        Platform.runLater(() -> {
-
-                            	Util.contentPane.getChildren().remove(loginPane);
-
-                        		mainTela.enableDrawer();
-                        		mainTela.setUser(check);
-                    			mainTela.enableHamburger();
-                    			mainTela.enableNotificationTask();
-
-                    			SysLog.addLog(SysLog.login(check.getUser()));
-
-                            });
-            		        return null;
-            		    }
-            		};
-
-            		progressBar.progressProperty().bind(tarefa.progressProperty());
-            		final Thread thread = new Thread(tarefa, "task-thread");
-                    thread.setDaemon(true);
-                    thread.start();
-
-                    box_login.setDisable(true);
-
-            	}
-            	else{
-            		label_error.setVisible(true);
-            		FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.1), label_error);
-            		fadeTransition.setFromValue(0.0);
-            		fadeTransition.setToValue(1.0);
-            		fadeTransition.setCycleCount(8);
-            		fadeTransition.play();
-            	}
-        	}
+    		handle_login(new ActionEvent());
     	}
-
     }
 
     @FXML
@@ -225,7 +170,7 @@ public class LoginController implements Initializable{
 			tff.setTf(CPF);
 			tff.formatter();
 
-			Usuario user = UtilDao.find(Usuario.class, CPF.getText());
+			Usuario user = UtilDao.daoUsuarios.getUsuario(CPF.getText());
 			if(user == null){
 				label_error2.setVisible(true);
         		FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.1), label_error2);
@@ -243,7 +188,7 @@ public class LoginController implements Initializable{
 			String hash = DigestUtils.md5Hex(novaSenha.getText());
 			mudarSenha.setSenha(hash);
 
-			UtilDao.persist(mudarSenha);
+			UtilDao.daoMudarSenhas.addRequest(mudarSenha);
 
     		Util.Alert("Solicitação enviada!\nAguarde um administrador confirmar.");
     		mudarSenhaMenu(event);

@@ -7,7 +7,7 @@
     <property name="dir.workspace" value="C:/Users/Mayke/workspace"/>
     <property name="dir.jarfile" value="C:/Users/Mayke/Desktop/PBD res"/>
     <target name="create_run_jar">
-        <jar destfile="${dir.jarfile}/Argus.jar" filesetmanifest="mergewithoutmain" duplicate="preserve">
+        <jar destfile="${dir.jarfile}/Argus.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="br.com.Acad.app.Main"/>
                 <attribute name="Class-Path" value="."/>
@@ -19,8 +19,9 @@
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-codec-1.11.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-collections-2.1.1.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-logging-1.0.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/controlsfx-8.40.15.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/dom4j-1.6.1.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/ejb3-persistence.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/fontawesomefx-8.9.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/hibernate-annotations.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/hibernate-commons-annotations.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/hibernate-entitymanager.jar"/>
@@ -29,15 +30,13 @@
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/javassist-3.18.0-ga.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/javassist.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jboss-archive-browsing.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jfoenix.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jfxswt.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jta.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/log4j-1.2.11.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/xstream-1.4.10.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Mayke/Desktop/eclipse/plugins/org.eclipse.fx.ide.css.jfx8_2.4.0.201605112122.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/controlsfx-8.40.15.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/fontawesomefx-8.9.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jfoenix.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/mysql-connector-java-8.0.16.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/xstream-1.4.10.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/ejb3-persistence-1.0.2.GA.jar"/>
         </jar>
     </target>
 </project>

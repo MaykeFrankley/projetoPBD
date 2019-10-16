@@ -161,11 +161,11 @@ public class CadastrarCurriculoController implements Initializable{
 			c.setNome(txt_nome.getText());
 			c.setTipo(box_tipo.getSelectionModel().getSelectedItem());
 
-			UtilDao.persist(c);
+			UtilDao.daoCurriculo.addCurriculo(c);
 			SysLog.addLog(SysLog.createCurriculo(c));
 		}else{
 			updateCurriculo.setNome(txt_nome.getText());
-			UtilDao.update(updateCurriculo);
+			UtilDao.daoCurriculo.updateCurriculo(updateCurriculo);
 			SysLog.addLog(SysLog.message("atualizou o curriculo \""+txt_nome.getText()+"\"!"));
 		}
 
@@ -198,7 +198,7 @@ public class CadastrarCurriculoController implements Initializable{
 			cd.setCargaHoraria(Integer.valueOf(cargaHoraria_add.getText()));
 			cd.setNomeCurriculo(c.getNome());
 			cd.setNomeDisciplina(d.getNome());
-			UtilDao.persist(cd);
+			UtilDao.daoCurriculo.addDisciplinaToCurriculo(cd);
 			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getId().getCodCurriculo()+" e ano letivo: "+c.getId().getAnoLetivo()));
 
 			cancelar(event);
@@ -224,10 +224,10 @@ public class CadastrarCurriculoController implements Initializable{
 
 	void initTables(){
 		oblist_curriculo.clear();
-		oblist_curriculo = UtilDao.getLists(Curriculo.class);
+		oblist_curriculo = UtilDao.daoCurriculo.getAllCurriculo();
 
 		oblist_disciplinas_add.clear();
-		oblist_disciplinas_add = UtilDao.getLists(Disciplina.class);
+		oblist_disciplinas_add = UtilDao.daoDisciplina.getAllDisciplinas();
 
 		//TableCurriculo1
 		col_cod.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -334,10 +334,10 @@ public class CadastrarCurriculoController implements Initializable{
 				add_button.setVisible(true);
 				oblist_disciplinasCur.clear();
 
-				oblist_disciplinasCur = UtilDao.getLists(CurriculoDisciplina.class, selected.getId().getCodCurriculo());
+				oblist_disciplinasCur = UtilDao.daoCurriculo.getAllDisciplinas(selected.getId().getCodCurriculo());
 
 				for (CurriculoDisciplina curriculoDisc : oblist_disciplinasCur) {
-					curriculoDisc.setNomeDisciplina(((Disciplina) UtilDao.find(Disciplina.class, curriculoDisc.getId().getCodDisciplina())).getNome());
+					curriculoDisc.setNomeDisciplina(((Disciplina) UtilDao.daoDisciplina.getDisciplina(curriculoDisc.getId().getCodDisciplina())).getNome());
 				}
 
 				table_disciplinas.setItems(oblist_disciplinasCur);

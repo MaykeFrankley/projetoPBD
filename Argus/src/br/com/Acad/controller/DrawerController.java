@@ -124,8 +124,9 @@ public class DrawerController implements Initializable{
     }
 
     @FXML
-    void gerenciar_alunos(ActionEvent event) {
-
+    void gerenciar_alunos(ActionEvent event) throws IOException {
+    	Scene scene = (Scene) ((Node) event.getSource()).getScene();
+    	Util.LoadWindow(getClass().getResource("/br/com/Acad/view/AlunosManager.fxml"), scene, "y");
     }
 
     @FXML
@@ -166,12 +167,6 @@ public class DrawerController implements Initializable{
     	yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
     		mainController.disableDrawer();
     		new SetDbUser("root", "9612").run();
-
-    		try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
 
         	try {
         		FXMLLoader loader = new FXMLLoader();

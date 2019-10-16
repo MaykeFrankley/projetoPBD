@@ -216,7 +216,7 @@ public class CadastrarProfessorController implements Initializable{
 			dp.setId(new DisciplinaProfessorID(pr.getCodPessoa(), cd.getId()));
 			dp.setNomeProfessor(pr.getNome());
 
-			UtilDao.persist(dp);
+			UtilDao.daoProfessor.addDisciplinaToProfessor(dp);
 			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getId().getCodProfessor());
 
 			initTables();
@@ -231,7 +231,7 @@ public class CadastrarProfessorController implements Initializable{
 	void confirmar(ActionEvent event) {
 		if(checkTextFields()){
 
-			oblist_pessoas = UtilDao.getLists(Pessoa.class);
+			oblist_pessoas = UtilDao.daoPessoa.getAllPessoa();
 			for (int i = 0; i < oblist_pessoas.size(); i++) {
 				String obCPF = oblist_pessoas.get(i).getCpf();
 
@@ -255,7 +255,7 @@ public class CadastrarProfessorController implements Initializable{
 				p.setNaturalidade(naturalidade.getText());
 				p.setStatus("Ativo");
 
-				int cod = UtilDao.persist(p);
+				int cod = UtilDao.daoPessoa.addPessoa(p);
 				SysLog.addLog(SysLog.createPessoas(cod));
 
 				e.setCodPessoa(cod);
@@ -266,7 +266,7 @@ public class CadastrarProfessorController implements Initializable{
 				e.setRua(nomeRua.getText());
 				if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
-				UtilDao.persist(e);
+				UtilDao.daoEnderecos.addEndereco(e);
 				SysLog.addLog(SysLog.createDados("Endereço", cod));
 
 				c.setCodPessoa(cod);
@@ -281,7 +281,7 @@ public class CadastrarProfessorController implements Initializable{
 				}
 
 				if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-					UtilDao.persist(c);
+					UtilDao.daoContatos.addContato(c);
 					SysLog.addLog(SysLog.createDados("Contato", cod));
 				}
 
@@ -291,7 +291,7 @@ public class CadastrarProfessorController implements Initializable{
 				pr.setCursoFormacao(cursoFormacao.getText());
 				pr.setFormacao(formacao.getSelectionModel().getSelectedItem());
 				pr.setStatus("Ativo");
-				UtilDao.persist(pr);
+				UtilDao.daoProfessor.addProfessor(pr);
 				SysLog.addLog(SysLog.createTipoPessoa("Professor", cod));
 
 				initTables();
@@ -428,8 +428,13 @@ public class CadastrarProfessorController implements Initializable{
 			return false;
 		}
 
-		if(estado.getSelectionModel().getSelectedItem() == null || cidade.getSelectionModel().getSelectedItem() == null){
-			Util.Alert("Selecione cidade e estado!");
+		if(estado.getSelectionModel().getSelectedItem() == null){
+			Util.Alert("Selecione o estado!");
+			return false;
+		}
+
+		if(cidade.getSelectionModel().getSelectedItem() == null){
+			Util.Alert("Selecione a cidade!");
 			return false;
 		}
 
@@ -488,12 +493,12 @@ public class CadastrarProfessorController implements Initializable{
 	void initTables(){
 		oblist_professores.clear();
 
-		oblist_professores = UtilDao.getLists(Professor.class);
+		oblist_professores = UtilDao.daoProfessor.getAllProfessores();
 		filteredData = new FilteredList<>(oblist_professores);
-		oblist_curriculos = UtilDao.getLists(Curriculo.class);
+		oblist_curriculos = UtilDao.daoCurriculo.getAllCurriculo();
 
 		for (Professor professor : oblist_professores) {
-			Pessoa p = UtilDao.find(Pessoa.class, professor.getCodPessoa());
+			Pessoa p = UtilDao.daoPessoa.getPessoa(professor.getCodPessoa());
 			professor.setNome(p.getNome());
 		}
 
@@ -511,9 +516,9 @@ public class CadastrarProfessorController implements Initializable{
 				Professor selected = table_professores.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas.clear();
-					oblist_disciplinas = UtilDao.getLists(DisciplinaProfessor.class, selected.getCodPessoa());
+					oblist_disciplinas = UtilDao.daoProfessor.getDisciplinaOfProfessor(selected.getCodPessoa());
 					for(DisciplinaProfessor dp: oblist_disciplinas){
-						Disciplina d = UtilDao.find(Disciplina.class, dp.getId().getCurriculoDisciplinaID().getCodDisciplina());
+						Disciplina d = UtilDao.daoDisciplina.getDisciplina(dp.getId().getCurriculoDisciplinaID().getCodDisciplina());
 						dp.setNomeDisciplina(d.getNome());
 					}
 					table_disciplinas.setItems(oblist_disciplinas);
@@ -569,7 +574,7 @@ public class CadastrarProfessorController implements Initializable{
 			if(newSelection != null){
 				DisciplinaProfessor selected = table_disciplinas.getSelectionModel().getSelectedItem();
 				if(selected != null) {
-					Curriculo c = UtilDao.find(Curriculo.class, selected.getId().getCurriculoDisciplinaID().getCurriculoID());
+					Curriculo c = UtilDao.daoCurriculo.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID());
 					curriculo.setText(c.getNome());
 					anoLetivo.setText(String.valueOf(c.getId().getAnoLetivo()));
 				}
@@ -622,10 +627,10 @@ public class CadastrarProfessorController implements Initializable{
 				Curriculo selected = table_curriculo.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas_add.clear();
-					oblist_disciplinas_add = UtilDao.getLists(CurriculoDisciplina.class, selected.getId().getCodCurriculo());
+					oblist_disciplinas_add = UtilDao.daoCurriculo.getAllDisciplinas(selected.getId().getCodCurriculo());
 
 					for(CurriculoDisciplina c : oblist_disciplinas_add){
-						Disciplina d = UtilDao.find(Disciplina.class, c.getId().getCodDisciplina());
+						Disciplina d = UtilDao.daoDisciplina.getDisciplina(c.getId().getCodDisciplina());
 						c.setNomeDisciplina(d.getNome());
 					}
 

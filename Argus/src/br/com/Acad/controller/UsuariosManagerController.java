@@ -191,7 +191,7 @@ public class UsuariosManagerController implements Initializable{
     		if(user != null){
             	user.setSenha(novaSenha.getText());
 
-            	UtilDao.update(user);
+            	UtilDao.daoUsuarios.updateUsuario(user);
 
             	DaoMudarSenhas daoMudarSenhas = new DaoMudarSenhas();
             	daoMudarSenhas.closeRequest(ms);
@@ -213,7 +213,7 @@ public class UsuariosManagerController implements Initializable{
 
             	ls.setAcao("O admin autorizou mudança de senha do usuário \""+user.getUser()+"\".");
 
-            	UtilDao.persist(ls);
+            	UtilDao.daoLog.addLog(ls);
 
     		}
 
@@ -226,12 +226,12 @@ public class UsuariosManagerController implements Initializable{
     @FXML
     void desativar_ativar_Pessoas(ActionEvent event)  {
     	ViewUsuario view = table_usuarios.getSelectionModel().getSelectedItem();
-    	Usuario selected = UtilDao.find(Usuario.class, view.getCpf());
+    	Usuario selected = UtilDao.daoUsuarios.getUsuario(view.getCpf());
     	if(selected != null){
     		DaoPessoa daoPessoa = new DaoPessoa();
 
 			if(event.getSource() == btn_ativar){
-				Pessoa p = UtilDao.find(Pessoa.class, selected.getCodPessoa());
+				Pessoa p = UtilDao.daoPessoa.getPessoa(selected.getCodPessoa());
 				daoPessoa.desativarPessoa(p);
 				initTables();
 			}
@@ -243,7 +243,7 @@ public class UsuariosManagerController implements Initializable{
 				}
 				if(selected.getStatus().equals("Ativo")){
 					selected.setStatus("Inativo");
-					UtilDao.update(selected);
+					UtilDao.daoUsuarios.updateUsuario(selected);
 					Util.Alert("Foi desativado do sistema e não poderá mais fazer login!\n");
 					initTables();
 				}else{
@@ -294,9 +294,9 @@ public class UsuariosManagerController implements Initializable{
     	oblist_usuarios.clear();
     	oblist_cpf.clear();
 
-		oblist_usuarios = UtilDao.getLists(Usuario.class);
-		oblist_usuarios_view = UtilDao.getLists(ViewUsuario.class);
-		oblist_cpf = UtilDao.getLists(MudarSenha.class);
+		oblist_usuarios = UtilDao.daoUsuarios.getAllUsuarios();
+		oblist_usuarios_view = UtilDao.daoUsuarios.getAllUsuariosView();
+		oblist_cpf = UtilDao.daoMudarSenhas.getAllRequests();
 
     	filteredData = new FilteredList<>(oblist_usuarios_view);
 
@@ -342,7 +342,7 @@ public class UsuariosManagerController implements Initializable{
 					Usuario u = oblist_usuarios.get(i);
 					if(u.getCpf().equals(cpf)){
 						try {
-							p = UtilDao.find(Pessoa.class, u.getCodPessoa());
+							p = UtilDao.daoPessoa.getPessoa(u.getCodPessoa());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -359,7 +359,7 @@ public class UsuariosManagerController implements Initializable{
 				novaSenha.setText(ms.getSenha());
 				tipo_update.setText(user.getTipo());
 
-				c = UtilDao.find(Contato.class, p.getCodPessoa());
+				c = UtilDao.daoContatos.getContato(p.getCodPessoa());
 				celular_listar.clear();email_listar.clear();telefone_listar.clear();
 				if(c != null){
 					if(c.getCelular() != null)celular_listar.setText(c.getCelular());
@@ -382,7 +382,7 @@ public class UsuariosManagerController implements Initializable{
 
 				if(selectedPessoa != null){
 					//Endereco
-					Endereco end = UtilDao.find(Endereco.class, cod);
+					Endereco end = UtilDao.daoEnderecos.getEndereco(cod);
 					if(end != null){
 
 						nomeRua_listar.setText(end.getRua());
@@ -394,7 +394,7 @@ public class UsuariosManagerController implements Initializable{
 						estado_listar.setText(end.getEstado());
 					}
 					//Contatos
-					Contato con = UtilDao.find(Contato.class, cod);
+					Contato con = UtilDao.daoContatos.getContato(cod);
 					if(con != null){
 						celular_listar.clear();email_listar.clear();telefone_listar.clear();
 						if(con.getCelular() != null)celular_listar.setText(con.getCelular());

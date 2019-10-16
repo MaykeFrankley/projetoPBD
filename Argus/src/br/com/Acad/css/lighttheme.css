@@ -326,6 +326,12 @@
     -fx-font-size: 12pt;
 }
 
+/*TextArea */
+
+.text-area{
+	-fx-text-fill: #FFFFFF;
+}
+
 
 /*ScrollPane */
 .scroll-pane > .viewport {

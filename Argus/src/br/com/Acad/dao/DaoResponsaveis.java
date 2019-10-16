@@ -72,6 +72,21 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 		return rf;
 	}
 
+	public ViewResponsavelFinanceiro getResponsavelFinanceiro(int codResponsavel) {
+		try {
+			createEM();
+			ViewResponsavelFinanceiro resp = (ViewResponsavelFinanceiro) entityMn.createNativeQuery("call getResponsavelDoAluno(:id);", ViewResponsavelFinanceiro.class)
+					.setParameter("id", codResponsavel).getSingleResult();
+			return resp;
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<ResponsavelFinanceiro> getAllResponsavel() {

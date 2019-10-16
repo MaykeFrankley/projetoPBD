@@ -11,6 +11,7 @@ import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
+import br.com.Acad.model.ViewTurma;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -103,7 +104,6 @@ public class DaoTurmas implements IDaoTurmas{
 			ObservableList<ViewAluno> oblist = FXCollections.observableList(list);
 			return oblist;
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 			entityMn.getTransaction().rollback();
 		} finally {
@@ -121,6 +121,25 @@ public class DaoTurmas implements IDaoTurmas{
 
 			List<Turma> list = entityMn.createQuery("from Turma").getResultList();
 			ObservableList<Turma> oblist = FXCollections.observableList(list);
+			return oblist;
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+			new HandleSQLException(e);
+			entityMn.getTransaction().rollback();
+		} finally {
+			entityMn.close();
+		}
+
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ObservableList<ViewTurma> getAllTurmasView() {
+		try {
+			createEM();
+
+			List<ViewTurma> list = entityMn.createQuery("from ViewTurma").getResultList();
+			ObservableList<ViewTurma> oblist = FXCollections.observableList(list);
 			return oblist;
 		} catch (PersistenceException e) {
 			e.printStackTrace();

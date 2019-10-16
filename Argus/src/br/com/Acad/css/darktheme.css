@@ -213,6 +213,7 @@
     -fx-font-size: 18px;
     -fx-border-color: derive(#FFFF8D, -60%);
 }
+
 .table-view:focused{
     -fx-background-color: derive(#2A2E37, 20%);
 }
@@ -317,6 +318,12 @@
     -fx-font-size: 12pt;
 }
 
+/*TextArea */
+
+.text-area{
+	-fx-text-fill: #FFFF8D;
+}
+
 
 /*ScrollPane */
 .scroll-pane > .viewport {
@@ -345,7 +352,7 @@
 
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb {
-    -fx-background-color: derive(#2A2E37, 20%);
+    -fx-background-color: derive(#2A2E37, 50%);
     -fx-background-radius: 5em;
 }
 

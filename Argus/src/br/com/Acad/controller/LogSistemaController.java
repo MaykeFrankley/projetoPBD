@@ -161,7 +161,7 @@ public class LogSistemaController implements Initializable{
     	oblist.clear();
 
     	try {
-			oblist = UtilDao.getLists(LogSistema.class);
+			oblist = UtilDao.daoLog.getAllLogs();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

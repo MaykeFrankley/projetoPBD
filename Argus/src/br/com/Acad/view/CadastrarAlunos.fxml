@@ -75,7 +75,7 @@
                                           <Insets />
                                        </HBox.margin>
                                     </VBox>
-                                    <VBox fx:id="box_contatos" fillWidth="false" prefHeight="249.0" prefWidth="375.0" spacing="25.0" visible="false">
+                                    <VBox fx:id="box_contatos" fillWidth="false" prefHeight="249.0" prefWidth="375.0" spacing="25.0">
                                        <children>
                                           <JFXTextField fx:id="email" focusColor="#c3c3c3" labelFloat="true" maxWidth="397.0" minWidth="351.0" prefHeight="43.0" prefWidth="397.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXTextField fx:id="telefone" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
@@ -160,7 +160,7 @@
                                           <JFXTextField fx:id="numero1" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" onKeyPressed="#formatNumeroTxt2" prefHeight="43.0" prefWidth="351.0" promptText="*Número" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXTextField fx:id="complemento1" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Complemento" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXTextField fx:id="bairro1" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Bairro" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <ComboBox fx:id="estado1" onAction="#populateCidades" prefHeight="41.0" prefWidth="331.0" promptText="*Estado" style="-fx-font-size: 18;">
+                                          <ComboBox fx:id="estado1" onAction="#populateCidades1" prefHeight="41.0" prefWidth="331.0" promptText="*Estado" style="-fx-font-size: 18;">
                                              <VBox.margin>
                                                 <Insets left="10.0" />
                                              </VBox.margin>

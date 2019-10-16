@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="Resources"/>
+	<classpathentry kind="src" path="Libs"/>
 	<classpathentry kind="lib" path="Libs/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="Libs/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="Libs/cglib-nodep-2.1_3.jar"/>
@@ -10,7 +11,6 @@
 	<classpathentry kind="lib" path="Libs/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="Libs/controlsfx-8.40.15.jar"/>
 	<classpathentry kind="lib" path="Libs/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="Libs/ejb3-persistence.jar"/>
 	<classpathentry kind="lib" path="Libs/fontawesomefx-8.9.jar"/>
 	<classpathentry kind="lib" path="Libs/hibernate-annotations.jar"/>
 	<classpathentry kind="lib" path="Libs/hibernate-commons-annotations.jar"/>
@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="Libs/mysql-connector-java-8.0.16.jar"/>
 	<classpathentry kind="lib" path="Libs/xstream-1.4.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Libs/ejb3-persistence-1.0.2.GA.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -69,7 +69,7 @@ public class SysLog {
 		for(String action : args){
 			LogSistema ls = Util.prepareLog();
 			ls.setAcao(action);
-			UtilDao.persist(ls);
+			UtilDao.daoLog.addLog(ls);
 		}
 	}
 

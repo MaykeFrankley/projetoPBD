@@ -19,6 +19,7 @@ public class HandleSQLException {
 						@Override
 						public void run() {
 							Util.Alert("Acesso negado!\nContate o administrador");
+							return;
 						}
 					});
 				}
@@ -26,9 +27,13 @@ public class HandleSQLException {
 			else if(throwable instanceof SQLIntegrityConstraintViolationException){
 				if(((SQLIntegrityConstraintViolationException) throwable).getErrorCode() == 1062){
 					Util.Alert("O registro já está no sistema!");
+					return;
 				}
 			}
+
 		}
+
+		e.printStackTrace();
 	}
 
 }

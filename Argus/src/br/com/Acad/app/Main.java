@@ -83,9 +83,7 @@ public class Main extends Application{
 			e.printStackTrace();
 		}
 
-
 		Main.factory = Persistence.createEntityManagerFactory("argusDB");
-
 
 		for (int i = 0; i < COUNT_LIMIT; i++) {
 			double progress = (double) i/10;

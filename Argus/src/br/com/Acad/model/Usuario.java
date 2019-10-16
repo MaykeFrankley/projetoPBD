@@ -2,9 +2,7 @@ package br.com.Acad.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -12,9 +10,7 @@ import javax.persistence.Table;
 public class Usuario {
 
 	@Id
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "pessoas")
 	private int codPessoa;
-
 
 	@Column(name="CPF")
 	private String cpf;

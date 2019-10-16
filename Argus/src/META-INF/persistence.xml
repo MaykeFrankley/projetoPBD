@@ -10,9 +10,10 @@
 			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/argus?useSSL=true&amp;useTimezone=true&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;characterEncoding=UTF-8"/>
 			<property name="hibernate.connection.user" value="root"/>
 			<property name="hibernate.connection.password" value="9612"/>
-			<property name="hibernate.hbm2ddl.auto" value="update"/>
+			<property name="hibernate.hbm2ddl.auto" value="update"/><property
+				name="hibernate.temp.use_jdbc_metadata_defaults" value="false" ></property>
 
-            <!--Configuracoes de Debug-->
+        	<!--Configuracoes de Debug-->
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="false" />
 

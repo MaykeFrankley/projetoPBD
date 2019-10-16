@@ -27,6 +27,7 @@ import br.com.Acad.model.ResponsavelFinanceiroID;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -230,7 +231,8 @@ public class CadastrarAlunoController implements Initializable{
 	    	pessoaAluno.setNaturalidade(naturalidade.getText());
 	    	pessoaAluno.setStatus("Ativo");
 
-	    	int cod = UtilDao.persist(pessoaAluno);
+	    	int cod = UtilDao.daoPessoa.addPessoa(pessoaAluno);
+	    	SysLog.addLog(SysLog.createPessoas(cod));
 
 	    	alunoEnd.setCodPessoa(cod);
 	    	alunoEnd.setRua(nomeRua.getText());
@@ -240,7 +242,8 @@ public class CadastrarAlunoController implements Initializable{
 			alunoEnd.setEstado(estado.getSelectionModel().getSelectedItem());
 			alunoEnd.setCidade(cidade.getSelectionModel().getSelectedItem());
 
-			UtilDao.persist(alunoEnd);
+			UtilDao.daoEnderecos.addEndereco(alunoEnd);
+			SysLog.addLog(SysLog.createDados("Endereço", cod));
 
 			alunoCont.setCodPessoa(cod);
 			if(email.getText().length() > 0)alunoCont.setEmail(email.getText());
@@ -254,7 +257,8 @@ public class CadastrarAlunoController implements Initializable{
 			}
 
 			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-				UtilDao.persist(alunoCont);
+				UtilDao.daoContatos.addContato(alunoCont);
+				SysLog.addLog(SysLog.createDados("Contato", cod));
 			}
 			// END ALUNOPESSOA
 
@@ -271,7 +275,8 @@ public class CadastrarAlunoController implements Initializable{
 	    			responsavel.setNome(nome1.getText());
 	    			responsavel.setStatus("Ativo");
 
-	    			int codResp = UtilDao.persist(responsavel);
+	    			int codResp = UtilDao.daoPessoa.addPessoa(responsavel);
+	    			SysLog.addLog(SysLog.createPessoas(codResp));
 
 	    			responsavelEnd.setCodPessoa(codResp);
 	    	    	responsavelEnd.setRua(nomeRua1.getText());
@@ -281,10 +286,11 @@ public class CadastrarAlunoController implements Initializable{
 	    			responsavelEnd.setEstado(estado1.getSelectionModel().getSelectedItem());
 	    			responsavelEnd.setCidade(cidade1.getSelectionModel().getSelectedItem());
 
-	    			UtilDao.persist(responsavelEnd);
+	    			UtilDao.daoEnderecos.addEndereco(responsavelEnd);
+	    			SysLog.addLog(SysLog.createDados("Endereço", codResp));
 	    			a.setCodResponsavelFin(codResp);
 
-	    			responsavelCont.setCodPessoa(cod);
+	    			responsavelCont.setCodPessoa(codResp);
 	    			if(email1.getText().length() > 0)responsavelCont.setEmail(email1.getText());
 	    			if(telefone1.getText().length() > 0)responsavelCont.setTelefone(telefone1.getText());
 	    			if(celular1.getText().length() > 0)responsavelCont.setCelular(celular1.getText());
@@ -296,14 +302,16 @@ public class CadastrarAlunoController implements Initializable{
 	    			}
 
 	    			if(email1.getText().length() > 0 || telefone1.getText().length() > 0 || celular1.getText().length() > 0){
-	    				UtilDao.persist(responsavelCont);
+	    				UtilDao.daoContatos.addContato(responsavelCont);
+	    				SysLog.addLog(SysLog.createDados("Contato", codResp));
 	    			}
 
 	    			resp.setCpf(cpf1.getText());
 	    			resp.setId(new ResponsavelFinanceiroID(codResp, a.getCodPessoa()));
 	    			resp.setStatus("Ativo");
 
-	    			UtilDao.persist(resp);
+	    			UtilDao.daoResponsaveis.addResponsavel(resp);
+	    			SysLog.addLog(SysLog.message("Cadastrou um novo responsável financeiro de cod:"+resp.getId().getCodPessoa()));
 	    		}
 	    	}
 	    	else{ //ALUNORESPONSAVEL
@@ -312,22 +320,25 @@ public class CadastrarAlunoController implements Initializable{
 				resp.setId(new ResponsavelFinanceiroID(pessoaAluno.getCodPessoa(), pessoaAluno.getCodPessoa()));
 				resp.setStatus("Ativo");
 
-				UtilDao.persist(resp);
+				UtilDao.daoResponsaveis.addResponsavel(resp);
+				SysLog.addLog(SysLog.message("Cadastrou um novo responsável financeiro de cod:"+resp.getId().getCodPessoa()));
 	    	}
 	    	a.setNomeMae(nomeMae.getText());
 	    	a.setNomePai(nomePai.getText());
 	    	a.setStatus("Ativo");
 
-	    	UtilDao.persist(a);
+	    	UtilDao.daoAlunos.addAluno(a);
+	    	SysLog.addLog(SysLog.message("Cadastrou um novo aluno de cod:"+a.getCodPessoa()));
 
-	    	ObservableList<CurriculoDisciplina> disciplinas = UtilDao.getLists(CurriculoDisciplina.class, selectedCurriculo.getId().getCodCurriculo());
-	    	ObservableList<Turma> turmas = UtilDao.getLists(Turma.class);
+	    	ObservableList<CurriculoDisciplina> disciplinas = UtilDao.daoCurriculo.getAllDisciplinas(selectedCurriculo.getId().getCodCurriculo());
+	    	ObservableList<Turma> turmas = UtilDao.daoTurmas.getAllTurmas();
 	    	for (Turma turma : turmas) {
 				if(turma.getCodCurriculo().equals(selectedCurriculo.getId().getCodCurriculo()) && turma.getAnoLetivo() == selectedCurriculo.getId().getAnoLetivo()){
 					if(turma.getAno() == disciplinas.get(0).getId().getAno()){
 						AlunoTurma at = new AlunoTurma();
 						at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
-						UtilDao.persist(at);
+						UtilDao.daoTurmas.addAlunoTurma(at);
+						SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
 
 						codResponsavel = 0;
 				    	initTable();
@@ -341,11 +352,15 @@ public class CadastrarAlunoController implements Initializable{
 	    	turma.setAnoLetivo(selectedCurriculo.getId().getAnoLetivo());
 	    	turma.setAno(disciplinas.get(0).getId().getAno());
 
-	    	UtilDao.persist(turma);
+	    	UtilDao.daoTurmas.addTurma(turma);
+	    	SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+turma.getCodTurma()+
+	    			" para o curriculo:"+turma.getCodCurriculo()+
+	    			" ano/Série: "+turma.getAno()+" e ano letivo:"+turma.getAnoLetivo()));
 
 	    	AlunoTurma at = new AlunoTurma();
 			at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
-			UtilDao.persist(at);
+			UtilDao.daoTurmas.addAlunoTurma(at);
+			SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
 
 	    	codResponsavel = 0;
 	    	initTable();
@@ -402,6 +417,10 @@ public class CadastrarAlunoController implements Initializable{
     @FXML
     void populateCidades(ActionEvent event) {
     	Util.populateCidade(estado, cidade);
+    }
+
+    @FXML
+    void populateCidades1(ActionEvent event) {
     	Util.populateCidade(estado1, cidade1);
     }
 
@@ -461,8 +480,8 @@ public class CadastrarAlunoController implements Initializable{
     }
 
     void initTable(){
-    	oblist_curriculos = UtilDao.getLists(Curriculo.class);
-    	oblist_resp = UtilDao.getLists(ViewResponsavelFinanceiro.class);
+    	oblist_curriculos = UtilDao.daoCurriculo.getAllCurriculo();
+    	oblist_resp = UtilDao.daoResponsaveis.getAllViewResponsavel();
 
     	col_cod.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -582,8 +601,12 @@ public class CadastrarAlunoController implements Initializable{
     		return false;
     	}
 
-    	if(estado1.getSelectionModel().getSelectedItem() == null || cidade1.getSelectionModel().getSelectedItem() == null){
-    		Util.Alert("Selecione cidade e estado!");
+    	if(estado1.getSelectionModel().getSelectedItem() == null){
+    		Util.Alert("Selecione o estado!");
+    		return false;
+    	}
+    	if(cidade1.getSelectionModel().getSelectedItem() == null){
+    		Util.Alert("Selecione a cidade!");
     		return false;
     	}
 
@@ -677,8 +700,12 @@ public class CadastrarAlunoController implements Initializable{
     		return false;
     	}
 
-    	if(estado.getSelectionModel().getSelectedItem() == null || cidade.getSelectionModel().getSelectedItem() == null){
-    		Util.Alert("Selecione cidade e estado!");
+    	if(estado.getSelectionModel().getSelectedItem() == null){
+    		Util.Alert("Selecione o estado!");
+    		return false;
+    	}
+    	if(cidade.getSelectionModel().getSelectedItem() == null){
+    		Util.Alert("Selecione a cidade!");
     		return false;
     	}
 

@@ -5,11 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name="turmas")
-public class Turma {
+public class ViewTurma {
 
 	@Id
 	@Column
@@ -20,12 +18,15 @@ public class Turma {
 	private String codCurriculo;
 
 	@Column
+	private String nome;
+
+	@Column
 	private int anoLetivo;
 
 	@Column
 	private int ano;
 
-	public Turma() {
+	public ViewTurma() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -43,6 +44,14 @@ public class Turma {
 
 	public void setCodCurriculo(String codCurriculo) {
 		this.codCurriculo = codCurriculo;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public int getAnoLetivo() {

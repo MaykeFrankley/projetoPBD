@@ -99,7 +99,7 @@ public class CadastrarUsuarioController implements Initializable{
 
     	if(checkTextFields()){
 
-    		oblist_pessoas = UtilDao.getLists(Pessoa.class);
+    		oblist_pessoas = UtilDao.daoPessoa.getAllPessoa();
     		for (int i = 0; i < oblist_pessoas.size(); i++) {
     			String obCPF = oblist_pessoas.get(i).getCpf();
 
@@ -138,7 +138,7 @@ public class CadastrarUsuarioController implements Initializable{
         		p.setNaturalidade(naturalidade.getText());
         		p.setStatus("Ativo");
 
-        		int cod = UtilDao.persist(p);
+        		int cod = UtilDao.daoPessoa.addPessoa(p);
         		SysLog.addLog(SysLog.createPessoas(cod));
 
         		e.setCodPessoa(cod);
@@ -149,7 +149,7 @@ public class CadastrarUsuarioController implements Initializable{
         		e.setRua(nomeRua.getText());
         		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
-        		UtilDao.persist(e);
+        		UtilDao.daoEnderecos.addEndereco(e);
         		SysLog.addLog(SysLog.createDados("Endereço", cod));
 
         		c.setCodPessoa(cod);
@@ -164,7 +164,7 @@ public class CadastrarUsuarioController implements Initializable{
     			}
 
     			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
-    				UtilDao.persist(c);
+    				UtilDao.daoContatos.addContato(c);
     				SysLog.addLog(SysLog.createDados("Contato", cod));
     			}
 
@@ -220,7 +220,7 @@ public class CadastrarUsuarioController implements Initializable{
 
 					break;
 
-				case "Pedagogo":
+				case "CoordenacaoPedagogica":
 					stmt.close();
 					stmt = con.prepareStatement("grant select, insert update on argus.SessaoPedagogica to ?@localhost;");
 	        	    stmt.setString(1, u.getUser());
@@ -237,7 +237,8 @@ public class CadastrarUsuarioController implements Initializable{
 				}
         	    stmt.close();
 
-        	    UtilDao.persist(u);
+        	    UtilDao.daoUsuarios.addUsuario(u);
+        	    SysLog.addLog(SysLog.createUser(u.getCodPessoa()));
         		Util.Alert("Usuário cadastrado com sucesso!");
 
 			} catch (Exception e) {
@@ -275,7 +276,7 @@ public class CadastrarUsuarioController implements Initializable{
 				"Rio Grande do Norte","Rio Grande do Sul","Rondônia",
 				"Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins");
 
-    	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "Pedagogo");
+    	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "CoordenacaoPedagogica");
 		new AutoCompleteComboBoxListener<>(estado);
 		new AutoCompleteComboBoxListener<>(cidade);
     }
@@ -378,8 +379,13 @@ public class CadastrarUsuarioController implements Initializable{
     		return false;
     	}
 
-    	if(estado.getSelectionModel().getSelectedItem() == null || cidade.getSelectionModel().getSelectedItem() == null){
-    		Util.Alert("Selecione cidade e estado!");
+    	if(estado.getSelectionModel().getSelectedItem() == null){
+    		Util.Alert("Selecione o estado!");
+    		return false;
+    	}
+
+    	if(cidade.getSelectionModel().getSelectedItem() == null){
+    		Util.Alert("Selecione a cidade!");
     		return false;
     	}
 
@@ -428,7 +434,7 @@ public class CadastrarUsuarioController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-	    oblist_usuarios = UtilDao.getLists(Usuario.class);
+	    oblist_usuarios = UtilDao.daoUsuarios.getAllUsuarios();
 
 		populateBoxes();
 		initValidation();

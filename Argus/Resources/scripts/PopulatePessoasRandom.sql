@@ -93,7 +93,7 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (3, 'Kina Abraham', 'Pahrump', '2006-04-02', '024.391.304-34', 'Ativo'),
 (4, 'Alexis Laflamme', 'Glen Haven', '2002-10-11', '085.643.486-21', 'Ativo'),
 (5, 'Julienne Baxley', 'Rowley', '2015-09-13', NULL, 'Ativo'),
-(6, 'Adolfo Bergeron', 'Houma', '2001-10-03', '653.359.505-61', 'Ativo'),
+(6, 'Adolfo Bergeron', 'Houma', '1980-10-03', '653.359.505-61', 'Ativo'),
 (7, 'Garry Metzger', 'Dresden', '2015-04-02', NULL, 'Ativo'),
 (8, 'Cathrine Southerland', 'Paia', '1983-07-17', '071.000.448-85', 'Ativo'),
 (9, 'Emely Shull', 'Glen Head', '2015-03-24', NULL, 'Ativo'),
@@ -133,14 +133,14 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (43, 'Alisa Almeida', 'Driggs', '1949-01-04', '834.419.442-87', 'Ativo'),
 (44, 'Terrence Hazel', 'Birdsboro', '1967-09-29', '927.916.952-51', 'Ativo'),
 (45, 'Jenelle Woodard', 'Souderton', '2014-04-09', '889.459.073-36', 'Ativo'),
-(46, 'Alva Westfall', 'Painted Post', '2001-01-09', '882.217.502-31', 'Ativo'),
+(46, 'Alva Westfall', 'Painted Post', '1980-01-09', '882.217.502-31', 'Ativo'),
 (47, 'Adah Caballero', 'Royal City', '1953-10-30', '203.913.421-14', 'Ativo'),
-(48, 'Ramona Correia', 'Lookeba', '2003-11-12', '369.565.380-87', 'Ativo'),
-(49, 'Paige Welsh', 'Painter', '2014-10-13', '719.597.736-05', 'Ativo'),
+(48, 'Ramona Correia', 'Lookeba', '1970-11-12', '369.565.380-87', 'Ativo'),
+(49, 'Paige Welsh', 'Painter', '1980-10-13', '719.597.736-05', 'Ativo'),
 (50, 'Kevin Stephen', 'Glen Rose', '1949-01-05', '785.086.799-41', 'Ativo'),
 (51, 'Camie Cosgrove', 'Houston', '1955-09-29', '286.499.719-19', 'Ativo'),
 (52, 'Gale Elliott', 'Eleva', '1970-03-30', '318.317.425-35', 'Ativo'),
-(53, 'Damien Gibbs', 'Lonoke', '2006-04-02', '508.244.707-97', 'Ativo'),
+(53, 'Damien Gibbs', 'Lonoke', '1970-04-02', '508.244.707-97', 'Ativo'),
 (54, 'Kareem Culver', 'Zuni', '2002-10-11', '557.654.053-40', 'Ativo'),
 (55, 'Houston Contreras', 'Porterville', '2006-09-13', '399.049.427-93', 'Ativo'),
 (56, 'Alonzo Calvin', 'Houma', '2001-10-03', '304.892.871-27', 'Ativo'),
@@ -162,12 +162,12 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (72, 'Lakenya Godfrey', 'Loogootee', '2001-01-04', '720.567.839-02', 'Ativo'),
 (73, 'Norma Forrester', 'Bloomdale', '1986-02-20', '000.176.220-18', 'Ativo'),
 (74, 'Edmond Pollock', 'Suttons Bay', '1949-01-05', '412.900.638-31', 'Ativo'),
-(75, 'Roderick Mims', 'Haddonfield', '2014-06-14', '973.663.468-10', 'Ativo'),
+(75, 'Roderick Mims', 'Haddonfield', '1980-06-14', '973.663.468-10', 'Ativo'),
 (76, 'Foster Cantwell', 'House Springs', '2002-07-31', '587.011.378-61', 'Ativo'),
 (77, 'Cletus Rosado', 'Williams Bay', '2001-01-05', '383.492.194-34', 'Ativo'),
-(78, 'Alina Buckner', 'Colon', '2002-03-30', '200.249.417-01', 'Ativo'),
+(78, 'Alina Buckner', 'Colon', '1960-03-30', '200.249.417-01', 'Ativo'),
 (79, 'Eusebio Truong', 'Newburgh', '1986-11-04', '850.106.401-74', 'Ativo'),
-(80, 'Gay Maples', 'Lookeba', '2002-06-15', '534.440.603-52', 'Ativo'),
+(80, 'Gay Maples', 'Lookeba', '1985-06-15', '534.440.603-52', 'Ativo'),
 (81, 'Verena Allred', 'Bloomer', '1979-10-21', '914.828.762-20', 'Ativo'),
 (82, 'Shaina Crouse', 'Houston', '1949-04-25', '611.256.119-59', 'Ativo'),
 (83, 'Mirtha Mcginnis', 'Eliot', '1949-03-20', '609.953.209-07', 'Ativo'),
@@ -177,7 +177,7 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (87, 'Jarrod Abraham', 'Colonial Beach', '1974-10-28', '858.176.670-85', 'Ativo'),
 (88, 'Benita Morin', 'Bloomfield Hills', '2002-04-20', '343.494.898-48', 'Ativo'),
 (89, 'Gerald Kinder', 'Newbury', '2003-01-25', '904.619.869-34', 'Ativo'),
-(90, 'Cynthia Butterfield', 'Portola', '2002-02-20', '750.274.633-30', 'Ativo'),
+(90, 'Cynthia Butterfield', 'Portola', '1980-02-20', '750.274.633-30', 'Ativo'),
 (91, 'Dexter Burt', 'Colonial Heights', '2005-11-01', '731.999.341-30', 'Ativo'),
 (92, 'Gregory Dodge', 'Suwanee', '2015-01-08', NULL, 'Ativo'),
 (93, 'Tessie Alba', 'Newbury Park', '1949-01-04', '484.100.515-39', 'Ativo'),
@@ -397,3 +397,121 @@ INSERT INTO professores(codPessoa, CPF, formacao, cursoFormacao, Status) VALUES
 (34, '542.982.023-74', 'Bacharelado', 'Research and Development', 'Ativo'),
 (84, '682.826.086-50', 'Licenciatura', 'Finance', 'Ativo'),
 (23, '022.043.228-96', 'Normal Superior', 'Operations', 'Ativo');
+
+--
+-- Inserting data into table professores-disciplinas
+--
+INSERT INTO `professores-disciplinas`(codProfessor, codDisciplina, codCurriculo, ano, anoLetivo) VALUES
+(94, 'POR', 'EFI', 1, 2019),
+(94, 'POR', 'EFI', 2, 2019),
+(94, 'POR', 'EFI', 3, 2019),
+(94, 'POR', 'EFI', 4, 2019),
+(94, 'POR', 'EFI', 5, 2019),
+(2, 'MAT', 'EFI', 1, 2019),
+(2, 'MAT', 'EFI', 2, 2019),
+(2, 'MAT', 'EFI', 3, 2019),
+(2, 'MAT', 'EFI', 4, 2019),
+(2, 'MAT', 'EFI', 5, 2019),
+(37, 'GEO', 'EFI', 1, 2019),
+(37, 'GEO', 'EFI', 2, 2019),
+(37, 'GEO', 'EFI', 3, 2019),
+(37, 'GEO', 'EFI', 4, 2019),
+(37, 'GEO', 'EFI', 5, 2019),
+(81, 'HIS', 'EFI', 1, 2019),
+(81, 'HIS', 'EFI', 2, 2019),
+(81, 'HIS', 'EFI', 3, 2019),
+(81, 'HIS', 'EFI', 4, 2019),
+(81, 'HIS', 'EFI', 5, 2019),
+(8, 'CIE', 'EFI', 1, 2019),
+(8, 'CIE', 'EFI', 2, 2019),
+(8, 'CIE', 'EFI', 3, 2019),
+(8, 'CIE', 'EFI', 4, 2019),
+(8, 'CIE', 'EFI', 5, 2019),
+(58, 'MUS', 'EFI', 1, 2019),
+(58, 'MUS', 'EFI', 2, 2019),
+(58, 'MUS', 'EFI', 3,2019),
+(58, 'MUS', 'EFI', 4, 2019),
+(58, 'MUS', 'EFI', 5, 2019),
+(34, 'ART', 'EFI', 1, 2019),
+(34, 'ART', 'EFI', 2, 2019),
+(34, 'ART', 'EFI', 3, 2019),
+(34, 'ART', 'EFI', 4, 2019),
+(34, 'ART', 'EFI', 5, 2019),
+(84, 'ING', 'EFI', 1, 2019),
+(84, 'ING', 'EFI', 2, 2019),
+(84, 'ING', 'EFI', 3, 2019),
+(84, 'ING', 'EFI', 4, 2019),
+(84, 'ING', 'EFI', 5, 2019),
+(23, 'EXC', 'EFI', 1, 2019),
+(23, 'EXC', 'EFI', 2, 2019),
+(23, 'EXC', 'EFI', 3, 2019),
+(23, 'EXC', 'EFI', 4, 2019),
+(23, 'EXC', 'EFI', 5, 2019),
+(94, 'EDF', 'EFI', 1, 2019),
+(94, 'EDF', 'EFI', 2, 2019),
+(94, 'EDF', 'EFI', 3, 2019),
+(94, 'EDF', 'EFI', 4, 2019),
+(94, 'EDF', 'EFI', 5, 2019);
+
+--
+-- Inserting data into table ResponsaveisFinanceiros
+--
+INSERT INTO ResponsaveisFinanceiros(codPessoa, codAluno, CPF, Status) VALUES
+(50, 101, '785.086.799-41', 'Ativo'),
+(49, 92, '719.597.736-05', 'Ativo'),
+(48, 41, '369.565.380-87', 'Ativo'),
+(47, 35, '203.913.421-14', 'Ativo'),
+(46, 25, '882.217.502-31', 'Ativo'),
+(80, 21, '534.440.603-52', 'Ativo'),
+(53, 20, '508.244.707-97', 'Ativo'),
+(75, 19, '973.663.468-10', 'Ativo'),
+(82, 17, '611.256.119-59', 'Ativo'),
+(78, 13, '200.249.417-01', 'Ativo'),
+(6, 10, '653.359.505-61', 'Ativo'),
+(90, 9, '750.274.633-30', 'Ativo'),
+(36, 7, '545.947.609-11', 'Ativo'),
+(100, 5, '856.487.469-50', 'Ativo');
+
+--
+-- Inserting data into table alunos
+--
+INSERT INTO alunos(codPessoa, nomeMae, nomePai, codResponsavelFin, Status) VALUES
+(101, 'maria', 'jose', 50, "Ativo"),
+(92, 'maria', 'jose', 49, "Ativo"),
+(41, 'maria', 'jose', 48, "Ativo"),
+(35, 'maria', 'jose', 47, "Ativo"),
+(25, 'maria', 'jose', 46, "Ativo"),
+(21, 'maria', 'jose', 80, "Ativo"),
+(20, 'maria', 'jose', 53, "Ativo"),
+(19, 'maria', 'jose', 75, "Ativo"),
+(17, 'maria', 'jose', 82, "Ativo"),
+(13, 'maria', 'jose', 78, "Ativo"),
+(10, 'maria', 'jose', 6, "Ativo"),
+(9, 'maria', 'jose', 90, "Ativo"),
+(7, 'maria', 'jose', 36, "Ativo"),
+(5, 'maria', 'jose', 100, "Ativo");
+
+--
+-- Inserting data into table Turmas
+--
+INSERT INTO Turmas(codTurma, codCurriculo, anoLetivo, ano) VALUES
+(codTurma, 'EFI', 2019, 1);
+
+--
+-- Inserting data into table Aluno-Turma
+--
+INSERT INTO `Aluno-Turma`(codAluno, codTurma) VALUES
+(101, 1),
+(92, 1),
+(41, 1),
+(35, 1),
+(25, 1),
+(21, 1),
+(20, 1),
+(19, 1),
+(17, 1),
+(13, 1),
+(10, 1),
+(9, 1),
+(7, 1),
+(5, 1);

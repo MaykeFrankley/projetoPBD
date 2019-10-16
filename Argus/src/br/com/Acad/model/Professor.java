@@ -2,9 +2,7 @@ package br.com.Acad.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -13,7 +11,6 @@ import javax.persistence.Transient;
 public class Professor {
 
 	@Id
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "pessoas")
 	private int codPessoa;
 
 	@Transient
