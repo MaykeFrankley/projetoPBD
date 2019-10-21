@@ -9,6 +9,7 @@ import br.com.Acad.app.Main;
 import br.com.Acad.dao.interfaces.IDaoTurmas;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.AlunoTurma;
+import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewTurma;
@@ -86,13 +87,38 @@ public class DaoTurmas implements IDaoTurmas{
 			entityMn.getTransaction().commit();
 
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 			entityMn.getTransaction().rollback();
 		} finally {
 			entityMn.close();
 		}
 
+	}
+
+	public void updateAlunoTurma(AlunoTurma alunoturma){
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(alunoturma);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+			entityMn.getTransaction().rollback();
+		} finally {
+			entityMn.close();
+		}
+
+	}
+
+	public AlunoTurma getAlunoTurma(AlunoTurmaID id){
+		createEM();
+		AlunoTurma t = entityMn.find(AlunoTurma.class, id);
+		entityMn.close();
+		return t;
 	}
 
 	@SuppressWarnings("unchecked")

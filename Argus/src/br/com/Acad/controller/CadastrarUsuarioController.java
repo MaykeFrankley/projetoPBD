@@ -20,12 +20,12 @@ import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
-import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
+import br.com.Acad.sql.ConnectionClass;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -202,21 +202,81 @@ public class CadastrarUsuarioController implements Initializable{
 
 				case "Secretaria":
 					stmt.close();
+					stmt = con.prepareStatement("grant select on argus.ViewAluno to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select on argus.ViewTurma to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant execute on PROCEDURE argus.getAlunos to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant execute on PROCEDURE argus.generateNotas to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsaveis to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsavelDoAluno to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select on argus.curriculo to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select on argus.`curriculo-disciplina`to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select on argus.curriculo to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select, insert, update on argus.Turmas to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select, insert, update on argus.`Aluno-Turma` to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select, insert, update on argus.Alunos to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select, insert, update on argus.Pessoas to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select, insert, update on argus.enderecos to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
+					stmt = con.prepareStatement("grant select, insert, update on argus.contatos to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
+
 					stmt = con.prepareStatement("grant select, insert, update on argus.Disciplinas to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
 
-	    			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
+					stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
 
-	    			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
+					stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
 
-	    			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
-	        	    stmt.setString(1, u.getUser());
-	    			stmt.execute();
+					stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+		    	    stmt.setString(1, u.getUser());
+					stmt.execute();
 
 					break;
 

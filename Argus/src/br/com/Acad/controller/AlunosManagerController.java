@@ -1,25 +1,35 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoNota;
+import br.com.Acad.model.AlunoNotaID;
+import br.com.Acad.model.AlunoTurma;
+import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
+import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.model.ViewTurma;
+import br.com.Acad.sql.ConnectionReserva;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
@@ -115,7 +125,22 @@ public class AlunosManagerController implements Initializable{
 	private JFXCheckBox whatsapp_listar;
 
 	@FXML
-	private JFXTextArea dadosResponsavel;
+	private JFXTextField codResp;
+
+	@FXML
+	private JFXTextField nomeResp;
+
+	@FXML
+	private JFXTextField cpfResp;
+
+	@FXML
+	private JFXTextField dt_resp;
+
+	@FXML
+	private JFXTextField naturalidadeResp;
+
+	@FXML
+	private JFXTextField statusResp;
 
 	@FXML
 	private JFXTextField nomeRua_listar1;
@@ -205,51 +230,99 @@ public class AlunosManagerController implements Initializable{
 	private JFXCheckBox whatsapp_update;
 
 	@FXML
-    private Tab turmasTab;
+	private Tab turmasTab;
 
-    @FXML
-    private TableView<ViewTurma> table_turmas;
+	@FXML
+	private TableView<ViewTurma> table_turmas;
 
-    @FXML
-    private TableColumn<ViewTurma, Integer> col_codTurma;
+	@FXML
+	private TableColumn<ViewTurma, Integer> col_codTurma;
 
-    @FXML
-    private TableColumn<ViewTurma, String> col_curriculo;
+	@FXML
+	private TableColumn<ViewTurma, String> col_curriculo;
 
-    @FXML
-    private TableColumn<ViewTurma, String> col_ano;
+	@FXML
+	private TableColumn<ViewTurma, String> col_ano;
 
-    @FXML
-    private TableColumn<ViewTurma, Integer> col_anoLetivo;
+	@FXML
+	private TableColumn<ViewTurma, Integer> col_anoLetivo;
 
-    @FXML
-    private TableView<ViewAluno> table_pessoas2;
+	@FXML
+	private TableView<ViewAluno> table_pessoas2;
 
-    @FXML
-    private TableColumn<ViewAluno, Integer> col_codPessoa2;
+	@FXML
+	private TableColumn<ViewAluno, Integer> col_codPessoa2;
 
-    @FXML
-    private TableColumn<ViewAluno, String> col_nome2;
+	@FXML
+	private TableColumn<ViewAluno, String> col_nome2;
 
-    @FXML
-    private TableColumn<ViewAluno, String> col_cpf2;
+	@FXML
+	private TableColumn<ViewAluno, String> col_cpf2;
 
-    @FXML
-    private TableColumn<ViewAluno, Date> col_dt_nascimento2;
+	@FXML
+	private TableColumn<ViewAluno, Date> col_dt_nascimento2;
 
-    @FXML
-    private TableColumn<ViewAluno, String> col_naturalidade2;
+	@FXML
+	private TableColumn<ViewAluno, String> col_naturalidade2;
 
-    @FXML
-    private TableColumn<ViewAluno, String> col_nomeMae2;
+	@FXML
+	private TableColumn<ViewAluno, String> col_nomeMae2;
 
-    @FXML
-    private TableColumn<ViewAluno, String> col_nomePai2;
+	@FXML
+	private TableColumn<ViewAluno, String> col_nomePai2;
 
-    @FXML
-    private TableColumn<ViewAluno, String> col_status2;
+	@FXML
+	private TableColumn<ViewAluno, String> col_status2;
 
-    private Aluno oldAluno;
+	@FXML
+	private TableColumn<ViewAluno, String> col_situacaoAluno;
+
+	@FXML
+	private Tab notasTab;
+
+	@FXML
+	private JFXTextField codAluno;
+
+	@FXML
+	private JFXTextField nomeAluno;
+
+	@FXML
+	private JFXTextField dt_aluno;
+
+	@FXML
+	private JFXTextField naturalidadeAluno;
+
+	@FXML
+	private JFXTextField statusAluno;
+
+	@FXML
+	private TableView<AlunoNota> table_notas;
+
+	@FXML
+	private TableColumn<AlunoNota, AlunoNotaID> col_disciplina;
+
+	@FXML
+	private TableColumn<AlunoNota, AlunoNotaID> col_anoNota;
+
+	@FXML
+	private TableColumn<AlunoNota, Float> col_media;
+
+	@FXML
+	private TableColumn<AlunoNota, AlunoNotaID> col_anoLetivoNota;
+
+	@FXML
+	private TableColumn<AlunoNota, String> col_situacao;
+
+	@FXML
+	private JFXTextField nota_txt;
+
+	@FXML
+	private JFXCheckBox finalCheck;
+
+	@FXML
+	private JFXButton btn_finalizar;
+
+	private Aluno oldAluno;
 
 	private Pessoa oldPessoa;
 
@@ -266,6 +339,10 @@ public class AlunosManagerController implements Initializable{
 	private ObservableList<ViewAluno> oblist_pessoas = FXCollections.observableArrayList();
 
 	private ObservableList<ViewTurma> oblist_turmas= FXCollections.observableArrayList();
+
+	private AlunoTurma alunoAprovado;
+
+	private AlunoTurma alunoReprovado;
 
 	@FXML
 	void atualizar(ActionEvent event) {
@@ -351,51 +428,131 @@ public class AlunosManagerController implements Initializable{
 	}
 
 	@FXML
-	void formatNumeroTxt(KeyEvent event) {
-		if(atualizarTab.isSelected()){
-			TextFieldFormatter tff = new TextFieldFormatter();
-			tff.setMask("#####");
-			tff.setCaracteresValidos("0123456789");
-			tff.setTf(numero_update);
-			tff.formatter();
+	void finalizarAluno(ActionEvent event) {
+		if(alunoAprovado != null){
+			UtilDao.daoTurmas.updateAlunoTurma(alunoAprovado);
+			Connection con = ConnectionReserva.createConnection();
+
+			String codCurriculo = null;
+			int anoLetivo = 0;
+			int ano = 0;
+			PreparedStatement stmt;
+			try {
+				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ?;");
+				stmt.setInt(1, alunoAprovado.getId().getCodTurma());
+				ResultSet getTurma = stmt.executeQuery();
+				if(getTurma.next()){
+					codCurriculo = getTurma.getString("codCurriculo");
+					anoLetivo = getTurma.getInt("anoLetivo");
+					ano = getTurma.getInt("ano");
+				}
+
+				stmt = con.prepareStatement("Select codTurma FROM Turmas WHERE codCurriculo = ? AND anoLetivo = ? AND ano = ?");
+				stmt.setString(1, codCurriculo);
+				stmt.setInt(2, anoLetivo+1);
+				stmt.setInt(3, ano+1);
+
+				ResultSet checkNovaTurma = stmt.executeQuery();
+				if(!checkNovaTurma.next()){
+					stmt = con.prepareStatement("SELECT DISTINCT `Curriculo-disciplina`.ano FROM "
+							+ "`Curriculo-disciplina` WHERE `Curriculo-disciplina`.codCurriculo = ? ORDER BY ano DESC LIMIT 1");
+					stmt.setString(1, codCurriculo);
+
+					ResultSet rs = stmt.executeQuery();
+					if(rs.next()){
+						if(rs.getInt("ano") > ano+1){
+							Turma novaTurma = new Turma();
+							novaTurma.setCodCurriculo(codCurriculo);
+							novaTurma.setAnoLetivo(anoLetivo+1);
+							novaTurma.setAno(ano+1);
+							int codNovaTurma = UtilDao.daoTurmas.addTurma(novaTurma);
+
+							AlunoTurma aluno = new AlunoTurma();
+							aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), codNovaTurma));
+							aluno.setSituacao("Pendente");
+							UtilDao.daoTurmas.addAlunoTurma(aluno);
+
+							Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
+						}
+					}
+
+				}else{
+					AlunoTurma aluno = new AlunoTurma();
+					aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), checkNovaTurma.getInt("codTurma")));
+					aluno.setSituacao("Pendente");
+					UtilDao.daoTurmas.addAlunoTurma(aluno);
+
+					Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
+				}
+
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
 		}
-	}
+		else if(alunoReprovado != null){
+			UtilDao.daoTurmas.updateAlunoTurma(alunoReprovado);
+			Connection con = ConnectionReserva.createConnection();
 
-	@FXML
-	void limpar(ActionEvent event) {
-		if(atualizarTab.isSelected()){
-			nome_update.clear();dt_nascimento_update.setValue(null);naturalidade_update.clear();cpf_update.clear();
-			nomeRua_update.clear();complemento_update.clear();numero_update.clear();email_update.clear();telefone_update.clear();
-			celular_update.clear();whatsapp_update.setSelected(false);cidade_update.getSelectionModel().clearSelection();
-			estado_update.getSelectionModel().clearSelection();bairro_update.clear();codigo_listar.setText("Código: ");
-			disableAtualizar();
+			String codCurriculo = null;
+			int anoLetivo = 0;
+			int ano = 0;
+			PreparedStatement stmt;
+			try {
+				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ?;");
+				stmt.setInt(1, alunoReprovado.getId().getCodTurma());
+				ResultSet getTurma = stmt.executeQuery();
+				if(getTurma.next()){
+					codCurriculo = getTurma.getString("codCurriculo");
+					anoLetivo = getTurma.getInt("anoLetivo");
+					ano = getTurma.getInt("ano");
+				}
+
+				stmt = con.prepareStatement("Select codTurma FROM Turmas WHERE codCurriculo = ? AND anoLetivo = ? AND ano = ?");
+				stmt.setString(1, codCurriculo);
+				stmt.setInt(2, anoLetivo+1);
+				stmt.setInt(3, ano);
+
+				ResultSet checkNovaTurma = stmt.executeQuery();
+				if(!checkNovaTurma.next()){
+
+					Turma novaTurma = new Turma();
+					novaTurma.setCodCurriculo(codCurriculo);
+					novaTurma.setAnoLetivo(anoLetivo+1);
+					novaTurma.setAno(ano);
+					int codNovaTurma = UtilDao.daoTurmas.addTurma(novaTurma);
+
+					AlunoTurma aluno = new AlunoTurma();
+					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), codNovaTurma));
+					aluno.setSituacao("Pendente");
+					UtilDao.daoTurmas.addAlunoTurma(aluno);
+
+					Util.Alert("O Aluno foi reprovado no currículo e foi cadastrado em uma nova turma!");
+
+
+				}else{
+					AlunoTurma aluno = new AlunoTurma();
+					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), checkNovaTurma.getInt("codTurma")));
+					aluno.setSituacao("Pendente");
+					UtilDao.daoTurmas.addAlunoTurma(aluno);
+
+					Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
+				}
+
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
 		}
-	}
 
-	@FXML
-	void populateCidades(ActionEvent event) {
-		if(atualizarTab.isSelected()){
-			Util.populateCidade(estado_update, cidade_update);
+		else{
+			Util.Alert("Ocorreu um erro!\nContate o administrador");
 		}
-	}
 
-	void populateBoxes(){
-		estado_update.getItems().addAll("Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal",
-				"Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba",
-				"Paraná","Pernambuco","Piauí","Rio de Janeiro",
-				"Rio Grande do Norte","Rio Grande do Sul","Rondônia",
-				"Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins");
 
-		new AutoCompleteComboBoxListener<>(estado_update);
-		new AutoCompleteComboBoxListener<>(cidade_update);
-	}
-
-	void disableAtualizar(){
-		vbox_atualizar.setDisable(true);
-	}
-
-	void enableAtualizar(){
-		vbox_atualizar.setDisable(false);
+		initTables();
 	}
 
 	@FXML
@@ -529,6 +686,105 @@ public class AlunosManagerController implements Initializable{
 
 	}
 
+	@FXML
+	void selecionarAluno(ActionEvent event) {
+
+		int ano = table_turmas.getSelectionModel().getSelectedItem().getAno();
+		int anoLetivo = table_turmas.getSelectionModel().getSelectedItem().getAnoLetivo();
+		ViewAluno selected = table_pessoas2.getSelectionModel().getSelectedItem();
+
+		if(selected != null && ano > 0){
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			codAluno.setText(String.valueOf(selected.getCodPessoa()));nomeAluno.setText(String.valueOf(selected.getNome()));
+			dt_aluno.setText(format.format(selected.getDt_nascimento()));naturalidadeAluno.setText(selected.getNaturalidade());
+			statusAluno.setText(selected.getStatus());
+
+			ObservableList<AlunoNota> oblist = FXCollections.observableArrayList();
+			oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo);
+
+			table_notas.setItems(oblist);
+
+			tabPane.getSelectionModel().select(notasTab);
+			btn_finalizar.setVisible(false);
+		}
+	}
+
+	@FXML
+	void alterarNota(ActionEvent event) {
+		AlunoNota selected = table_notas.getSelectionModel().getSelectedItem();
+		if(selected != null){
+			nota_txt.requestFocus();
+			try {
+				if(Float.valueOf(nota_txt.getText()) > 10){
+					nota_txt.setText(String.valueOf(10.0));
+				}
+				selected.setMedia(Float.valueOf(nota_txt.getText()));
+			} catch (Exception e) {
+				Util.Alert("Verifique o valor!");
+				return;
+			}
+
+			if(finalCheck.isSelected())selected.setFoiFinal(1);
+
+			UtilDao.daoAlunos.setAlunoNota(selected);
+			table_notas.getItems().clear();
+			table_notas.setItems(UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo()));
+			Util.Alert("Média atualizada!");
+
+			boolean aprovadoCurriculo = false;
+			boolean reprovadoCurriculo = false;
+			for (AlunoNota nota : table_notas.getItems()) {
+				if(nota.getSituacao().equals("AP") || nota.getSituacao().equals("AM")){
+					aprovadoCurriculo = true;
+				}
+				else{
+					aprovadoCurriculo = false;
+				}
+
+				if(nota.getSituacao().equals("RP")){
+					aprovadoCurriculo = false;
+					reprovadoCurriculo = true;
+					break;
+				}
+			}
+
+			if(aprovadoCurriculo){
+				int codTurma = table_turmas.getSelectionModel().getSelectedItem().getCodTurma();
+				if(codTurma > 0){
+					btn_finalizar.setVisible(true);
+					AlunoTurma at = UtilDao.daoTurmas.getAlunoTurma(new AlunoTurmaID(Integer.valueOf(codAluno.getText()), codTurma));
+					at.setSituacao("Aprovado");
+					alunoAprovado = at;
+					alunoReprovado = null;
+				}
+			}
+			else if(reprovadoCurriculo){
+				int codTurma = table_turmas.getSelectionModel().getSelectedItem().getCodTurma();
+				if(codTurma > 0){
+					AlunoTurma at = new AlunoTurma();
+					at.setId(new AlunoTurmaID(Integer.valueOf(codAluno.getText()), codTurma));
+					at.setSituacao("Reprovado");
+					alunoAprovado = null;
+					alunoReprovado = at;
+
+					for(AlunoNota nota: table_notas.getItems()){
+						if(nota.getSituacao().equals("Pendente")){
+							btn_finalizar.setVisible(false);
+							break;
+						}else{
+							btn_finalizar.setVisible(true);
+						}
+					}
+				}
+			}
+
+		}
+		else{
+			Util.Alert("Selecione uma nota!!");
+		}
+
+	}
+
 	void initTables(){
 		oblist_pessoas = UtilDao.daoAlunos.getAllAlunosView();
 		oblist_turmas = UtilDao.daoTurmas.getAllTurmasView();
@@ -600,8 +856,10 @@ public class AlunosManagerController implements Initializable{
 					}
 					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 					ViewResponsavelFinanceiro resp = UtilDao.daoResponsaveis.getResponsavelFinanceiro(selectedPessoa.getCodResponsavelFin());
-					dadosResponsavel.setText("Código:"+resp.getCodPessoa()+"            "+"Nome:"+resp.getNome()+"            "+"CPF:"+resp.getCpf()+"            "+"Data de nascimento:"+format.format(resp.getDt_nascimento())+"            "+
-					"Naturalidade:"+resp.getNaturalidade()+"            "+"Status:"+resp.getStatus());
+
+					codResp.setText(String.valueOf(resp.getCodPessoa()));nomeResp.setText(resp.getNome());
+					cpfResp.setText(resp.getCpf());dt_resp.setText(format.format(resp.getDt_nascimento()));
+					naturalidadeResp.setText(resp.getNaturalidade());statusResp.setText(resp.getStatus());
 
 					Endereco respEnd = UtilDao.daoEnderecos.getEndereco(resp.getCodPessoa());
 					nomeRua_listar1.setText(respEnd.getRua());
@@ -638,6 +896,7 @@ public class AlunosManagerController implements Initializable{
 		col_dt_nascimento2.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
 		col_nomeMae2.setCellValueFactory(new PropertyValueFactory<>("nomeMae"));
 		col_nomePai2.setCellValueFactory(new PropertyValueFactory<>("nomePai"));
+		col_situacaoAluno.setCellValueFactory(new PropertyValueFactory<>("situacao"));
 
 
 		col_dt_nascimento2.setCellFactory(column -> {
@@ -672,6 +931,52 @@ public class AlunosManagerController implements Initializable{
 				ObservableList<ViewAluno> alunos = UtilDao.daoTurmas.getAlunos(selected.getCodTurma());
 				table_pessoas2.setItems(alunos);
 			}
+		});
+
+		col_disciplina.setCellValueFactory(new PropertyValueFactory<>("nomeDisciplina"));
+		col_anoNota.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_anoLetivoNota.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_media.setCellValueFactory(new PropertyValueFactory<>("media"));
+		col_situacao.setCellValueFactory(new PropertyValueFactory<>("situacao"));
+
+		table_notas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
+			if(newSelection != null){
+				nota_txt.setText(String.valueOf(newSelection.getMedia()));
+			}
+		});
+
+		col_anoNota.setCellFactory(column -> {
+			final TableCell<AlunoNota, AlunoNotaID> cell = new TableCell<AlunoNota, AlunoNotaID>(){
+
+				@Override
+				protected void updateItem(AlunoNotaID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getSerie())+"ª ano");
+					}
+				}
+			};
+			return cell;
+		});
+
+		col_anoLetivoNota.setCellFactory(column -> {
+			final TableCell<AlunoNota, AlunoNotaID> cell = new TableCell<AlunoNota, AlunoNotaID>(){
+
+				@Override
+				protected void updateItem(AlunoNotaID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getAnoLetivo()));
+					}
+				}
+			};
+			return cell;
 		});
 	}
 
@@ -780,16 +1085,94 @@ public class AlunosManagerController implements Initializable{
 		return true;
 	}
 
+
+
+	@FXML
+	void formatNumeroTxt(KeyEvent event) {
+		if(atualizarTab.isSelected()){
+			TextFieldFormatter tff = new TextFieldFormatter();
+			tff.setMask("#####");
+			tff.setCaracteresValidos("0123456789");
+			tff.setTf(numero_update);
+			tff.formatter();
+		}
+	}
+
+	@FXML
+	void limpar(ActionEvent event) {
+		if(atualizarTab.isSelected()){
+			nome_update.clear();dt_nascimento_update.setValue(null);naturalidade_update.clear();cpf_update.clear();
+			nomeRua_update.clear();complemento_update.clear();numero_update.clear();email_update.clear();telefone_update.clear();
+			celular_update.clear();whatsapp_update.setSelected(false);cidade_update.getSelectionModel().clearSelection();
+			estado_update.getSelectionModel().clearSelection();bairro_update.clear();codigo_listar.setText("Código: ");
+			disableAtualizar();
+		}
+	}
+
+	@FXML
+	void populateCidades(ActionEvent event) {
+		if(atualizarTab.isSelected()){
+			Util.populateCidade(estado_update, cidade_update);
+		}
+	}
+
+	void populateBoxes(){
+		estado_update.getItems().addAll("Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal",
+				"Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba",
+				"Paraná","Pernambuco","Piauí","Rio de Janeiro",
+				"Rio Grande do Norte","Rio Grande do Sul","Rondônia",
+				"Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins");
+
+		new AutoCompleteComboBoxListener<>(estado_update);
+		new AutoCompleteComboBoxListener<>(cidade_update);
+	}
+
+	void disableAtualizar(){
+		vbox_atualizar.setDisable(true);
+	}
+
+	void enableAtualizar(){
+		vbox_atualizar.setDisable(false);
+	}
+
+	void formatMedia(){
+		nota_txt.setText(nota_txt.getText().replaceAll(",", "."));
+		nota_txt.setText(nota_txt.getText().replaceAll("\\s+", "."));
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		atualizarTab.setOnSelectionChanged(e ->{
 			if(atualizarTab.isSelected()){
 				if(nome_update.getText().isEmpty()){
-					Util.Alert("Selecione um professor na aba \"Listar\"");
+					Util.Alert("Selecione um aluno na aba \"Listar\"");
 				}
 			}
 
 		});
+
+		notasTab.setOnSelectionChanged(e ->{
+			if(notasTab.isSelected()){
+				if(codAluno.getText().isEmpty()){
+					Util.Alert("Selecione um aluno na aba \"Turmas\"");
+				}
+			}
+
+		});
+
+		nota_txt.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						nota_txt.setText(old_value);
+					}
+					if(new_value.length() > 3){
+						nota_txt.setText(old_value);
+					}
+
+					formatMedia();
+				}
+				);
 
 		initTables();
 		populateBoxes();

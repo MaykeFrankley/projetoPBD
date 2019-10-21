@@ -49,7 +49,6 @@
                                     <VBox fillWidth="false" prefHeight="371.0" prefWidth="511.0" spacing="40.0">
                                        <children>
                                           <JFXTextField fx:id="txt_nome" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" onKeyReleased="#setCodigo" prefHeight="43.0" prefWidth="347.0" promptText="*Nome" style="-fx-font-size: 18px;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="txt_anoLetivo" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" prefHeight="43.0" prefWidth="347.0" promptText="*Ano letivo" style="-fx-font-size: 18px;" unFocusColor="RED" />
                                           <ComboBox fx:id="box_tipo" prefHeight="41.0" prefWidth="325.0" promptText="*Tipo">
                                              <VBox.margin>
                                                 <Insets left="11.0" />
@@ -60,11 +59,10 @@
                                           <Insets />
                                        </HBox.margin>
                                     </VBox>
-                                    <TableView fx:id="table_curriculo" prefHeight="366.0" prefWidth="965.0">
+                                    <TableView fx:id="table_curriculo" prefHeight="366.0" prefWidth="668.0">
                                        <columns>
                                           <TableColumn fx:id="col_cod" prefWidth="121.0" text="Código" />
                                           <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="344.0" text="Nome" />
-                                          <TableColumn fx:id="col_anoLetivo" prefWidth="166.0" text="Ano letivo" />
                                           <TableColumn fx:id="col_tipo" prefWidth="166.0" text="Tipo" />
                                        </columns>
                                     </TableView>
@@ -121,11 +119,10 @@
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <TableView fx:id="table_curriculo2" prefHeight="366.0" prefWidth="752.0">
+                                                <TableView fx:id="table_curriculo2" prefHeight="265.0" prefWidth="686.0">
                                                    <columns>
                                                       <TableColumn fx:id="col_cod2" prefWidth="73.0" text="Código" />
                                                       <TableColumn fx:id="col_nome2" minWidth="0.0" prefWidth="366.0" text="Nome" />
-                                                      <TableColumn fx:id="col_anoLetivo2" prefWidth="115.0" text="Ano letivo" />
                                                       <TableColumn fx:id="col_tipo2" prefWidth="164.0" text="Tipo" />
                                                    </columns>
                                                    <tooltip>
@@ -149,7 +146,8 @@
                                                 <TableColumn fx:id="col_codDisciplina" prefWidth="78.0" text="Código" />
                                                 <TableColumn fx:id="col_nomeDisciplina" minWidth="0.0" prefWidth="267.0" text="Nome" />
                                                 <TableColumn fx:id="col_serieDisciplina" prefWidth="133.0" text="Ano/Série" />
-                                                <TableColumn fx:id="col_cargaHoraria" prefWidth="145.0" text="Carga Horária" />
+                                                <TableColumn fx:id="col_anoLetivo" prefWidth="136.0" text="Ano Letivo" />
+                                                <TableColumn fx:id="col_cargaHoraria" prefWidth="154.0" text="Carga Horária" />
                                              </columns>
                                           </TableView>
                                        </children>
@@ -157,6 +155,11 @@
                                     <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="129.0" prefWidth="1250.0" spacing="35.0">
                                        <children>
                                           <JFXButton fx:id="add_button" buttonType="RAISED" onAction="#adicionar" prefHeight="49.0" prefWidth="229.0" ripplerFill="WHITE" text="Adicionar disciplina" visible="false">
+                                             <font>
+                                                <Font size="19.0" />
+                                             </font>
+                                          </JFXButton>
+                                          <JFXButton fx:id="remover_button" buttonType="RAISED" onAction="#remover" prefHeight="49.0" prefWidth="229.0" ripplerFill="WHITE" text="Remover disciplina" visible="false">
                                              <font>
                                                 <Font size="19.0" />
                                              </font>
@@ -195,12 +198,17 @@
                                           </TableView>
                                           <HBox>
                                              <children>
-                                                <ComboBox fx:id="ano_add" prefHeight="41.0" prefWidth="104.0" promptText="Ano" visibleRowCount="5">
+                                                <ComboBox fx:id="box_anoAdd" prefHeight="41.0" prefWidth="104.0" promptText="Ano" visibleRowCount="5">
                                                    <HBox.margin>
                                                       <Insets top="20.0" />
                                                    </HBox.margin>
                                                 </ComboBox>
                                                 <JFXTextField fx:id="cargaHoraria_add" alignment="TOP_LEFT" focusColor="#909090" labelFloat="true" maxWidth="244.0" minWidth="127.0" prefHeight="43.0" prefWidth="169.0" promptText="Carga Horária(horas)" style="-fx-alignment: CENTER;" unFocusColor="RED">
+                                                   <HBox.margin>
+                                                      <Insets top="20.0" />
+                                                   </HBox.margin>
+                                                </JFXTextField>
+                                                <JFXTextField fx:id="anoLetivo_add" alignment="TOP_LEFT" focusColor="#909090" labelFloat="true" maxWidth="244.0" minWidth="127.0" prefHeight="43.0" prefWidth="169.0" promptText="Ano Letivo" style="-fx-alignment: CENTER;" unFocusColor="RED">
                                                    <HBox.margin>
                                                       <Insets top="20.0" />
                                                    </HBox.margin>

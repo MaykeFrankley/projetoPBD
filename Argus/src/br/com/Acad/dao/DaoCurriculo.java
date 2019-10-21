@@ -11,7 +11,6 @@ import br.com.Acad.dao.interfaces.IDaoCurriculo;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
-import br.com.Acad.model.CurriculoID;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -72,7 +71,7 @@ public class DaoCurriculo implements IDaoCurriculo{
 			createEM();
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
-			entityMn.remove(entityMn.getReference(Curriculo.class, curriculo.getId()));
+			entityMn.remove(entityMn.getReference(Curriculo.class, curriculo.getCodCurriculo()));
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
@@ -86,9 +85,9 @@ public class DaoCurriculo implements IDaoCurriculo{
 	}
 
 	@Override
-	public Curriculo getCurriculo(CurriculoID ID) {
+	public Curriculo getCurriculo(String codCurriculo) {
 		createEM();
-		Curriculo c = entityMn.find(Curriculo.class, ID);
+		Curriculo c = entityMn.find(Curriculo.class, codCurriculo);
 		entityMn.close();
 		return c;
 	}
@@ -112,6 +111,24 @@ public class DaoCurriculo implements IDaoCurriculo{
 			entityMn.close();
 		}
 
+	}
+
+	public void removeDisciplinaCurriculo(CurriculoDisciplina cd) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.remove(entityMn.getReference(CurriculoDisciplina.class, cd.getId()));
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Disciplina deletada com sucesso!");
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -3,7 +3,6 @@ package br.com.Acad.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -102,8 +101,7 @@ public class LoginController implements Initializable{
         	label_error.setVisible(false);
 
         	if(check != null){
-        		Timer timer = new Timer();
-        		timer.schedule(new SetDbUser(txt_login.getText(), hash), 0);
+        		new SetDbUser(txt_login.getText(), hash).run();;
 
         		progressBar.setVisible(true);
         		Task<Void> tarefa = new Task<Void>() {
@@ -112,7 +110,7 @@ public class LoginController implements Initializable{
         		    protected Void call() throws Exception {
         		        for(int i = 0; i < 10; i++) {
         		            updateProgress(i, 9);
-        		            Thread.sleep(1);
+        		            Thread.sleep(10);
         		        }
 
         		        Platform.runLater(() -> {

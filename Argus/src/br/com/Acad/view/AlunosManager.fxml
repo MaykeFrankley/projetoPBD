@@ -4,8 +4,8 @@
 <?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTabPane?>
-<?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ContextMenu?>
@@ -51,7 +51,7 @@
                                        <columns>
                                           <TableColumn fx:id="col_codPessoa" minWidth="50.0" text="Cod" />
                                           <TableColumn fx:id="col_nome" minWidth="300.0" prefWidth="302.9999694824219" text="Nome" />
-                                          <TableColumn fx:id="col_cpf" minWidth="200.0" prefWidth="200.0" text="CPF" />
+                                          <TableColumn fx:id="col_cpf" minWidth="200.0" prefWidth="200.0" text="CPF" visible="false" />
                                           <TableColumn fx:id="col_dt_nascimento" minWidth="200.0" prefWidth="200.0" text="Data de Nascimento" />
                                           <TableColumn fx:id="col_naturalidade" minWidth="200.0" prefWidth="247.0" text="Naturalidade" />
                                           <TableColumn fx:id="col_nomeMae" minWidth="300.0" prefWidth="300.0" text="Nome da mãe" />
@@ -121,11 +121,19 @@
                               </VBox>
                               <VBox layoutY="850.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="880.0">
                                  <children>
-                                    <JFXTextArea fx:id="dadosResponsavel" editable="false" focusColor="RED" labelFloat="true" minWidth="1324.0" prefHeight="72.0" promptText="Dados do Responsável" text="&#10;">
-                                       <font>
-                                          <Font size="20.0" />
-                                       </font>
-                                    </JFXTextArea>
+                                    <HBox fillHeight="false" spacing="20.0">
+                                       <children>
+                                          <JFXTextField fx:id="codResp" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="97.0" prefHeight="43.0" prefWidth="97.0" promptText="Código" unFocusColor="#ffff8d" />
+                                          <JFXTextField fx:id="nomeResp" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="278.0" prefHeight="43.0" prefWidth="324.0" promptText="Nome" unFocusColor="#ffff8d" />
+                                          <JFXTextField fx:id="cpfResp" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="278.0" prefHeight="43.0" prefWidth="286.0" promptText="CPF" unFocusColor="#ffff8d" />
+                                          <JFXTextField fx:id="dt_resp" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="194.0" prefHeight="43.0" prefWidth="194.0" promptText="Data de nascimento" unFocusColor="#ffff8d" />
+                                          <JFXTextField fx:id="naturalidadeResp" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="194.0" prefHeight="43.0" prefWidth="194.0" promptText="Naturalidade" unFocusColor="#ffff8d" />
+                                          <JFXTextField fx:id="statusResp" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="129.0" prefHeight="43.0" prefWidth="129.0" promptText="Status" unFocusColor="#ffff8d" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="30.0" />
+                                       </VBox.margin>
+                                    </HBox>
                                     <HBox spacing="50.0">
                                        <children>
                                           <VBox fillWidth="false" prefHeight="274.0" prefWidth="727.0" spacing="25.0">
@@ -138,7 +146,7 @@
                                                 <JFXTextField fx:id="estado_listar1" editable="false" focusColor="#e4ff1b" labelFloat="true" prefHeight="43.0" prefWidth="490.0" promptText="Estado" style="-fx-font-size: 18;" unFocusColor="RED" />
                                              </children>
                                              <HBox.margin>
-                                                <Insets top="30.0" />
+                                                <Insets top="50.0" />
                                              </HBox.margin>
                                           </VBox>
                                           <VBox prefHeight="425.0" prefWidth="584.0" spacing="25.0">
@@ -169,6 +177,11 @@
                                     <DropShadow />
                                  </effect>
                               </VBox>
+                              <Label layoutX="594.0" layoutY="846.0" text="Dados do responsável" textFill="#ffff8d">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </AnchorPane>
                      </content>
@@ -303,6 +316,11 @@
                            </effect>
                            <children>
                               <JFXTextField fx:id="campoPesquisa2" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar" />
+                              <Label text="Turmas" textFill="#ffff8d">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
                               <HBox alignment="TOP_CENTER" fillHeight="false">
                                  <children>
                                     <TableView fx:id="table_turmas" editable="true" minWidth="-Infinity" prefHeight="250.0" prefWidth="757.0" tableMenuButtonVisible="true">
@@ -319,14 +337,91 @@
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa2" minWidth="50.0" text="Cod" />
                                     <TableColumn fx:id="col_nome2" minWidth="300.0" prefWidth="302.9999694824219" text="Nome" />
-                                    <TableColumn fx:id="col_cpf2" minWidth="200.0" prefWidth="200.0" text="CPF" />
+                                    <TableColumn fx:id="col_cpf2" minWidth="200.0" prefWidth="200.0" text="CPF" visible="false" />
                                     <TableColumn fx:id="col_dt_nascimento2" minWidth="200.0" prefWidth="200.0" text="Data de Nascimento" />
                                     <TableColumn fx:id="col_naturalidade2" minWidth="200.0" prefWidth="247.0" text="Naturalidade" />
                                     <TableColumn fx:id="col_nomeMae2" minWidth="300.0" prefWidth="300.0" text="Nome da mãe" />
                                     <TableColumn fx:id="col_nomePai2" minWidth="300.0" prefWidth="300.0" text="Nome do pai" />
                                     <TableColumn fx:id="col_status2" minWidth="200.0" prefWidth="247.0" text="Status" />
+                                    <TableColumn fx:id="col_situacaoAluno" minWidth="200.0" prefWidth="247.0" text="Situação" />
+                                 </columns>
+                                 <contextMenu>
+                                    <ContextMenu style="-fx-font-size: 16;">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#selecionarAluno" text="Editar notas" />
+                                       </items>
+                                    </ContextMenu>
+                                 </contextMenu>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="notasTab" closable="false" text="Editar notas">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1366.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="960.0" prefWidth="1366.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <children>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" />
+                              <Label text="Dados do aluno" textFill="YELLOW">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <HBox fillHeight="false" spacing="20.0">
+                                 <children>
+                                    <JFXTextField fx:id="codAluno" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="97.0" prefHeight="43.0" prefWidth="97.0" promptText="Código" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                    <JFXTextField fx:id="nomeAluno" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="278.0" prefHeight="43.0" prefWidth="324.0" promptText="Nome" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                    <JFXTextField fx:id="dt_aluno" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="194.0" prefHeight="43.0" prefWidth="194.0" promptText="Data de nascimento" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                    <JFXTextField fx:id="naturalidadeAluno" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="194.0" prefHeight="45.0" prefWidth="215.0" promptText="Naturalidade" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                    <JFXTextField fx:id="statusAluno" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="129.0" prefHeight="45.0" prefWidth="159.0" promptText="Status" style="-fx-font-size: 18px;" unFocusColor="RED" />
+                                 </children>
+                              </HBox>
+                              <Label contentDisplay="BOTTOM" text="Notas" textFill="YELLOW">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <FontAwesomeIconView fill="RED" glyphName="ARROW_DOWN" size="16" />
+                                 </graphic>
+                              </Label>
+                              <TableView fx:id="table_notas" editable="true" minWidth="-Infinity" prefHeight="346.0" prefWidth="851.0" tableMenuButtonVisible="true">
+                                 <columns>
+                                    <TableColumn fx:id="col_disciplina" minWidth="1.0" prefWidth="196.0" text="Disciplina" />
+                                    <TableColumn fx:id="col_anoNota" minWidth="21.0" prefWidth="145.0" text="Ano/Série" />
+                                    <TableColumn fx:id="col_media" minWidth="0.0" prefWidth="139.0" text="Media" />
+                                    <TableColumn fx:id="col_anoLetivoNota" minWidth="0.0" prefWidth="139.0" text="Ano letivo" />
+                                    <TableColumn fx:id="col_situacao" minWidth="0.0" prefWidth="165.0" text="Situação" />
                                  </columns>
                               </TableView>
+                              <HBox spacing="40.0">
+                                 <children>
+                                    <JFXTextField fx:id="nota_txt" alignment="TOP_CENTER" focusColor="RED" labelFloat="true" maxWidth="97.0" minWidth="84.0" prefHeight="50.0" prefWidth="84.0" promptText="Media" style="-fx-font-size: 20px;" unFocusColor="RED" />
+                                    <JFXCheckBox fx:id="finalCheck" text="Foi para a final?" textFill="#ffff8d">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets top="16.0" />
+                                       </HBox.margin>
+                                    </JFXCheckBox>
+                                 </children>
+                              </HBox>
+                              <HBox spacing="80.0">
+                                 <children>
+                                    <JFXButton onAction="#alterarNota" text="Alterar" />
+                                    <JFXButton fx:id="btn_finalizar" onAction="#finalizarAluno" text="Finalizar" visible="false" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </children>

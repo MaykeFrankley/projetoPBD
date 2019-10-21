@@ -18,7 +18,6 @@ import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.CurriculoDisciplinaID;
-import br.com.Acad.model.CurriculoID;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Disciplina;
@@ -249,13 +248,10 @@ public class ProfessorManagerController implements Initializable{
 	private TableView<Curriculo> table_curriculo;
 
 	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_cod_cur;
+	private TableColumn<Curriculo, String> col_cod_cur;
 
 	@FXML
 	private TableColumn<Curriculo, String> col_nome_cur;
-
-	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_anoLetivo_cur;
 
 	@FXML
 	private TableColumn<Curriculo, String> col_tipo_cur;
@@ -305,8 +301,8 @@ public class ProfessorManagerController implements Initializable{
 			JFXButton yes = new JFXButton("Remover");
 			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
 				UtilDao.daoProfessor.removeDisciplinaProfessor(selected);
-				SysLog.addLog(SysLog.message("removeu uma disciplina de cod: "+selected.getId().getCurriculoDisciplinaID().getCodDisciplina()+" do professor cod: ")
-						+selected.getId().getCodProfessor());
+				SysLog.addLog(SysLog.message("removeu uma disciplina de cod: "+selected.getId().getCodDisciplina()+" do professor cod: ")
+						+selected.getCodProfessor());
 				initTables();
 			});
 			JFXButton cancel = new JFXButton("Cancelar");
@@ -327,12 +323,13 @@ public class ProfessorManagerController implements Initializable{
 		if(cd != null && pr != null){
 
 			DisciplinaProfessor dp = new DisciplinaProfessor();
-			dp.setId(new DisciplinaProfessorID(pr.getCodPessoa(), cd.getId()));
+			dp.setCodProfessor(pr.getCodPessoa());
+			dp.setId(new DisciplinaProfessorID(cd.getId().getCodCurriculo(), cd.getId().getCodDisciplina(), cd.getId().getAno()));
 			dp.setNomeProfessor(pr.getNome());
 
 			UtilDao.daoProfessor.addDisciplinaToProfessor(dp);
 			addDisciplinaPane.setVisible(false);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getId().getCodProfessor());
+			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getCodProfessor());
 
 			initTables();
 
@@ -725,12 +722,12 @@ public class ProfessorManagerController implements Initializable{
 					oblist_disciplinas.clear();
 					oblist_disciplinas = UtilDao.daoProfessor.getDisciplinaOfProfessor(selected.getCodPessoa());
 					for(DisciplinaProfessor dp: oblist_disciplinas){
-						Disciplina d = UtilDao.daoDisciplina.getDisciplina(dp.getId().getCurriculoDisciplinaID().getCodDisciplina());
+						Disciplina d = UtilDao.daoDisciplina.getDisciplina(dp.getId().getCodDisciplina());
 						dp.setNomeDisciplina(d.getNome());
 					}
 					table_disciplinas.setItems(oblist_disciplinas);
 
-					curriculo.clear();anoLetivo.clear();
+					curriculo.clear();
 				}
 			}
 
@@ -750,7 +747,7 @@ public class ProfessorManagerController implements Initializable{
 					if(empty){
 						this.setText("");
 					}else{
-						this.setText(item.getCurriculoDisciplinaID().getCodDisciplina());
+						this.setText(item.getCodDisciplina());
 					}
 
 				}
@@ -768,7 +765,7 @@ public class ProfessorManagerController implements Initializable{
 					if(empty){
 						this.setText("");
 					}else{
-						this.setText(String.valueOf(item.getCurriculoDisciplinaID().getAno())+"º ano");
+						this.setText(String.valueOf(item.getAno())+"º ano");
 					}
 
 				}
@@ -781,51 +778,15 @@ public class ProfessorManagerController implements Initializable{
 			if(newSelection != null){
 				DisciplinaProfessor selected = table_disciplinas.getSelectionModel().getSelectedItem();
 				if(selected != null) {
-					Curriculo c = UtilDao.daoCurriculo.getCurriculo(selected.getId().getCurriculoDisciplinaID().getCurriculoID());
+					Curriculo c = UtilDao.daoCurriculo.getCurriculo(selected.getId().getCodCurriculo());
 					curriculo.setText(c.getNome());
-					anoLetivo.setText(String.valueOf(c.getId().getAnoLetivo()));
 				}
 			}
 		});
 
-		col_cod_cur.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_cod_cur.setCellValueFactory(new PropertyValueFactory<>("codCurriculo"));
 		col_nome_cur.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		col_anoLetivo_cur.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_tipo_cur.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-
-		col_cod_cur.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>() {
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(item.getCodCurriculo());
-					}
-				}
-			};
-			return cell;
-		});
-
-		col_anoLetivo_cur.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>() {
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getAnoLetivo()));
-					}
-				}
-			};
-			return cell;
-		});
 
 		table_curriculo.setItems(oblist_curriculos);
 
@@ -834,7 +795,7 @@ public class ProfessorManagerController implements Initializable{
 				Curriculo selected = table_curriculo.getSelectionModel().getSelectedItem();
 				if(selected != null){
 					oblist_disciplinas_add.clear();
-					oblist_disciplinas_add = UtilDao.daoCurriculo.getAllDisciplinas(selected.getId().getCodCurriculo());
+					oblist_disciplinas_add = UtilDao.daoCurriculo.getAllDisciplinas(selected.getCodCurriculo());
 
 					for(CurriculoDisciplina c : oblist_disciplinas_add){
 						c.setNomeDisciplina(((Disciplina)UtilDao.daoDisciplina.getDisciplina(c.getId().getCodDisciplina())).getNome());

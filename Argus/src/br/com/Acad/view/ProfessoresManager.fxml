@@ -299,7 +299,6 @@
                                     <HBox>
                                        <children>
                                           <JFXTextField fx:id="curriculo" editable="false" focusColor="#e4ff1b" labelFloat="true" maxWidth="389.0" minWidth="389.0" prefHeight="45.0" prefWidth="389.0" promptText="Curriculo:" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="anoLetivo" editable="false" focusColor="#e4ff1b" labelFloat="true" layoutX="10.0" layoutY="10.0" maxWidth="389.0" minWidth="169.0" prefHeight="45.0" prefWidth="169.0" promptText="Ano letivo:" style="-fx-font-size: 18;" unFocusColor="RED" />
                                        </children>
                                        <VBox.margin>
                                           <Insets top="40.0" />

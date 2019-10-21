@@ -19,7 +19,7 @@ public class SysLog {
 	}
 
 	public static String createCurriculo(Curriculo c){
-		String s = "Um administrador \""+MainTelaController.user.getUser()+"\" cadastrou um novo currículo de código: "+c.getId().getCodCurriculo()+" e ano letivo: "+c.getId().getAnoLetivo();
+		String s = "Um administrador \""+MainTelaController.user.getUser()+"\" cadastrou um novo currículo de código: "+c.getCodCurriculo();
 		return s;
 	}
 

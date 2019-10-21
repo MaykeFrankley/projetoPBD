@@ -2,7 +2,14 @@ package br.com.Acad.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,6 +21,8 @@ import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
 import br.com.Acad.app.Main;
 import br.com.Acad.model.Usuario;
+import br.com.Acad.util.BackupManager;
+import br.com.Acad.util.Settings;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.application.Platform;
@@ -31,27 +40,27 @@ import javafx.scene.layout.StackPane;
 
 public class MainTelaController implements Initializable{
 
-    @FXML
-    private BorderPane borderPane;
+	@FXML
+	private BorderPane borderPane;
 
-    @FXML
-    private StackPane contentPane;
+	@FXML
+	private StackPane contentPane;
 
-    @FXML
-    private JFXDrawer drawer;
+	@FXML
+	private JFXDrawer drawer;
 
-    @FXML
-    private JFXHamburger hamburger;
+	@FXML
+	private JFXHamburger hamburger;
 
-    @FXML
-    private HBox top;
+	@FXML
+	private HBox top;
 
-    @FXML
-    private ImageView background;
+	@FXML
+	private ImageView background;
 
-    public Timer timer;
+	public Timer timer;
 
-    private DrawerController drawerController;
+	private DrawerController drawerController;
 
 	private double xOffSet;
 
@@ -61,28 +70,28 @@ public class MainTelaController implements Initializable{
 
 	public static JFXDrawer dr;
 
-    @FXML
-    void close_app(MouseEvent event) {
-    	JFXButton yes = new JFXButton("Sair");
-    	yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
-    		Platform.exit();
-    		System.exit(1);
-    	});
-    	JFXButton cancel = new JFXButton("Cancelar");
-    	cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even2) ->{
-    		Util.contentPane.getChildren().get(0).setEffect(null);
-    	});
+	@FXML
+	void close_app(MouseEvent event) {
+		JFXButton yes = new JFXButton("Sair");
+		yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
+			Platform.exit();
+			System.exit(1);
+		});
+		JFXButton cancel = new JFXButton("Cancelar");
+		cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even2) ->{
+			Util.contentPane.getChildren().get(0).setEffect(null);
+		});
 
-    	Util.confirmation(Arrays.asList(yes, cancel),"Deseja sair do sistema?");
+		Util.confirmation(Arrays.asList(yes, cancel),"Deseja sair do sistema?");
 
-    }
+	}
 
-    @FXML
-    void minimize_stage(MouseEvent event) {
-    	Main.stage.setIconified(true);
-    }
+	@FXML
+	void minimize_stage(MouseEvent event) {
+		Main.stage.setIconified(true);
+	}
 
-    private void makeStageDragable(){
+	private void makeStageDragable(){
 
 		top.setOnMousePressed((event) ->{
 			xOffSet = event.getSceneX();
@@ -111,8 +120,8 @@ public class MainTelaController implements Initializable{
 
 	}
 
-    private void initDrawer(){
-    	try {
+	private void initDrawer(){
+		try {
 
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/br/com/Acad/view/Dashboard_drawer.fxml"));
@@ -126,12 +135,12 @@ public class MainTelaController implements Initializable{
 			e1.printStackTrace();
 		}
 
-    }
+	}
 
-    private void initializeMenu(){
+	private void initializeMenu(){
 		Util.contentPane = contentPane;
 
-    	HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(hamburger);
+		HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(hamburger);
 		transition.setRate(-1);
 
 		hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED,(e)->{
@@ -145,62 +154,100 @@ public class MainTelaController implements Initializable{
 			}
 		});
 
-    	drawer.setOnDrawerClosed(e -> {
-    		if(transition.getRate() == 1){
-    			transition.setRate(transition.getRate()*-1);
-    			transition.play();
-    		}
-    	});
+		drawer.setOnDrawerClosed(e -> {
+			if(transition.getRate() == 1){
+				transition.setRate(transition.getRate()*-1);
+				transition.play();
+			}
+		});
 
-    }
+	}
 
-    void setUser(Usuario user){
-    	MainTelaController.user = user;
-    	drawerController.setUser(user);
-    }
+	void setUser(Usuario user){
+		MainTelaController.user = user;
+		drawerController.setUser(user);
+	}
 
-    void enableHamburger(){
-    	if(hamburger.isDisabled()){
-    		hamburger.setDisable(false);
-        	hamburger.setVisible(true);
-    	}else{
-    		hamburger.setDisable(true);
-        	hamburger.setVisible(false);
-    	}
+	void enableHamburger(){
+		if(hamburger.isDisabled()){
+			hamburger.setDisable(false);
+			hamburger.setVisible(true);
+		}else{
+			hamburger.setDisable(true);
+			hamburger.setVisible(false);
+		}
 
-    }
+	}
 
-    void enableNotificationTask(){
-    	if(user != null && user.getTipo().equals("Admin")){
-    		timer = new Timer();
-    		timer.scheduleAtFixedRate(new checkPasswordsRequest(), 1000, 10000);
-    	}
-    }
+	static void startBackupTimer(){
+		int[] options = Settings.get();
 
-    void cancelNotificationTask(){
-    	if(timer != null){
-    		timer.cancel();
-        	timer.purge();
-    	}
+		LocalDateTime localDate = null;
+		Timer backupTimer = new Timer();
+		if(options[2] < 10 && options[3] < 10){
+			LocalTime h = LocalTime.parse("0"+String.valueOf(options[2])+":"+"0"+String.valueOf(options[3]));
+			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
+		}
+		else if(options[2] < 10 && options[3] >= 10){
+			LocalTime h = LocalTime.parse("0"+String.valueOf(options[2])+":"+String.valueOf(options[3]));
+			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
+		}
+		else if(options[2] >= 10 && options[3] < 10){
+			LocalTime h = LocalTime.parse(String.valueOf(options[2])+":"+"0"+String.valueOf(options[3]));
+			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
+		}
+		else{
+			LocalTime h = LocalTime.parse(String.valueOf(options[2])+":"+String.valueOf(options[3]));
+			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
+		}
 
-    }
+		Calendar c = Calendar.getInstance();
 
-    void disableDrawer(){
-    	if(drawer.isShown()){
-    		drawer.close();
-    	}
-    	if(!drawer.isShown()){
-    		drawer.setDisable(true);
-    	}
+		ZonedDateTime zdt = localDate.atZone(ZoneId.of("America/Sao_Paulo"));
+		Date date = Date.from(zdt.toInstant());
+		if(options[4] == LocalDate.now(ZoneId.of("America/Sao_Paulo")).getDayOfMonth()){
+			backupTimer.schedule(new backupDB(), date);
 
-    }
+			c.setTime(date);
+			c.add(Calendar.DAY_OF_MONTH, 1);
+			options[4] = c.get(Calendar.DAY_OF_MONTH);
+			Settings.Save(options);
+		}
 
-    void enableDrawer(){
-    	if(drawer.isDisabled()){
-    		drawer.setDisable(false);
-    		drawer.open();
-    	}
-    }
+	}
+
+	void enableNotificationTask(){
+		if(user != null && user.getTipo().equals("Admin")){
+			timer = new Timer();
+			timer.scheduleAtFixedRate(new checkPasswordsRequest(), 1000, 10000);
+		}
+	}
+
+	void cancelNotificationTask(){
+		if(timer != null){
+			timer.cancel();
+			timer.purge();
+		}
+
+	}
+
+	void disableDrawer(){
+		if(drawer.isShown()){
+			drawer.close();
+		}
+		if(!drawer.isShown()){
+			drawer.setDisable(true);
+		}
+
+	}
+
+	void enableDrawer(){
+		if(drawer.isDisabled()){
+			drawer.setDisable(false);
+			drawer.open();
+		}
+		startBackupTimer();
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -249,6 +296,24 @@ public class MainTelaController implements Initializable{
 			}
 		}
 
+
+	}
+
+	public static class backupDB extends TimerTask{
+
+		@Override
+		public void run() {
+			Platform.runLater(()->{
+				Util.backuping();
+			});
+			try {
+				new BackupManager(BackupManager.BACKUP, null);
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		}
 
 	}
 

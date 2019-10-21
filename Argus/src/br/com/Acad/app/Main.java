@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.util.TimeZone;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import com.sun.javafx.application.LauncherImpl;
 
 import br.com.Acad.sql.FillDataBase;
+import br.com.Acad.util.SetDbUser;
 import br.com.Acad.util.Util;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -83,7 +83,8 @@ public class Main extends Application{
 			e.printStackTrace();
 		}
 
-		Main.factory = Persistence.createEntityManagerFactory("argusDB");
+		new SetDbUser("root", "9612").run();;
+		factory = SetDbUser.fac;
 
 		for (int i = 0; i < COUNT_LIMIT; i++) {
 			double progress = (double) i/10;

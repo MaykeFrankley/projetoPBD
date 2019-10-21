@@ -19,7 +19,6 @@ import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
-import br.com.Acad.model.CurriculoID;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.ResponsavelFinanceiro;
@@ -189,16 +188,13 @@ public class CadastrarAlunoController implements Initializable{
     private TableView<Curriculo> table_curriculo;
 
     @FXML
-    private TableColumn<Curriculo, CurriculoID> col_cod;
+    private TableColumn<Curriculo, String> col_cod;
 
     @FXML
     private TableColumn<Curriculo, String> col_nome;
 
     @FXML
-    private TableColumn<Curriculo, CurriculoID> col_anoLetivo;
-
-    @FXML
-    private TableColumn<Curriculo, CurriculoID> col_tipo;
+    private TableColumn<Curriculo, String> col_tipo;
 
     private ObservableList<Curriculo> oblist_curriculos = FXCollections.observableArrayList();
 
@@ -330,13 +326,17 @@ public class CadastrarAlunoController implements Initializable{
 	    	UtilDao.daoAlunos.addAluno(a);
 	    	SysLog.addLog(SysLog.message("Cadastrou um novo aluno de cod:"+a.getCodPessoa()));
 
-	    	ObservableList<CurriculoDisciplina> disciplinas = UtilDao.daoCurriculo.getAllDisciplinas(selectedCurriculo.getId().getCodCurriculo());
+	    	ObservableList<CurriculoDisciplina> disciplinas = UtilDao.daoCurriculo.getAllDisciplinas(selectedCurriculo.getCodCurriculo());
 	    	ObservableList<Turma> turmas = UtilDao.daoTurmas.getAllTurmas();
-	    	for (Turma turma : turmas) {
-				if(turma.getCodCurriculo().equals(selectedCurriculo.getId().getCodCurriculo()) && turma.getAnoLetivo() == selectedCurriculo.getId().getAnoLetivo()){
+	    	for (int i = 0; i < turmas.size(); i++) {
+				Turma turma = turmas.get(i);
+
+				if(turma.getCodCurriculo().equals(selectedCurriculo.getCodCurriculo()) && turma.getAnoLetivo() == disciplinas.get(0).getId().getAnoLetivo() &&
+						turma.getCodCurriculo().equals(selectedCurriculo.getCodCurriculo()) && turma.getAnoLetivo() == disciplinas.get(1).getId().getAnoLetivo()){
 					if(turma.getAno() == disciplinas.get(0).getId().getAno()){
 						AlunoTurma at = new AlunoTurma();
 						at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
+						at.setSituacao("Pendente");
 						UtilDao.daoTurmas.addAlunoTurma(at);
 						SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
 
@@ -345,11 +345,22 @@ public class CadastrarAlunoController implements Initializable{
 						return;
 					}
 				}
+				else if(turma.getCodCurriculo().equals(selectedCurriculo.getCodCurriculo()) && turma.getAnoLetivo() == disciplinas.get(1).getId().getAnoLetivo()){
+					AlunoTurma at = new AlunoTurma();
+					at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
+					at.setSituacao("Pendente");
+					UtilDao.daoTurmas.addAlunoTurma(at);
+					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
+
+					codResponsavel = 0;
+			    	initTable();
+					return;
+				}
 			}
 
 	    	Turma turma = new Turma();
-	    	turma.setCodCurriculo(selectedCurriculo.getId().getCodCurriculo());
-	    	turma.setAnoLetivo(selectedCurriculo.getId().getAnoLetivo());
+	    	turma.setCodCurriculo(selectedCurriculo.getCodCurriculo());
+	    	turma.setAnoLetivo(disciplinas.get(0).getId().getAnoLetivo());
 	    	turma.setAno(disciplinas.get(0).getId().getAno());
 
 	    	UtilDao.daoTurmas.addTurma(turma);
@@ -359,6 +370,7 @@ public class CadastrarAlunoController implements Initializable{
 
 	    	AlunoTurma at = new AlunoTurma();
 			at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getCodTurma()));
+			at.setSituacao("Pendente");
 			UtilDao.daoTurmas.addAlunoTurma(at);
 			SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
 
@@ -483,46 +495,9 @@ public class CadastrarAlunoController implements Initializable{
     	oblist_curriculos = UtilDao.daoCurriculo.getAllCurriculo();
     	oblist_resp = UtilDao.daoResponsaveis.getAllViewResponsavel();
 
-    	col_cod.setCellValueFactory(new PropertyValueFactory<>("id"));
+    	col_cod.setCellValueFactory(new PropertyValueFactory<>("codCurriculo"));
 		col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		col_anoLetivo.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_tipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-
-		col_cod.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>(){
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getCodCurriculo()));
-					}
-				}
-
-			};
-			return cell;
-		});
-
-		col_anoLetivo.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>(){
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getAnoLetivo()));
-					}
-				}
-
-			};
-			return cell;
-		});
 
 		table_curriculo.setItems(oblist_curriculos);
 

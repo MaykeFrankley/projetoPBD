@@ -1,14 +1,15 @@
 package br.com.Acad.model;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Curriculo {
 
-	@EmbeddedId
-	private CurriculoID id;
+	@Id
+	@Column
+	private String codCurriculo;
 
 	@Column
 	private String nome;
@@ -20,12 +21,12 @@ public class Curriculo {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CurriculoID getId() {
-		return id;
+	public String getCodCurriculo() {
+		return codCurriculo;
 	}
 
-	public void setId(CurriculoID id) {
-		this.id = id;
+	public void setCodCurriculo(String codCurriculo) {
+		this.codCurriculo = codCurriculo;
 	}
 
 	public String getNome() {

@@ -19,6 +19,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 
 import br.com.Acad.controller.MainTelaController;
+import br.com.Acad.controller.SettingsController;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.LogSistemaID;
 import javafx.animation.Interpolator;
@@ -32,6 +33,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableView;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.ImageView;
@@ -159,6 +162,72 @@ public class Util {
 		dialog.setOnDialogClosed(e ->{
 			contentPane.getChildren().get(0).setEffect(null);
 		});
+	}
+
+	public static void backuping(){
+
+		JFXDialogLayout dialogLayoutAlert = new JFXDialogLayout();
+		JFXButton button = new JFXButton("Okay");
+		JFXDialog dialog = new JFXDialog(contentPane, dialogLayoutAlert, JFXDialog.DialogTransition.BOTTOM);
+
+		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+			dialog.close();
+
+		});
+
+		ProgressBar p = new ProgressBar();
+		p.setPrefSize(150, 50);
+		p.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+		dialogLayoutAlert.setHeading(new Label("Backup do sistema!"));
+		dialogLayoutAlert.setBody(p);
+		dialogLayoutAlert.setMinSize(200, 100);
+		dialogLayoutAlert.setActions(button);
+		dialog.setOverlayClose(false);
+		dialog.show();
+
+		Notifications not = Notifications.create()
+				.title("Sistema argus")
+				.text("O backup do sistema está sendo executado!\nPorfavor Aguarde!")
+				.graphic(null)
+				.hideAfter(Duration.seconds(5))
+				.position(Pos.BOTTOM_RIGHT);
+		not.darkStyle();
+		not.showInformation();
+	}
+
+	public static void restoring(){
+
+		JFXDialogLayout dialogLayoutAlert = new JFXDialogLayout();
+		JFXButton button = new JFXButton("Okay");
+		JFXDialog dialog = new JFXDialog(contentPane, dialogLayoutAlert, JFXDialog.DialogTransition.BOTTOM);
+
+		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+			if(SettingsController.running){
+				e.consume();
+			}else{
+				dialog.close();
+			}
+		});
+
+
+		ProgressBar p = new ProgressBar();
+		p.setPrefSize(150, 50);
+		p.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+		dialogLayoutAlert.setHeading(new Label("Restaurando banco do sistema!"));
+		dialogLayoutAlert.setBody(p);
+		dialogLayoutAlert.setMinSize(200, 100);
+		dialogLayoutAlert.setActions(button);
+		dialog.setOverlayClose(false);
+		dialog.show();
+
+		Notifications not = Notifications.create()
+				.title("Sistema argus")
+				.text("A restauração do sistema está sendo executada!\nPorfavor Aguarde!")
+				.graphic(null)
+				.hideAfter(Duration.seconds(5))
+				.position(Pos.BOTTOM_RIGHT);
+		not.darkStyle();
+		not.showInformation();
 	}
 
 	public static void confirmation(List<JFXButton> controls, String body) {

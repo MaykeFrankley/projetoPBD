@@ -1,9 +1,7 @@
 package br.com.Acad.controller;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
 
@@ -14,7 +12,6 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,7 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
-public class DrawerController implements Initializable{
+public class DrawerController{
 
 	@FXML
     private FontAwesomeIconView icon_arrow;
@@ -203,16 +200,16 @@ public class DrawerController implements Initializable{
 
     void setUser(Usuario user){
     	this.label_user.setText(user.getUser());
+    	if(!MainTelaController.user.getTipo().equals("Admin")){
+    		pessoas_btn.setDisable(true);
+		}else{
+			pessoas_btn.setDisable(false);
+		}
+
     }
 
     void setMainTela(MainTelaController mc){
     	this.mainController = mc;
     }
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-
-	}
 
 }

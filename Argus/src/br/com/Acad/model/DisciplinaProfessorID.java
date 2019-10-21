@@ -5,33 +5,40 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 
 @SuppressWarnings("serial")
 @Embeddable
 public class DisciplinaProfessorID implements Serializable{
 
 	@Column
-	private int codProfessor;
+	private String codCurriculo;
 
-	@Embedded
-	private CurriculoDisciplinaID curriculoDisciplinaID;
+	@Column
+	private String codDisciplina;
+
+	@Column
+	private int ano;
 
 	public DisciplinaProfessorID() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DisciplinaProfessorID(int codProfessor, CurriculoDisciplinaID curriculoDisciplinaID) {
-		this.codProfessor = codProfessor;
-		this.curriculoDisciplinaID = curriculoDisciplinaID;
+	public DisciplinaProfessorID(String codCurriculo, String codDisciplina, int ano) {
+		this.codCurriculo = codCurriculo;
+		this.codDisciplina = codDisciplina;
+		this.ano = ano;
 	}
 
-	public int getCodProfessor() {
-		return codProfessor;
+	public String getCodDisciplina() {
+		return codDisciplina;
 	}
 
-	public CurriculoDisciplinaID getCurriculoDisciplinaID() {
-		return curriculoDisciplinaID;
+	public int getAno() {
+		return ano;
+	}
+
+	public String getCodCurriculo() {
+		return codCurriculo;
 	}
 
 	@Override
@@ -39,14 +46,14 @@ public class DisciplinaProfessorID implements Serializable{
 		if(this == obj) return true;
 		if(!(obj instanceof DisciplinaProfessorID)) return false;
 		DisciplinaProfessorID that = (DisciplinaProfessorID) obj;
-		return Objects.equals(getCodProfessor(), that.getCodProfessor()) &&
-				Objects.equals(getCurriculoDisciplinaID(), that.getCurriculoDisciplinaID());
-
+		return Objects.equals(getCodDisciplina(), that.codDisciplina) &&
+				Objects.equals(getCodCurriculo(), that.getCodCurriculo());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getCodProfessor(), getCurriculoDisciplinaID());
+		return Objects.hash(getAno(), getCodDisciplina(), getCodCurriculo());
 	}
+
 
 }

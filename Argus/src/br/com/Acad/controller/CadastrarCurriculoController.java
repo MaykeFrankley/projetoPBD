@@ -13,9 +13,9 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.CurriculoDisciplinaID;
-import br.com.Acad.model.CurriculoID;
 import br.com.Acad.model.Disciplina;
 import br.com.Acad.util.SysLog;
+import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,40 +44,31 @@ public class CadastrarCurriculoController implements Initializable{
 	private JFXTextField txt_nome;
 
 	@FXML
-	private JFXTextField txt_anoLetivo;
-
-	@FXML
 	private ComboBox<String> box_tipo;
 
 	@FXML
 	private TableView<Curriculo> table_curriculo;
 
 	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_cod;
+	private TableColumn<Curriculo, String> col_cod;
 
 	@FXML
 	private TableColumn<Curriculo, String> col_nome;
 
 	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_anoLetivo;
-
-	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_tipo;
+	private TableColumn<Curriculo, String> col_tipo;
 
 	@FXML
 	private TableView<Curriculo> table_curriculo2;
 
 	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_cod2;
+	private TableColumn<Curriculo, String> col_cod2;
 
 	@FXML
 	private TableColumn<Curriculo, String> col_nome2;
 
 	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_anoLetivo2;
-
-	@FXML
-	private TableColumn<Curriculo, CurriculoID> col_tipo2;
+	private TableColumn<Curriculo, String> col_tipo2;
 
 	@FXML
 	private TableView<CurriculoDisciplina> table_disciplinas;
@@ -92,10 +83,16 @@ public class CadastrarCurriculoController implements Initializable{
 	private TableColumn<CurriculoDisciplina, CurriculoDisciplinaID> col_serieDisciplina;
 
 	@FXML
+	private TableColumn<CurriculoDisciplina, CurriculoDisciplinaID> col_anoLetivo;
+
+	@FXML
 	private TableColumn<CurriculoDisciplina, Integer> col_cargaHoraria;
 
 	@FXML
 	private JFXButton add_button;
+
+	@FXML
+	private JFXButton remover_button;
 
 	@FXML
 	private DialogPane addDisciplinaPane;
@@ -110,10 +107,13 @@ public class CadastrarCurriculoController implements Initializable{
 	private TableColumn<Disciplina, String> col_nomeDisciplinaAdd;
 
 	@FXML
-	private ComboBox<String> ano_add;
+	private ComboBox<String> box_anoAdd;
 
 	@FXML
 	private JFXTextField cargaHoraria_add;
+
+	@FXML
+	private JFXTextField anoLetivo_add;
 
 	private ObservableList<Curriculo> oblist_curriculo = FXCollections.observableArrayList();
 
@@ -157,7 +157,7 @@ public class CadastrarCurriculoController implements Initializable{
 	void cadastrar(ActionEvent event) {
 		if(!update){
 			Curriculo c = new Curriculo();
-			c.setId(new CurriculoID(codCurriculo, Integer.valueOf(txt_anoLetivo.getText())));
+			c.setCodCurriculo(codCurriculo);
 			c.setNome(txt_nome.getText());
 			c.setTipo(box_tipo.getSelectionModel().getSelectedItem());
 
@@ -183,28 +183,42 @@ public class CadastrarCurriculoController implements Initializable{
 	}
 
 	@FXML
+	void remover(ActionEvent event) {
+		CurriculoDisciplina cd = table_disciplinas.getSelectionModel().getSelectedItem();
+		if(cd != null){
+			UtilDao.daoCurriculo.removeDisciplinaCurriculo(cd);
+			oblist_disciplinasCur.clear();
+			initTables();
+		}
+	}
+
+	@FXML
 	void aplicar(ActionEvent event) {
 		Disciplina d = table_disciplina_add.getSelectionModel().getSelectedItem();
 		Curriculo c = table_curriculo2.getSelectionModel().getSelectedItem();
-		if(d != null && !ano_add.getSelectionModel().isEmpty() && !cargaHoraria_add.getText().isEmpty()){
+		if(d != null && !box_anoAdd.getSelectionModel().isEmpty() && !cargaHoraria_add.getText().isEmpty()){
 			Pattern p = Pattern.compile("\\d+");
-			Matcher m = p.matcher(ano_add.getSelectionModel().getSelectedItem());
+			Matcher m = p.matcher(box_anoAdd.getSelectionModel().getSelectedItem());
 			int ano = 0;
 			if(m.find()){
 				ano = Integer.valueOf(m.group());
 			}
 			CurriculoDisciplina cd = new CurriculoDisciplina();
-			cd.setId(new CurriculoDisciplinaID(c.getId(), d.getCodDisciplina(), ano));
+			cd.setId(new CurriculoDisciplinaID(c.getCodCurriculo(), d.getCodDisciplina(), ano, Integer.valueOf(anoLetivo_add.getText())));
 			cd.setCargaHoraria(Integer.valueOf(cargaHoraria_add.getText()));
 			cd.setNomeCurriculo(c.getNome());
 			cd.setNomeDisciplina(d.getNome());
 			UtilDao.daoCurriculo.addDisciplinaToCurriculo(cd);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getId().getCodCurriculo()+" e ano letivo: "+c.getId().getAnoLetivo()));
+			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getCodCurriculo()+" e ano letivo: "+cd.getId().getAnoLetivo()));
 
 			cancelar(event);
 			oblist_disciplinasCur.clear();
 
 			initTables();
+		}else{
+			Util.Alert("Selecione uma disciplina!");
+			event.consume();
+			return;
 		}
 	}
 
@@ -219,7 +233,7 @@ public class CadastrarCurriculoController implements Initializable{
 
 	@FXML
 	void limpar(ActionEvent event) {
-		txt_anoLetivo.clear();txt_nome.clear();box_tipo.getSelectionModel().clearSelection();update = false;updateCurriculo = null;box_tipo.setDisable(false);
+		txt_nome.clear();box_tipo.getSelectionModel().clearSelection();update = false;updateCurriculo = null;box_tipo.setDisable(false);
 	}
 
 	void initTables(){
@@ -230,46 +244,9 @@ public class CadastrarCurriculoController implements Initializable{
 		oblist_disciplinas_add = UtilDao.daoDisciplina.getAllDisciplinas();
 
 		//TableCurriculo1
-		col_cod.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_cod.setCellValueFactory(new PropertyValueFactory<>("codCurriculo"));
 		col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		col_anoLetivo.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_tipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-
-		col_cod.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>(){
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getCodCurriculo()));
-					}
-				}
-
-			};
-			return cell;
-		});
-
-		col_anoLetivo.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>(){
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getAnoLetivo()));
-					}
-				}
-
-			};
-			return cell;
-		});
 
 		table_curriculo.setItems(oblist_curriculo);
 		table_curriculo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -277,54 +254,14 @@ public class CadastrarCurriculoController implements Initializable{
 				update = true;
 				updateCurriculo = table_curriculo.getSelectionModel().getSelectedItem();
 				txt_nome.setText(updateCurriculo.getNome());
-				txt_anoLetivo.setText(String.valueOf(updateCurriculo.getId().getAnoLetivo()));
 				box_tipo.setDisable(true);
 			}
 		});
 
 		//TableCurriculo2
-		col_cod2.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_cod2.setCellValueFactory(new PropertyValueFactory<>("codCurriculo"));
 		col_nome2.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		col_anoLetivo2.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_tipo2.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-
-		col_cod2.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>(){
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getCodCurriculo()));
-					}
-				}
-
-			};
-			return cell;
-
-		});
-
-		col_anoLetivo2.setCellFactory(column -> {
-			final TableCell<Curriculo, CurriculoID> cell = new TableCell<Curriculo, CurriculoID>(){
-
-				@Override
-				protected void updateItem(CurriculoID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getAnoLetivo()));
-					}
-				}
-
-			};
-			return cell;
-
-		});
 
 		table_curriculo2.setItems(oblist_curriculo);
 
@@ -332,9 +269,12 @@ public class CadastrarCurriculoController implements Initializable{
 			if (newSelection != null) {
 				Curriculo selected = table_curriculo2.getSelectionModel().getSelectedItem();
 				add_button.setVisible(true);
+				if(MainTelaController.user.getTipo().equals("Admin")){
+					remover_button.setVisible(true);
+				}
 				oblist_disciplinasCur.clear();
 
-				oblist_disciplinasCur = UtilDao.daoCurriculo.getAllDisciplinas(selected.getId().getCodCurriculo());
+				oblist_disciplinasCur = UtilDao.daoCurriculo.getAllDisciplinas(selected.getCodCurriculo());
 
 				for (CurriculoDisciplina curriculoDisc : oblist_disciplinasCur) {
 					curriculoDisc.setNomeDisciplina(((Disciplina) UtilDao.daoDisciplina.getDisciplina(curriculoDisc.getId().getCodDisciplina())).getNome());
@@ -345,6 +285,7 @@ public class CadastrarCurriculoController implements Initializable{
 
 			}else{
 				add_button.setVisible(false);
+				remover_button.setVisible(false);
 			}
 
 		});
@@ -355,10 +296,44 @@ public class CadastrarCurriculoController implements Initializable{
 
 		table_disciplina_add.setItems(oblist_disciplinas_add);
 
+
+		table_disciplina_add.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) ->{
+			if (newSelection != null) {
+				box_anoAdd.getItems().clear();
+				box_anoAdd.getItems().addAll("1ª ano", "2ª ano", "3ª ano", "4ª ano", "5ª ano", "6ª ano",
+						"7ª ano", "8ª ano", "9ª ano");
+				for(CurriculoDisciplina d: oblist_disciplinasCur){
+					if(newSelection.getCodDisciplina().equals(d.getId().getCodDisciplina())){
+
+						if(d.getId().getAno() == 1)
+							box_anoAdd.getItems().remove("1ª ano");
+						if(d.getId().getAno() == 2)
+							box_anoAdd.getItems().remove("2ª ano");
+						if(d.getId().getAno() == 3)
+							box_anoAdd.getItems().remove("3ª ano");
+						if(d.getId().getAno() == 4)
+							box_anoAdd.getItems().remove("4ª ano");
+						if(d.getId().getAno() == 5)
+							box_anoAdd.getItems().remove("5ª ano");
+						if(d.getId().getAno() == 6)
+							box_anoAdd.getItems().remove("6ª ano");
+						if(d.getId().getAno() == 7)
+							box_anoAdd.getItems().remove("7ª ano");
+						if(d.getId().getAno() == 8)
+							box_anoAdd.getItems().remove("8ª ano");
+						if(d.getId().getAno() == 9)
+							box_anoAdd.getItems().remove("9ª ano");
+
+					}
+				}
+			}
+		});
+
 		//Table disciplinaCurriculo
 		col_codDisciplina.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_nomeDisciplina.setCellValueFactory(new PropertyValueFactory<>("nomeDisciplina"));
 		col_serieDisciplina.setCellValueFactory(new PropertyValueFactory<>("id"));
+		col_anoLetivo.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_cargaHoraria.setCellValueFactory(new PropertyValueFactory<>("cargaHoraria"));
 
 		col_codDisciplina.setCellFactory(column -> {
@@ -399,6 +374,25 @@ public class CadastrarCurriculoController implements Initializable{
 
 		});
 
+		col_anoLetivo.setCellFactory(column -> {
+			final TableCell<CurriculoDisciplina, CurriculoDisciplinaID> cell = new TableCell<CurriculoDisciplina, CurriculoDisciplinaID>(){
+
+				@Override
+				protected void updateItem(CurriculoDisciplinaID item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getAnoLetivo()));
+					}
+				}
+
+			};
+			return cell;
+
+		});
+
 		col_cargaHoraria.setCellFactory(column -> {
 			TableCell<CurriculoDisciplina, Integer> cell = new TableCell<CurriculoDisciplina, Integer>() {
 
@@ -420,8 +414,8 @@ public class CadastrarCurriculoController implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		box_tipo.getItems().addAll("Bimestral", "Semestral");
-		ano_add.getItems().addAll("1ª ano", "2ª ano", "3ª ano", "4ª ano", "5ª ano", "6ª ano",
+		box_tipo.getItems().addAll("Bimestral", "Trimestral");
+		box_anoAdd.getItems().addAll("1ª ano", "2ª ano", "3ª ano", "4ª ano", "5ª ano", "6ª ano",
 				"7ª ano", "8ª ano", "9ª ano");
 
 		cargaHoraria_add.textProperty().addListener(
@@ -430,7 +424,16 @@ public class CadastrarCurriculoController implements Initializable{
 						cargaHoraria_add.setText(new_value.replaceAll("[^\\d]", ""));
 					}
 				}
-				);
+		);
+
+		anoLetivo_add.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+					if (!new_value.matches("\\d*")) {
+						anoLetivo_add.setText(new_value.replaceAll("[^\\d]", ""));
+					}
+				}
+		);
+
 
 		initTables();
 

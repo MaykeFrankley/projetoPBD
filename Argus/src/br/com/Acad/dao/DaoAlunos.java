@@ -9,9 +9,11 @@ import br.com.Acad.app.Main;
 import br.com.Acad.dao.interfaces.IDaoAlunos;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoNota;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -74,6 +76,24 @@ public class DaoAlunos implements IDaoAlunos{
 		return a;
 	}
 
+	public void setAlunoNota(AlunoNota nota) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(nota);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
 	@Override
 	public ViewResponsavelFinanceiro getResponsavel(int codPessoa){
 		try {
@@ -123,5 +143,25 @@ public class DaoAlunos implements IDaoAlunos{
 		}
 		return null;
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public ObservableList<AlunoNota> getNotas(int codAluno, int ano, int anoLetivo) {
+		try {
+			createEM();
+			List<AlunoNota> list = entityMn.createQuery("from AlunoNota where codAluno = :al and serie = :a and anoLetivo = :alt").
+					setParameter("al", codAluno).setParameter("a", ano).setParameter("alt", anoLetivo).getResultList();
+			ObservableList<AlunoNota> oblist = FXCollections.observableList(list);
+
+			for (AlunoNota alunoNota : oblist) {
+				alunoNota.setNomeDisciplina(UtilDao.daoDisciplina.getDisciplina(alunoNota.getId().getCodDisciplina()).getNome());
+			}
+			return oblist;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+		return null;
 	}
 }
