@@ -61,6 +61,7 @@ public class SettingsController implements Initializable{
     			callFromSettings = true;
     			new BackupManager(BackupManager.BACKUP, null);
     			callFromSettings = false;
+    			System.out.println("FALSPOOO");
     		};
     	};
 

@@ -301,8 +301,8 @@ public class MainTelaController implements Initializable{
 
 	public static class backupDB extends TimerTask{
 
-		public static boolean running = true;
-		public static boolean callFromMain = true;
+		public static boolean running = false;
+		public static boolean callFromMain = false;
 
 		@Override
 		public void run() {
@@ -313,6 +313,8 @@ public class MainTelaController implements Initializable{
 
 			Thread thread = new Thread(){
 				public void run() {
+					running = true;
+					callFromMain = true;
 					new BackupManager(BackupManager.BACKUP, null);
 					running = false;
 					callFromMain = false;
