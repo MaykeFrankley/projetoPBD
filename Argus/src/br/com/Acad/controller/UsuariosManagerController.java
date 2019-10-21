@@ -37,6 +37,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -414,6 +415,19 @@ public class UsuariosManagerController implements Initializable{
 
     	table_cpf.setItems(oblist_cpf);
     	table_usuarios.setItems(oblist_usuarios_view);
+
+    	col_tipo.setCellFactory(ComboBoxTableCell.forTableColumn("Admin", "Secretaria", "Direção", "CoordenacaoPedagogica"));
+    	col_tipo.setOnEditCommit(e -> {
+    		Usuario u = UtilDao.daoUsuarios.getUsuario(e.getTableView().getItems().get(e.getTablePosition().getRow()).getCpf());
+    		u.setTipo(e.getNewValue());
+    		try {
+				Util.setPrivileges(u);
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+    		initTables();
+
+    	});
     }
 
 

@@ -19,7 +19,7 @@ public class FillDataBase {
 	public Connection con;
 	public PreparedStatement stmt;
 
-	public boolean checkDB() throws SQLException, FileNotFoundException, IOException {
+	public boolean checkDB() throws SQLException, FileNotFoundException, IOException, InterruptedException {
 
 		sql = new CheckSQL();
 
@@ -54,6 +54,8 @@ public class FillDataBase {
 
 			runner.runScript(in2);
 			rs.close();
+
+			Thread.sleep(2000);
 
 			String hashPass = DigestUtils.md5Hex("1");
 			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
@@ -158,6 +160,30 @@ public class FillDataBase {
 
 			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
     	    stmt.setString(1, "JoseSilva");
+			stmt.execute();
+
+			//////////////////////////////////////
+			String user3 = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Maria Silva', 'Serra Talhada', '1980-05-16', '111.111.111-11', 'Ativo');";
+			stmt = con.prepareStatement(user3);
+			stmt.execute();
+
+			String hashPass3 = DigestUtils.md5Hex("1");
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(?,?,?,?,?,?)");
+			stmt.setInt(1, 103);
+			stmt.setString(2, "111.111.111-11");
+			stmt.setString(3, "MariaSilva");
+			stmt.setString(4, hashPass3);
+			stmt.setString(5, "Direção");
+			stmt.setString(6, "Ativo");
+			stmt.execute();
+
+			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
+			stmt.setString(1, "MariaSilva");
+			stmt.setString(2, hashPass3);
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
+    	    stmt.setString(1, "MariaSilva");
 			stmt.execute();
 
 			stmt.close();

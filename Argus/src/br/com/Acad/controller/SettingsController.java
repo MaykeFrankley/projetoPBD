@@ -14,6 +14,7 @@ import com.jfoenix.controls.JFXToggleButton;
 import br.com.Acad.util.BackupManager;
 import br.com.Acad.util.Settings;
 import br.com.Acad.util.Util;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,12 +48,24 @@ public class SettingsController implements Initializable{
 
     private int[] options = Settings.get();
 
-    public static boolean running = true;
+    public static boolean callFromSettings = false;
 
     @FXML
     void fazerBackup(ActionEvent event) {
-		new BackupManager(BackupManager.BACKUP, null);
-		Util.backuping();
+    	Platform.runLater(() -> {
+    		Util.backuping();
+    	});
+
+    	Thread thread = new Thread(){
+    		public void run() {
+    			callFromSettings = true;
+    			new BackupManager(BackupManager.BACKUP, null);
+    			callFromSettings = false;
+    		};
+    	};
+
+    	thread.start();
+
     }
 
     @FXML
@@ -70,11 +83,9 @@ public class SettingsController implements Initializable{
 			}else{
 				Util.Alert("Erro ao restaurar o banco!\nVerifique se o arquivo está localizado na raiz do sistema");
 			}
-			running = false;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			running = false;
 		}
     }
 

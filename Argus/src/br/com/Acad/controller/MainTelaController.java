@@ -301,17 +301,26 @@ public class MainTelaController implements Initializable{
 
 	public static class backupDB extends TimerTask{
 
+		public static boolean running = true;
+		public static boolean callFromMain = true;
+
 		@Override
 		public void run() {
 			Platform.runLater(()->{
 				Util.backuping();
+
 			});
-			try {
-				new BackupManager(BackupManager.BACKUP, null);
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+
+			Thread thread = new Thread(){
+				public void run() {
+					new BackupManager(BackupManager.BACKUP, null);
+					running = false;
+					callFromMain = false;
+				}
+			};
+
+			thread.start();
+
 
 		}
 

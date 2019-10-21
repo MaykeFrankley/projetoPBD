@@ -439,6 +439,16 @@ public class CadastrarAlunoController implements Initializable{
     @FXML
     void proximo(ActionEvent event) {
     	if(checkTextFields()){
+    		ObservableList<Pessoa> oblist = UtilDao.daoPessoa.getAllPessoa();
+			for (int i = 0; i < oblist.size(); i++) {
+				String obCPF = oblist.get(i).getCpf();
+
+				if(cpf.getText().length() > 10 && obCPF != null && obCPF.equals(cpf.getText())){
+					Util.Alert("CPF já está cadastrado no sistema!");
+					return;
+				}
+
+			}
     		if(responsavelFin.isSelected()){
     			tab_grade.setDisable(false);
     			tab_responsavel.setDisable(true);
@@ -455,6 +465,16 @@ public class CadastrarAlunoController implements Initializable{
     void proximo2(ActionEvent event){
     	if(event.getSource() == btn_proximo1){
     		if(checkTextFields2()){
+    			ObservableList<Pessoa> oblist = UtilDao.daoPessoa.getAllPessoa();
+    			for (int i = 0; i < oblist.size(); i++) {
+    				String obCPF = oblist.get(i).getCpf();
+
+    				if(cpf1.getText().length() > 10 && obCPF != null && obCPF.equals(cpf1.getText())){
+    					Util.Alert("CPF já está cadastrado no sistema!");
+    					return;
+    				}
+
+    			}
     			tab_grade.setDisable(false);
         		tabPane.getSelectionModel().select(tab_grade);
     		}
@@ -540,7 +560,7 @@ public class CadastrarAlunoController implements Initializable{
     		return false;
     	}
 
-    	if(cpf1.getText().length() > 11 && cpf1.getText().length() < 14){
+    	if(cpf1.getText().length() < 11 || (cpf1.getText().length() > 11 && cpf1.getText().length() < 14)){
     		Util.Alert("Verifique o CPF!");
     		return false;
     	}else{
@@ -626,16 +646,18 @@ public class CadastrarAlunoController implements Initializable{
     		return false;
     	}
 
-    	if(cpf.getText().length() > 0 && cpf.getText().length() > 11 && cpf.getText().length() < 14){
-    		Util.Alert("Verifique o CPF!");
-    		return false;
-    	}else{
-    		tff = new TextFieldFormatter();
-    		tff.setMask("###.###.###-##");
-    		tff.setCaracteresValidos("0123456789");
-    		tff.setTf(cpf);
-    		tff.formatter();
-    	}
+    	if(cpf.getText().length() > 0){
+			if(cpf.getText().length() < 11 || (cpf.getText().length() > 11 && cpf.getText().length() < 14)){
+				Util.Alert("Verifique o CPF!");
+				return false;
+			}else{
+				tff = new TextFieldFormatter();
+				tff.setMask("###.###.###-##");
+				tff.setCaracteresValidos("0123456789");
+				tff.setTf(cpf);
+				tff.formatter();
+			}
+		}
 
     	if(responsavelFin.isSelected()){
     		if(cpf.getText().isEmpty() || cpf.getText().length() > 11 && cpf.getText().length() < 14){

@@ -2,7 +2,10 @@ package br.com.Acad.util;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.util.Calendar;
 import java.util.List;
@@ -22,6 +25,8 @@ import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.controller.SettingsController;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.LogSistemaID;
+import br.com.Acad.model.Usuario;
+import br.com.Acad.sql.ConnectionClass;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -171,6 +176,10 @@ public class Util {
 		JFXDialog dialog = new JFXDialog(contentPane, dialogLayoutAlert, JFXDialog.DialogTransition.BOTTOM);
 
 		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+			if(MainTelaController.backupDB.callFromMain && MainTelaController.backupDB.running && !SettingsController.callFromSettings){
+				e.consume();
+				return;
+			}
 			dialog.close();
 
 		});
@@ -202,11 +211,7 @@ public class Util {
 		JFXDialog dialog = new JFXDialog(contentPane, dialogLayoutAlert, JFXDialog.DialogTransition.BOTTOM);
 
 		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
-			if(SettingsController.running){
-				e.consume();
-			}else{
 				dialog.close();
-			}
 		});
 
 
@@ -310,6 +315,145 @@ public class Util {
 		} );
 
 
+
+	}
+
+	public static void setPrivileges(Usuario u) throws SQLException{
+		Connection con;
+	    con = ConnectionClass.createConnection();
+
+
+	    PreparedStatement stmt = con.prepareStatement("DROP USER IF EXISTS ?@localhost;");
+	    stmt.setString(1, u.getUser());
+	    stmt.execute();
+
+	    stmt = con.prepareStatement("CREATE USER IF NOT EXISTS ?@'localhost' IDENTIFIED BY ?;");
+	    stmt.setString(1, u.getUser());
+	    stmt.setString(2, u.getSenha());
+		stmt.execute();
+
+	    switch (u.getTipo()) {
+		case "Admin":
+			stmt = con.prepareStatement("grant all privileges on argus.* to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+		case "Direção":
+			stmt.close();
+			stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			break;
+
+		case "Secretaria":
+			stmt.close();
+			stmt = con.prepareStatement("grant select on argus.ViewAluno to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.ViewTurma to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getAlunos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant execute on PROCEDURE argus.generateNotas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsaveis to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsavelDoAluno to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.curriculo to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.`curriculo-disciplina`to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.curriculo to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Turmas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.`Aluno-Turma` to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Alunos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Pessoas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.enderecos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.contatos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Disciplinas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			break;
+
+		case "CoordenacaoPedagogica":
+			stmt.close();
+			stmt = con.prepareStatement("grant select, insert, update on argus.SessaoPedagogica to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			break;
+
+		default:
+			break;
+		}
+	    stmt.close();
+
+	    if(u.getCpf().equals(UtilDao.daoUsuarios.getUsuario(u.getCpf()).getCpf())){
+	    	UtilDao.daoUsuarios.updateUsuario(u);
+	    }
+	    else{
+	    	UtilDao.daoUsuarios.addUsuario(u);
+	    	SysLog.addLog(SysLog.createUser(u.getCodPessoa()));
+	    }
 
 	}
 
