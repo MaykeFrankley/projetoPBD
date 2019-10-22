@@ -37,6 +37,13 @@
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/mysql-connector-java-8.0.16.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/xstream-1.4.10.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/ejb3-persistence-1.0.2.GA.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/org.eclipse.fx.ide.css.jfx8_2.4.0.201605112122.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/activation-1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/mail-1.5.0-b01.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/mysql-backup4j-1.0.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/protobuf-java-2.6.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/slf4j-api-1.7.25.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/zt-zip-1.12.jar"/>
         </jar>
     </target>
 </project>

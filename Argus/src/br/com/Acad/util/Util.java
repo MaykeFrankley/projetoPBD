@@ -447,7 +447,7 @@ public class Util {
 		}
 	    stmt.close();
 
-	    if(u.getCpf().equals(UtilDao.daoUsuarios.getUsuario(u.getCpf()).getCpf())){
+	    if(UtilDao.daoUsuarios.getUsuario(u.getCpf()) != null){
 	    	UtilDao.daoUsuarios.updateUsuario(u);
 	    }
 	    else{
