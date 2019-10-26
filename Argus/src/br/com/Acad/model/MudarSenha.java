@@ -1,5 +1,8 @@
 package br.com.Acad.model;
 
+import java.sql.Date;
+import java.sql.Time;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,8 +16,11 @@ public class MudarSenha {
 	@Column
 	private String cpf;
 
-	@Column(name="NovaSenha")
-	private String senha;
+	@Column
+	private Date dataSolicitacao;
+
+	@Column
+	private Time horaSolicitacao;
 
 	public MudarSenha() {
 		// TODO Auto-generated constructor stub
@@ -25,19 +31,29 @@ public class MudarSenha {
 		return cpf;
 	}
 
-	public String getSenha() {
-		return senha;
-	}
-
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
 
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public Date getDataSolicitacao() {
+		return dataSolicitacao;
 	}
 
+
+	public void setDataSolicitacao(Date dataSolicitacao) {
+		this.dataSolicitacao = dataSolicitacao;
+	}
+
+
+	public Time getHoraSolicitacao() {
+		return horaSolicitacao;
+	}
+
+
+	public void setHoraSolicitacao(Time horaSolicitacao) {
+		this.horaSolicitacao = horaSolicitacao;
+	}
 
 
 

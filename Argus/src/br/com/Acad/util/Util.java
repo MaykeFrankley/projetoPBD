@@ -162,7 +162,8 @@ public class Util {
 		dialogLayoutAlert.setActions(button);
 		dialog.show();
 
-		contentPane.getChildren().get(0).setEffect(blur);
+		if(contentPane.getChildren().size() > 1)
+			contentPane.getChildren().get(0).setEffect(blur);
 
 		dialog.setOnDialogClosed(e ->{
 			contentPane.getChildren().get(0).setEffect(null);

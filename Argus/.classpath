@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="Libs/protobuf-java-2.6.0.jar"/>
 	<classpathentry kind="lib" path="Libs/slf4j-api-1.7.25.jar"/>
 	<classpathentry kind="lib" path="Libs/zt-zip-1.12.jar"/>
+	<classpathentry kind="lib" path="Libs/commons-lang3-3.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

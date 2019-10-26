@@ -2,7 +2,6 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
-<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
@@ -15,6 +14,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -103,86 +103,97 @@
             </Tab>
             <Tab fx:id="MudancaSenhasTab" closable="false" text="Mudança de senhas">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <StackPane>
                      <children>
-                        <VBox fx:id="vbox_atualizar" alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <HBox alignment="CENTER" fillHeight="false" prefHeight="216.0" prefWidth="1280.0" spacing="20.0">
+                              <VBox fx:id="vbox_atualizar" alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <VBox fillWidth="false" prefHeight="317.0" prefWidth="427.0" spacing="20.0">
+                                    <HBox alignment="CENTER" fillHeight="false" prefHeight="216.0" prefWidth="1280.0" spacing="20.0">
                                        <children>
-                                          <JFXTextField fx:id="cod_update" editable="false" focusColor="#c3c3c3" labelFloat="true" minWidth="134.0" prefHeight="43.0" prefWidth="134.0" promptText="Código" style="-fx-font-size: 16px;" styleClass="text-field" unFocusColor="#54ea5e" />
-                                          <JFXTextField fx:id="nome_update" editable="false" focusColor="#c3c3c3" labelFloat="true" minWidth="427.0" prefHeight="43.0" prefWidth="452.0" promptText="Nome" style="-fx-font-size: 16px;" styleClass="text-field" unFocusColor="#54ea5e" />
-                                          <JFXTextField fx:id="cpf_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="423.0" minWidth="322.0" prefHeight="43.0" prefWidth="423.0" promptText="CPF" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                          <VBox fillWidth="false" prefHeight="317.0" prefWidth="427.0" spacing="20.0">
+                                             <children>
+                                                <JFXTextField fx:id="cod_update" editable="false" focusColor="#c3c3c3" labelFloat="true" minWidth="134.0" prefHeight="43.0" prefWidth="134.0" promptText="Código" style="-fx-font-size: 16px;" styleClass="text-field" unFocusColor="#54ea5e" />
+                                                <JFXTextField fx:id="nome_update" editable="false" focusColor="#c3c3c3" labelFloat="true" minWidth="427.0" prefHeight="43.0" prefWidth="452.0" promptText="Nome" style="-fx-font-size: 16px;" styleClass="text-field" unFocusColor="#54ea5e" />
+                                                <JFXTextField fx:id="cpf_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="423.0" minWidth="322.0" prefHeight="43.0" prefWidth="423.0" promptText="CPF" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets left="40.0" />
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox fillWidth="false" prefHeight="317.0" prefWidth="383.0" spacing="20.0">
+                                             <children>
+                                                <JFXTextField fx:id="usuario_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Usuario" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                                <JFXTextField fx:id="tipo_update" editable="false" focusColor="#c3c3c3" labelFloat="true" layoutX="10.0" layoutY="10.0" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Tipo de usuario" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                                <JFXTextField fx:id="senhaGerada" editable="false" focusColor="RED" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Senha Gerada" style="-fx-font-size: 16px;" unFocusColor="RED" />
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </VBox>
+                                          <VBox fillWidth="false" prefHeight="314.0" prefWidth="501.0" spacing="20.0">
+                                             <children>
+                                                <JFXTextField fx:id="email_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="394.0" minWidth="351.0" prefHeight="43.0" prefWidth="394.0" promptText="Email" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                                <JFXTextField fx:id="telefone_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                                <JFXTextField fx:id="celular_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="Celular" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                             </children>
+                                          </VBox>
                                        </children>
-                                       <HBox.margin>
-                                          <Insets left="40.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox fillWidth="false" prefHeight="317.0" prefWidth="383.0" spacing="20.0">
-                                       <children>
-                                          <JFXTextField fx:id="usuario_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Usuario" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
-                                          <JFXPasswordField fx:id="novaSenha" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="344.0" minWidth="344.0" prefHeight="43.0" prefWidth="344.0" promptText="Senha" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
-                                          <JFXTextField fx:id="tipo_update" editable="false" focusColor="#c3c3c3" labelFloat="true" layoutX="10.0" layoutY="10.0" maxWidth="351.0" minWidth="351.0" prefHeight="43.0" prefWidth="351.0" promptText="Tipo de usuario" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
-                                       </children>
-                                       <HBox.margin>
+                                       <VBox.margin>
                                           <Insets />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <VBox fillWidth="false" prefHeight="314.0" prefWidth="501.0" spacing="20.0">
+                                       </VBox.margin>
+                                    </HBox>
+                                    <Label text="Solicitações" textFill="#ababab" wrapText="true">
+                                       <font>
+                                          <Font name="Arial Bold" size="16.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets right="500.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <HBox alignment="CENTER" fillHeight="false" prefHeight="246.0" prefWidth="1275.0" spacing="20.0">
                                        <children>
-                                          <JFXTextField fx:id="email_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="394.0" minWidth="351.0" prefHeight="43.0" prefWidth="394.0" promptText="Email" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
-                                          <JFXTextField fx:id="telefone_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
-                                          <JFXTextField fx:id="celular_update" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="Celular" style="-fx-font-size: 16px;" unFocusColor="#54ea5e" />
+                                          <TableView fx:id="table_cpf" prefHeight="238.0" prefWidth="774.0">
+                                            <columns>
+                                              <TableColumn fx:id="col_cpf_mud" prefWidth="287.0" text="CPF" />
+                                                <TableColumn fx:id="col_data_mud" prefWidth="227.0" text="Data" />
+                                                <TableColumn fx:id="col_hora_mud" prefWidth="441.0" text="Hora" />
+                                            </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                          <HBox alignment="BOTTOM_RIGHT" fillHeight="false" prefHeight="226.0" prefWidth="321.0" spacing="30.0">
+                                             <children>
+                                                <JFXButton buttonType="RAISED" onAction="#concluir" prefHeight="46.0" prefWidth="123.0" ripplerFill="WHITE" text="Concluir">
+                                                   <font>
+                                                      <Font size="19.0" />
+                                                   </font>
+                                                </JFXButton>
+                                                <JFXButton buttonType="RAISED" onAction="#gerarSenha" prefHeight="49.0" prefWidth="149.0" ripplerFill="WHITE" text="Gerar senha">
+                                                   <font>
+                                                      <Font size="19.0" />
+                                                   </font>
+                                                </JFXButton>
+                                             </children>
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                          </HBox>
                                        </children>
-                                    </VBox>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets />
-                                 </VBox.margin>
-                              </HBox>
-                              <Label text="Solicitações" textFill="#ababab" wrapText="true">
-                                 <font>
-                                    <Font name="Arial Bold" size="16.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets right="500.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <HBox alignment="CENTER" fillHeight="false" prefHeight="246.0" prefWidth="1275.0" spacing="20.0">
-                                 <children>
-                                    <TableView fx:id="table_cpf" prefHeight="238.0" prefWidth="393.0">
-                                      <columns>
-                                        <TableColumn fx:id="col_cpf_mud" prefWidth="407.0" text="CPF" />
-                                      </columns>
-                                       <columnResizePolicy>
-                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                       </columnResizePolicy>
-                                    </TableView>
-                                    <HBox alignment="BOTTOM_RIGHT" fillHeight="false" prefHeight="294.0" prefWidth="470.0" spacing="30.0">
-                                       <children>
-                                          <JFXButton buttonType="RAISED" onAction="#autorizar" prefHeight="46.0" prefWidth="123.0" ripplerFill="WHITE" text="Autorizar">
-                                             <font>
-                                                <Font size="19.0" />
-                                             </font>
-                                          </JFXButton>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
                                     </HBox>
                                  </children>
-                                 <VBox.margin>
-                                    <Insets />
-                                 </VBox.margin>
-                              </HBox>
+                                 <effect>
+                                    <DropShadow />
+                                 </effect>
+                              </VBox>
                            </children>
-                           <effect>
-                              <DropShadow />
-                           </effect>
-                        </VBox>
+                        </AnchorPane>
                      </children>
-                  </AnchorPane>
+                  </StackPane>
                </content>
             </Tab>
          </tabs>

@@ -5,12 +5,16 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
@@ -23,9 +27,9 @@ import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.model.ViewUsuario;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
-import br.com.Acad.sql.ConnectionClass;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -132,9 +136,6 @@ public class UsuariosManagerController implements Initializable{
     private JFXTextField usuario_update;
 
     @FXML
-    private JFXPasswordField novaSenha;
-
-    @FXML
     private JFXTextField tipo_update;
 
     @FXML
@@ -153,10 +154,19 @@ public class UsuariosManagerController implements Initializable{
     private TableColumn<MudarSenha, String> col_cpf_mud;
 
     @FXML
+    private TableColumn<MudarSenha, Date> col_data_mud;
+
+    @FXML
+    private TableColumn<MudarSenha, Time> col_hora_mud;
+
+    @FXML
     private Tab desativarTab;
 
     @FXML
     private JFXTextField campo_pesquisa2;
+
+    @FXML
+    private JFXTextField senhaGerada;
 
     @FXML
     private JFXButton btn_ativar;
@@ -173,8 +183,7 @@ public class UsuariosManagerController implements Initializable{
     public FilteredList<ViewUsuario> filteredData;
 
     @FXML
-    void autorizar(ActionEvent event) throws SQLException  {
-
+    void gerarSenha(ActionEvent event) throws SQLException {
     	MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
 
     	if(!cod_update.getText().isEmpty() && ms != null){
@@ -190,12 +199,16 @@ public class UsuariosManagerController implements Initializable{
     			}
 			}
     		if(user != null){
-            	user.setSenha(novaSenha.getText());
+    			String randomPass = RandomStringUtils.randomAlphanumeric(11);
+
+    			String hash = DigestUtils.md5Hex(randomPass);
+
+            	user.setSenha(hash);
+
+            	senhaGerada.setText(randomPass);
+            	senhaGerada.requestFocus();
 
             	UtilDao.daoUsuarios.updateUsuario(user);
-
-            	DaoMudarSenhas daoMudarSenhas = new DaoMudarSenhas();
-            	daoMudarSenhas.closeRequest(ms);
 
             	Connection con;
         	    con = ConnectionClass.createConnection();
@@ -208,15 +221,41 @@ public class UsuariosManagerController implements Initializable{
 
         	    initTables();
 
-            	Util.Alert("Usuario: "+"\""+user.getUser()+"\""+" atualizado com sucesso!");
-
             	LogSistema ls = Util.prepareLog();
 
-            	ls.setAcao("O admin autorizou mudança de senha do usuário \""+user.getUser()+"\".");
+            	ls.setAcao("O admin gerou uma senha do usuário \""+user.getUser()+"\".");
 
             	UtilDao.daoLog.addLog(ls);
 
     		}
+
+    	}else{
+    		Util.Alert("Selecione uma solicitação!");
+    	}
+
+    }
+
+    @FXML
+    void concluir(ActionEvent event) throws SQLException  {
+
+    	MudarSenha ms = table_cpf.getSelectionModel().getSelectedItem();
+
+    	if(!cod_update.getText().isEmpty() && ms != null){
+
+    		String username = UtilDao.daoUsuarios.getUsuario(ms.getCpf()).getUser();
+
+        	DaoMudarSenhas daoMudarSenhas = new DaoMudarSenhas();
+        	daoMudarSenhas.closeRequest(ms);
+
+    	    initTables();
+
+        	LogSistema ls = Util.prepareLog();
+
+        	ls.setAcao("O admin encerrou a solicitação de senha do usuário \""+username+"\".");
+
+        	UtilDao.daoLog.addLog(ls);
+
+
 
     	}else{
     		Util.Alert("Selecione uma solicitação!");
@@ -310,6 +349,8 @@ public class UsuariosManagerController implements Initializable{
     	col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
     	col_naturalidade.setCellValueFactory(new PropertyValueFactory<>("naturalidade"));
     	col_dt_nascimento.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
+    	col_data_mud.setCellValueFactory(new PropertyValueFactory<>("dataSolicitacao"));
+    	col_hora_mud.setCellValueFactory(new PropertyValueFactory<>("horaSolicitacao"));
 
     	col_dt_nascimento.setCellFactory(column -> {
 			TableCell<ViewUsuario, Date> cell = new TableCell<ViewUsuario, Date>() {
@@ -322,6 +363,43 @@ public class UsuariosManagerController implements Initializable{
 						setText(null);
 					}
 					else {
+						this.setText(format.format(item));
+					}
+				}
+			};
+			return cell;
+		});
+
+    	col_data_mud.setCellFactory(column -> {
+			TableCell<MudarSenha, Date> cell = new TableCell<MudarSenha, Date>() {
+				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+				@Override
+				protected void updateItem(Date item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(format.format(item));
+					}
+				}
+			};
+			return cell;
+		});
+
+    	col_hora_mud.setCellFactory(column -> {
+			TableCell<MudarSenha, Time> cell = new TableCell<MudarSenha, Time>() {
+				private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+				@Override
+				protected void updateItem(Time item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
 						this.setText(format.format(item));
 					}
 				}
@@ -357,7 +435,6 @@ public class UsuariosManagerController implements Initializable{
 				cpf_update.setText(p.getCpf());
 
 				usuario_update.setText(user.getUser());
-				novaSenha.setText(ms.getSenha());
 				tipo_update.setText(user.getTipo());
 
 				c = UtilDao.daoContatos.getContato(p.getCodPessoa());

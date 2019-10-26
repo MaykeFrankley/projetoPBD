@@ -81,19 +81,9 @@
                   <JFXTextField fx:id="CPF" focusColor="#898989" labelFloat="true" maxWidth="288.0" minWidth="288.0" prefHeight="43.0" prefWidth="288.0" promptText="Digite seu CPF (Apenas números)" unFocusColor="#e1ff00" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0">
-               <children>
-                  <FontAwesomeIconView glyphName="LOCK" glyphStyle="-fx-fill:#b2b2b2" size="25" />
-                  <JFXPasswordField fx:id="novaSenha" focusColor="#898989" labelFloat="true" prefWidth="288.0" promptText="Senha (Entre 6 e 11 caracteres)" unFocusColor="#e1ff00" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0">
-               <children>
-                  <FontAwesomeIconView glyphName="LOCK" glyphStyle="-fx-fill:#aaacaf" size="25" />
-                  <JFXPasswordField fx:id="confirmarSenha" focusColor="#898989" labelFloat="true" maxWidth="301.0" minWidth="294.0" prefHeight="43.0" prefWidth="294.0" promptText="Confirmar senha" unFocusColor="#e1ff00" />
-               </children>
-            </HBox>
-            <JFXButton fx:id="solicitarAut" buttonType="RAISED" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#handle_request" prefHeight="45.0" prefWidth="226.0" styleClass="login-btn" text="Solicitar autorização" textFill="#f5efef">
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0" />
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="0.0" prefWidth="250.0" />
+            <JFXButton fx:id="solicitarAut" buttonType="RAISED" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#handle_request" prefHeight="45.0" prefWidth="226.0" styleClass="login-btn" text="Solicitar nova senha" textFill="#f5efef">
                <font>
                   <Font size="14.0" />
                </font>

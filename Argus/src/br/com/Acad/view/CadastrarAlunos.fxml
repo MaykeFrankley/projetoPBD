@@ -279,9 +279,8 @@
                                     <TableView fx:id="table_curriculo" prefHeight="411.0" prefWidth="896.0">
                                        <columns>
                                           <TableColumn fx:id="col_cod" prefWidth="112.0" text="Código" />
-                                          <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="353.0" text="Nome" />
-                                          <TableColumn fx:id="col_anoLetivo" prefWidth="166.0" text="Ano letivo" />
-                                          <TableColumn fx:id="col_tipo" prefWidth="166.0" text="Tipo" />
+                                          <TableColumn fx:id="col_nome" minWidth="0.0" prefWidth="467.0" text="Nome" />
+                                          <TableColumn fx:id="col_tipo" prefWidth="285.0" text="Tipo" />
                                        </columns>
                                     </TableView>
                                  </children>

@@ -2,7 +2,11 @@ package br.com.Acad.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -77,12 +81,6 @@ public class LoginController implements Initializable{
     private JFXTextField CPF;
 
     @FXML
-    private JFXPasswordField novaSenha;
-
-    @FXML
-    private JFXPasswordField confirmarSenha;
-
-    @FXML
     private JFXButton solicitarAut;
 
     private MainTelaController mainTela;
@@ -122,7 +120,8 @@ public class LoginController implements Initializable{
                 			mainTela.enableHamburger();
                 			mainTela.enableNotificationTask();
 
-                			SysLog.addLog(SysLog.login(check.getUser()));
+                			if(!check.getTipo().equals("Direção"))
+                				SysLog.addLog(SysLog.login(check.getUser()));
 
                         });
         		        return null;
@@ -160,7 +159,7 @@ public class LoginController implements Initializable{
     @FXML
     void handle_request(ActionEvent event) {
 
-    	if((CPF.getText().length() == 11 || CPF.getText().length() == 14) && novaSenha.getText().length() >= 6 && novaSenha.getText().equals(confirmarSenha.getText())){
+    	if(CPF.getText().length() == 11 || CPF.getText().length() == 14){
     		TextFieldFormatter tff = new TextFieldFormatter();
     		tff = new TextFieldFormatter();
 			tff.setMask("###.###.###-##");
@@ -182,16 +181,17 @@ public class LoginController implements Initializable{
 
 			MudarSenha mudarSenha = new MudarSenha();
 			mudarSenha.setCpf(CPF.getText());
-
-			String hash = DigestUtils.md5Hex(novaSenha.getText());
-			mudarSenha.setSenha(hash);
+			Date data = new Date(Calendar.getInstance().getTime().getTime());
+			Time hora = new Time(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")).getTime().getTime());
+			mudarSenha.setDataSolicitacao(data);
+			mudarSenha.setHoraSolicitacao(hora);
 
 			UtilDao.daoMudarSenhas.addRequest(mudarSenha);
 
     		Util.Alert("Solicitação enviada!\nAguarde um administrador confirmar.");
     		mudarSenhaMenu(event);
 
-    		CPF.clear();novaSenha.clear();confirmarSenha.clear();
+    		CPF.clear();
 
     	}else{
     		Util.Alert("Verifique os campos e tente novamente!");
@@ -246,34 +246,6 @@ public class LoginController implements Initializable{
 		          }
 		     }
 		);
-
-		novaSenha.textProperty().addListener(
-			     (observable, old_value, new_value) -> {
-
-			          if(new_value.contains(" ")){
-			                //prevents from the new space char
-			        	  novaSenha.setText(old_value);
-			          }
-			          if(new_value.length() > 11){
-			        	  novaSenha.setText(old_value);
-			          }
-
-			     }
-			);
-
-		confirmarSenha.textProperty().addListener(
-			     (observable, old_value, new_value) -> {
-
-			          if(new_value.contains(" ")){
-			                //prevents from the new space char
-			        	  confirmarSenha.setText(old_value);
-			          }
-			          if(new_value.length() > 11){
-			        	  confirmarSenha.setText(old_value);
-			          }
-
-			     }
-			);
 
 	}
 

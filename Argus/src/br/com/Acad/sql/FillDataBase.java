@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -35,29 +34,20 @@ public class FillDataBase {
 			stmt = con.prepareStatement(admin);
 			stmt.execute();
 
-			String selectAdmin = "SELECT codPessoa, CPF, Status FROM Pessoas;";
-			ResultSet rs = con.createStatement().executeQuery(selectAdmin);
+			String hashPass = DigestUtils.md5Hex("1");
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(1, '116.734.914-80', 'admin', ?, 'Admin', 'Ativo')");
+			stmt.setString(1, hashPass);
+			stmt.execute();
 
-			if(rs.next()){
-				String hashPass = DigestUtils.md5Hex("1");
-				stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(?,?,?,?,?,?)");
-				stmt.setInt(1, rs.getInt("codPessoa"));
-				stmt.setString(2, rs.getString("CPF"));
-				stmt.setString(3, "admin");
-				stmt.setString(4, hashPass);
-				stmt.setString(5, "Admin");
-				stmt.setString(6, "Ativo");
-				stmt.execute();
-			}
+			stmt = con.prepareStatement("INSERT INTO enderecos VALUES(1, 'testeRua', 10, 'teste', 'teste', 'teste', 'teste')");
+			stmt.execute();
 
 			BufferedReader in2 = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/PopulatePessoasRandom.sql"), "UTF8"));
 
 			runner.runScript(in2);
-			rs.close();
 
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 
-			String hashPass = DigestUtils.md5Hex("1");
 			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
 			stmt.setString(1, "admin");
 			stmt.setString(2, hashPass);
@@ -71,19 +61,16 @@ public class FillDataBase {
 			stmt = con.prepareStatement(user2);
 			stmt.execute();
 
-			String hashPass2 = DigestUtils.md5Hex("1");
-			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(?,?,?,?,?,?)");
-			stmt.setInt(1, 2);
-			stmt.setString(2, "116.738.742-50");
-			stmt.setString(3, "JoseSilva");
-			stmt.setString(4, hashPass2);
-			stmt.setString(5, "Secretaria");
-			stmt.setString(6, "Ativo");
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(2, '116.738.742-50', 'JoseSilva', ?, 'Secretaria', 'Ativo');");
+			stmt.setString(1, hashPass);
+			stmt.execute();
+
+			stmt = con.prepareStatement("INSERT INTO enderecos VALUES(2, 'testeRua', 10, 'teste', 'teste', 'teste', 'teste');");
 			stmt.execute();
 
 			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
 			stmt.setString(1, "JoseSilva");
-			stmt.setString(2, hashPass2);
+			stmt.setString(2, hashPass);
 			stmt.execute();
 
 			stmt = con.prepareStatement("grant select on argus.ViewAluno to ?@localhost;");
@@ -167,19 +154,16 @@ public class FillDataBase {
 			stmt = con.prepareStatement(user3);
 			stmt.execute();
 
-			String hashPass3 = DigestUtils.md5Hex("1");
-			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(?,?,?,?,?,?)");
-			stmt.setInt(1, 103);
-			stmt.setString(2, "111.111.111-11");
-			stmt.setString(3, "MariaSilva");
-			stmt.setString(4, hashPass3);
-			stmt.setString(5, "Direção");
-			stmt.setString(6, "Ativo");
+			stmt = con.prepareStatement("INSERT INTO enderecos VALUES(last_insert_id(), 'testeRua', 10, 'teste', 'teste', 'teste', 'teste')");
+			stmt.execute();
+
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(103, '111.111.111-11', 'MariaSilva', ?, 'Direção', 'Ativo')");
+			stmt.setString(1, hashPass);
 			stmt.execute();
 
 			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
 			stmt.setString(1, "MariaSilva");
-			stmt.setString(2, hashPass3);
+			stmt.setString(2, hashPass);
 			stmt.execute();
 
 			stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
