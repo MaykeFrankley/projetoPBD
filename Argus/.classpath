@@ -36,5 +36,13 @@
 	<classpathentry kind="lib" path="Libs/slf4j-api-1.7.25.jar"/>
 	<classpathentry kind="lib" path="Libs/zt-zip-1.12.jar"/>
 	<classpathentry kind="lib" path="Libs/commons-lang3-3.9.jar"/>
+	<classpathentry kind="lib" path="Libs/jasperreports-javaflow-6.10.0.jar"/>
+	<classpathentry kind="lib" path="Libs/jasperreports-functions-6.10.0.jar"/>
+	<classpathentry kind="lib" path="Libs/jasperreports-metadata-6.10.0.jar"/>
+	<classpathentry kind="lib" path="Libs/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="Libs/commons-beanutils-1.9.4.jar"/>
+	<classpathentry kind="lib" path="Libs/commons-collections4-4.4.jar"/>
+	<classpathentry kind="lib" path="Libs/joda-time-2.10.5.jar"/>
+	<classpathentry kind="lib" path="Libs/net.tascalate.javaflow.api-2.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

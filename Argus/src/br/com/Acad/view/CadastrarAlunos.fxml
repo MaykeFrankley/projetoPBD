@@ -79,7 +79,7 @@
                                        <children>
                                           <JFXTextField fx:id="email" focusColor="#c3c3c3" labelFloat="true" maxWidth="397.0" minWidth="351.0" prefHeight="43.0" prefWidth="397.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXTextField fx:id="telefone" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="celular" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="Celular (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="celular" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="*Celular (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXCheckBox fx:id="whatsapp" style="-fx-font-size: 18;" text="WhatsApp?" textFill="WHITE">
                                              <font>
                                                 <Font size="16.0" />
@@ -179,7 +179,7 @@
                                        <children>
                                           <JFXTextField fx:id="email1" focusColor="#c3c3c3" labelFloat="true" maxWidth="397.0" minWidth="351.0" prefHeight="43.0" prefWidth="397.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXTextField fx:id="telefone1" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
-                                          <JFXTextField fx:id="celular1" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="Celular (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
+                                          <JFXTextField fx:id="celular1" focusColor="#c3c3c3" labelFloat="true" maxWidth="275.0" minWidth="269.0" prefHeight="43.0" prefWidth="269.0" promptText="*Celular (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXCheckBox fx:id="whatsapp1" style="-fx-font-size: 18;" text="WhatsApp?" textFill="WHITE">
                                              <font>
                                                 <Font size="16.0" />
@@ -235,6 +235,11 @@
                         </VBox>
                         <VBox fx:id="box_table" alignment="TOP_CENTER" spacing="40.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
+                              <Label text="Responsáveis Cadastrados" textFill="#ffff8d">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
                               <TableView fx:id="table_pessoas" editable="true" prefHeight="444.0" prefWidth="1860.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa" prefWidth="75.0" text="Cod" />

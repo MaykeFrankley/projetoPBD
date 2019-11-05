@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
+import javafx.application.Platform;
+
 
 public class ConnectionClass {
 
@@ -38,6 +40,7 @@ public class ConnectionClass {
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, null, "Erro ao contactar banco de dados!", JOptionPane.ERROR_MESSAGE);
 			Logger.getLogger(ConnectionClass.class.getName()).log(Level.SEVERE, null, e);
+			Platform.exit();
 		}
 		return connection;
 

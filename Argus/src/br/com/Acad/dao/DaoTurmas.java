@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.dao.interfaces.IDaoTurmas;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.AlunoTurma;
@@ -126,8 +127,17 @@ public class DaoTurmas implements IDaoTurmas{
 	public ObservableList<ViewAluno> getAlunos(int codTurma) {
 		try {
 			createEM();
+
 			List<ViewAluno> list = entityMn.createNativeQuery("CALL getAlunos(:cod);", ViewAluno.class).setParameter("cod", codTurma).getResultList();
 			ObservableList<ViewAluno> oblist = FXCollections.observableList(list);
+			if(!MainTelaController.user.getTipo().equals("Admin")){
+				for (int i = 0; i < oblist.size(); i++) {
+					ViewAluno aluno = oblist.get(i);
+					if(aluno.getStatus().equals("Inativo")){
+						oblist.remove(aluno);i--;
+					}
+				}
+			}
 			return oblist;
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

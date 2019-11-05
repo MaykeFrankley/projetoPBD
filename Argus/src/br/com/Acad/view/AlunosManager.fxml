@@ -315,7 +315,7 @@
                               <DropShadow />
                            </effect>
                            <children>
-                              <JFXTextField fx:id="campoPesquisa2" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar" />
+                              <JFXTextField fx:id="campoPesquisa2" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar turmas" />
                               <Label text="Turmas" textFill="#ffff8d">
                                  <font>
                                     <Font size="16.0" />
@@ -333,6 +333,7 @@
                                     </TableView>
                                  </children>
                               </HBox>
+                              <JFXTextField fx:id="campoPesquisa3" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchAlunoTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar alunos" />
                               <TableView fx:id="table_pessoas2" editable="true" minWidth="-Infinity" prefHeight="447.0" prefWidth="1306.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa2" minWidth="50.0" text="Cod" />

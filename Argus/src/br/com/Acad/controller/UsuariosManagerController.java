@@ -28,6 +28,7 @@ import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.model.ViewUsuario;
 import br.com.Acad.sql.ConnectionClass;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
@@ -221,12 +222,7 @@ public class UsuariosManagerController implements Initializable{
 
         	    initTables();
 
-            	LogSistema ls = Util.prepareLog();
-
-            	ls.setAcao("O admin gerou uma senha do usuário \""+user.getUser()+"\".");
-
-            	UtilDao.daoLog.addLog(ls);
-
+        	    SysLog.addLog(SysLog.message("O admin gerou uma senha do usuário \""+user.getUser()+"\"."));
     		}
 
     	}else{
@@ -499,6 +495,7 @@ public class UsuariosManagerController implements Initializable{
     		u.setTipo(e.getNewValue());
     		try {
 				Util.setPrivileges(u);
+				SysLog.addLog(SysLog.message("alterou o tipo de usuário do usuário:"+u.getUser()));
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}

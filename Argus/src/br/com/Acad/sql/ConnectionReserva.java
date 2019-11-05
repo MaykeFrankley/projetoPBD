@@ -3,11 +3,12 @@ package br.com.Acad.sql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+
+import javafx.application.Platform;
 
 
 public class ConnectionReserva {
@@ -33,22 +34,12 @@ public class ConnectionReserva {
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, null, "Erro ao contactar banco de dados!", JOptionPane.ERROR_MESSAGE);
 			Logger.getLogger(ConnectionReserva.class.getName()).log(Level.SEVERE, null, e);
+			Platform.exit();
 		}
 		return connection;
 
 	}
 
-	private static void createSchema(){
-		try {
-			Connection con = createConnection();
-			Statement Stmt = con.createStatement();
-			Stmt.execute("CREATE SCHEMA IF NOT EXISTS `argus` DEFAULT CHARACTER SET utf8 ;");
-			Stmt.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
 
 //	public static void runSqlScriptRuntime(){
 //

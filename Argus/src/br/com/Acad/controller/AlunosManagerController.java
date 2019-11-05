@@ -68,6 +68,9 @@ public class AlunosManagerController implements Initializable{
 	private JFXTextField campoPesquisa2;
 
 	@FXML
+	private JFXTextField campoPesquisa3;
+
+	@FXML
 	private TableView<ViewAluno> table_pessoas;
 
 	@FXML
@@ -336,6 +339,8 @@ public class AlunosManagerController implements Initializable{
 
 	private FilteredList<ViewTurma> filteredData2;
 
+	private FilteredList<ViewAluno> filteredData3;
+
 	private ObservableList<ViewAluno> oblist_pessoas = FXCollections.observableArrayList();
 
 	private ObservableList<ViewTurma> oblist_turmas= FXCollections.observableArrayList();
@@ -431,6 +436,7 @@ public class AlunosManagerController implements Initializable{
 	void finalizarAluno(ActionEvent event) {
 		if(alunoAprovado != null){
 			UtilDao.daoTurmas.updateAlunoTurma(alunoAprovado);
+			SysLog.addLog(SysLog.message("Atualizou um aluno turma de cód:"+alunoAprovado.getId().getCodAluno()));
 			Connection con = ConnectionReserva.createConnection();
 
 			String codCurriculo = null;
@@ -460,7 +466,7 @@ public class AlunosManagerController implements Initializable{
 
 					ResultSet rs = stmt.executeQuery();
 					if(rs.next()){
-						if(rs.getInt("ano") > ano+1){
+						if(rs.getInt("ano") >= ano+1){
 							Turma novaTurma = new Turma();
 							novaTurma.setCodCurriculo(codCurriculo);
 							novaTurma.setAnoLetivo(anoLetivo+1);
@@ -471,8 +477,12 @@ public class AlunosManagerController implements Initializable{
 							aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), codNovaTurma));
 							aluno.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(aluno);
+							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
 							Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
+						}
+						else{
+							Util.Alert("O Aluno foi aprovado no currículo!");
 						}
 					}
 
@@ -481,6 +491,7 @@ public class AlunosManagerController implements Initializable{
 					aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), checkNovaTurma.getInt("codTurma")));
 					aluno.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
+					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
 					Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
 				}
@@ -493,6 +504,7 @@ public class AlunosManagerController implements Initializable{
 		}
 		else if(alunoReprovado != null){
 			UtilDao.daoTurmas.updateAlunoTurma(alunoReprovado);
+			SysLog.addLog(SysLog.message("Atualizou um aluno turma de cód:"+alunoReprovado.getId().getCodAluno()));
 			Connection con = ConnectionReserva.createConnection();
 
 			String codCurriculo = null;
@@ -522,11 +534,13 @@ public class AlunosManagerController implements Initializable{
 					novaTurma.setAnoLetivo(anoLetivo+1);
 					novaTurma.setAno(ano);
 					int codNovaTurma = UtilDao.daoTurmas.addTurma(novaTurma);
+					SysLog.addLog(SysLog.message("gerou uma nova turma de cod:"+codNovaTurma));
 
 					AlunoTurma aluno = new AlunoTurma();
 					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), codNovaTurma));
 					aluno.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
+					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
 					Util.Alert("O Aluno foi reprovado no currículo e foi cadastrado em uma nova turma!");
 
@@ -536,6 +550,7 @@ public class AlunosManagerController implements Initializable{
 					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), checkNovaTurma.getInt("codTurma")));
 					aluno.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
+					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
 					Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
 				}
@@ -624,6 +639,43 @@ public class AlunosManagerController implements Initializable{
 		SortedList<ViewAluno> sortedData = new SortedList<>(filteredData);
 		sortedData.comparatorProperty().bind(table_pessoas.comparatorProperty());
 		table_pessoas.setItems(sortedData);
+	}
+
+	@FXML
+	void searchAlunoTurma(KeyEvent event) {
+		campoPesquisa3.textProperty().addListener((observableValue, oldValue,newValue)->{
+			filteredData3.setPredicate(pessoa->{
+				if(newValue==null || newValue.isEmpty()){
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				if(pessoa.getNome().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(pessoa.getNaturalidade().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(String.valueOf(pessoa.getCodPessoa()).contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(pessoa.getStatus().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(pessoa.getDt_nascimento().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(pessoa.getCpf() != null){
+					if(pessoa.getCpf().toLowerCase().contains(lowerCaseFilter)){
+						return true;
+					}
+				}
+
+				return false;
+			});
+		});
+		SortedList<ViewAluno> sortedData = new SortedList<>(filteredData3);
+		sortedData.comparatorProperty().bind(table_pessoas2.comparatorProperty());
+		table_pessoas2.setItems(sortedData);
 	}
 
 	@FXML
@@ -725,10 +777,12 @@ public class AlunosManagerController implements Initializable{
 			}
 
 			if(finalCheck.isSelected())selected.setFoiFinal(1);
+			else selected.setFoiFinal(0);
 
 			UtilDao.daoAlunos.setAlunoNota(selected);
 			table_notas.getItems().clear();
 			table_notas.setItems(UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo()));
+			SysLog.addLog(SysLog.message("Alterou a nota do aluno cod:"+selected.getId().getCodAluno()+" para:"+selected.getMedia()+" disciplina:"+selected.getNomeDisciplina()));
 			Util.Alert("Média atualizada!");
 
 			boolean aprovadoCurriculo = false;
@@ -926,10 +980,14 @@ public class AlunosManagerController implements Initializable{
 
 		table_turmas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
 			if(newSelection != null){
-				table_pessoas2.getItems().clear();
 				ViewTurma selected = table_turmas.getSelectionModel().getSelectedItem();
 				ObservableList<ViewAluno> alunos = UtilDao.daoTurmas.getAlunos(selected.getCodTurma());
+				for (int i = 0; i < alunos.size(); i++) {
+					ViewAluno aluno = alunos.get(i);
+					aluno.setSituacao(UtilDao.daoTurmas.getAlunoTurma(new AlunoTurmaID(aluno.getCodPessoa(), selected.getCodTurma())).getSituacao());
+				}
 				table_pessoas2.setItems(alunos);
+				filteredData3 = new FilteredList<>(alunos);
 			}
 		});
 
@@ -942,6 +1000,7 @@ public class AlunosManagerController implements Initializable{
 		table_notas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
 			if(newSelection != null){
 				nota_txt.setText(String.valueOf(newSelection.getMedia()));
+				nota_txt.requestFocus();
 			}
 		});
 

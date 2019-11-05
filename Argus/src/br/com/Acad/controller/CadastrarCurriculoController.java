@@ -143,12 +143,14 @@ public class CadastrarCurriculoController implements Initializable{
 			segundoNome = splited[1].substring(0, 1).toUpperCase();
 		}
 		if(splited.length > 2){
-			ultimoNome = splited[2].substring(0, 1).toUpperCase();
+			ultimoNome = splited[splited.length-1].substring(0, 1).toUpperCase();
 		}
 
 		codCurriculo = primeiroNome+segundoNome+ultimoNome;
 		codCurriculo = Normalizer.normalize(codCurriculo, Normalizer.Form.NFD);
 		codCurriculo = codCurriculo.replaceAll("\\p{M}", "");
+		
+		System.out.println(codCurriculo);
 
 
 	}
@@ -187,6 +189,7 @@ public class CadastrarCurriculoController implements Initializable{
 		CurriculoDisciplina cd = table_disciplinas.getSelectionModel().getSelectedItem();
 		if(cd != null){
 			UtilDao.daoCurriculo.removeDisciplinaCurriculo(cd);
+			SysLog.addLog(SysLog.message("Removeu a disciplina de cod:"+cd.getId().getCodDisciplina()+" do curriculo cod:"+cd.getId().getCodCurriculo()));
 			oblist_disciplinasCur.clear();
 			initTables();
 		}

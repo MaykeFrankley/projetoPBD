@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefWidth="1366.0" style="-fx-background-color: #2A2E37;" stylesheets="@../css/darktheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.Acad.controller.HistoricoEscolarController">
+   <children>
+      <Label alignment="TOP_CENTER" cache="true" opacity="0.5" prefWidth="1366.0" text="Gerar Histórico escolar" textFill="#ffff8d" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="703.0" fitWidth="1280.0" opacity="0.1" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <image>
+            <Image url="@../../../../../Resources/images/argus_logo_transparent.png" />
+         </image>
+      </ImageView>
+      <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <tabs>
+            <Tab fx:id="dadosEscola" closable="false" text="Dados da escola">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1366.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="354.0" layoutY="32.0" prefHeight="894.0" prefWidth="1366.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="100.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <children>
+                              <HBox spacing="40.0">
+                                 <children>
+                                    <VBox fillWidth="false" spacing="30.0">
+                                       <children>
+                                          <JFXTextField fx:id="nomeEscola" focusColor="RED" labelFloat="true" maxWidth="466.0" minWidth="432.0" prefHeight="43.0" prefWidth="466.0" promptText="*Nome da escola" unFocusColor="RED" />
+                                          <JFXTextField fx:id="endereco" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="432.0" prefHeight="43.0" prefWidth="432.0" promptText="*Endereço" unFocusColor="RED" />
+                                          <JFXTextField fx:id="bairro" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="370.0" prefHeight="43.0" prefWidth="370.0" promptText="*Bairro" unFocusColor="RED" />
+                                          <ComboBox fx:id="estado" onAction="#populateCidades" prefHeight="41.0" prefWidth="209.0" promptText="*Estado">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                          <ComboBox fx:id="cidade" prefHeight="41.0" prefWidth="269.0" promptText="*Cidade">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox fillWidth="false" spacing="30.0">
+                                       <children>
+                                          <JFXTextField fx:id="telefone" focusColor="RED" labelFloat="true" maxWidth="466.0" minWidth="237.0" prefHeight="43.0" prefWidth="261.0" promptText="*Telefone" unFocusColor="RED" />
+                                          <JFXTextField fx:id="cnpj" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="237.0" prefHeight="43.0" prefWidth="237.0" promptText="*CNPJ" unFocusColor="RED" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <Button mnemonicParsing="false" onAction="#salvarEscola" text="Salvar" />
+                              <Label text="Campos com * são de preenchimento obrigatório" textFill="#ffff8d">
+                                 <VBox.margin>
+                                    <Insets top="100.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="selecionarAluno" closable="false" text="Selecionar Aluno">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1366.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="354.0" layoutY="32.0" prefHeight="894.0" prefWidth="1366.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <children>
+                              <Label text="Curriculo" textFill="#ffff8d">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <HBox alignment="TOP_CENTER" fillHeight="false">
+                                 <children>
+                                    <TableView fx:id="table_curriculo" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="608.0" tableMenuButtonVisible="true">
+                                       <columns>
+                                          <TableColumn fx:id="col_curriculo" minWidth="1.0" prefWidth="577.0" text="Currículo" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </HBox>
+                              <JFXTextField fx:id="campoPesquisa" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchAlunoTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar alunos" />
+                              <TableView fx:id="table_alunos" editable="true" minWidth="-Infinity" prefHeight="447.0" prefWidth="1306.0" tableMenuButtonVisible="true">
+                                 <columns>
+                                    <TableColumn fx:id="col_codPessoa" minWidth="50.0" text="Cod" />
+                                    <TableColumn fx:id="col_nome" minWidth="300.0" prefWidth="302.9999694824219" text="Nome" />
+                                    <TableColumn fx:id="col_cpf" minWidth="200.0" prefWidth="200.0" text="CPF" visible="false" />
+                                    <TableColumn fx:id="col_dt_nascimento" minWidth="200.0" prefWidth="200.0" text="Data de Nascimento" />
+                                    <TableColumn fx:id="col_naturalidade" minWidth="200.0" prefWidth="247.0" text="Naturalidade" />
+                                    <TableColumn fx:id="col_nomeMae" minWidth="300.0" prefWidth="300.0" text="Nome da mãe" />
+                                    <TableColumn fx:id="col_nomePai" minWidth="300.0" prefWidth="300.0" text="Nome do pai" />
+                                    <TableColumn fx:id="col_status" minWidth="200.0" prefWidth="247.0" text="Status" />
+                                    <TableColumn fx:id="col_situacaoAluno" minWidth="200.0" prefWidth="247.0" text="Situação" />
+                                    <TableColumn fx:id="col_situacaoAluno1" minWidth="200.0" prefWidth="247.0" text="Situação" />
+                                 </columns>
+                              </TableView>
+                              <Button mnemonicParsing="false" onAction="#gerarHistorico" prefHeight="49.0" prefWidth="106.0" text="Gerar" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </children>
+</AnchorPane>

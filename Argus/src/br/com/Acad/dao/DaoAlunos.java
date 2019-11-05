@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.dao.interfaces.IDaoAlunos;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Aluno;
@@ -119,6 +120,14 @@ public class DaoAlunos implements IDaoAlunos{
 			createEM();
 			List<Aluno> list = entityMn.createQuery("from Aluno").getResultList();
 			oblist = FXCollections.observableList(list);
+			if(!MainTelaController.user.getTipo().equals("Admin")){
+				for (int i = 0; i < oblist.size(); i++) {
+					Aluno aluno = oblist.get(i);
+					if(aluno.getStatus().equals("Inativo")){
+						oblist.remove(aluno);i--;
+					}
+				}
+			}
 
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
@@ -135,6 +144,15 @@ public class DaoAlunos implements IDaoAlunos{
 			createEM();
 			List<ViewAluno> list = entityMn.createQuery("from ViewAluno").getResultList();
 			ObservableList<ViewAluno> oblist = FXCollections.observableList(list);
+
+			if(!MainTelaController.user.getTipo().equals("Admin")){
+				for (int i = 0; i < oblist.size(); i++) {
+					ViewAluno aluno = oblist.get(i);
+					if(aluno.getStatus().equals("Inativo")){
+						oblist.remove(aluno);i--;
+					}
+				}
+			}
 			return oblist;
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

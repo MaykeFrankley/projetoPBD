@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<br.com.Acad.model.Escola>
+  <nome>Escola testetestetesteteste</nome>
+  <endereco>Endereço testetestetesteteste</endereco>
+  <bairro>Bairro testetestetesteteste</bairro>
+  <estado>Pernambuco</estado>
+  <cidade>Serra Talhada</cidade>
+  <telefone>87 38318065</telefone>
+  <cnpj>40.633.597/0001-26</cnpj>
+</br.com.Acad.model.Escola>

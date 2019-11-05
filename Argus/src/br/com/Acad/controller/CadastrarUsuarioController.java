@@ -175,6 +175,8 @@ public class CadastrarUsuarioController implements Initializable{
         	    Util.setPrivileges(u);
         		Util.Alert("Usuário cadastrado com sucesso!");
 
+        		limpar(event);
+
 			} catch (Exception e) {
 				Util.Alert("Erro ao concluir o cadastro!\nContate o administrador!");
 				e.printStackTrace();
@@ -273,6 +275,11 @@ public class CadastrarUsuarioController implements Initializable{
     	TextFieldFormatter tff = new TextFieldFormatter();
 
     	if(nome.getText().length() == 0 || nome.getText() == null){
+    		Util.Alert("Verifique o nome!");
+    		return false;
+    	}
+
+    	if(nomeUsuario.getText().length() == 0 || nomeUsuario.getText() == null){
     		Util.Alert("Verifique o nome!");
     		return false;
     	}

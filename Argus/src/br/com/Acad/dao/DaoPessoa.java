@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.dao.interfaces.IDaoPessoas;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Pessoa;
@@ -150,6 +151,14 @@ public class DaoPessoa implements IDaoPessoas{
 			createEM();
 			List<Pessoa> list = entityMn.createQuery("from Pessoa").getResultList();
 			oblist = FXCollections.observableList(list);
+			if(!MainTelaController.user.getTipo().equals("Admin")){
+				for (int i = 0; i < oblist.size(); i++) {
+					Pessoa pessoa = oblist.get(i);
+					if(pessoa.getStatus().equals("Inativo")){
+						oblist.remove(pessoa);i--;
+					}
+				}
+			}
 
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

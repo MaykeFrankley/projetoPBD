@@ -70,11 +70,12 @@ public class HandleSQLException {
 		FileWriter fw = null;
 		try {
 			fw = new FileWriter("execp.txt", true);
+			PrintWriter pw = new PrintWriter (fw);
+	        e.printStackTrace (pw);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		PrintWriter pw = new PrintWriter (fw);
-        e.printStackTrace (pw);
+
 	}
 
 }

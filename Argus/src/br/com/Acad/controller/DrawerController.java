@@ -12,10 +12,10 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 
 import br.com.Acad.exceptions.HandleSQLException;
-import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.SetDbUser;
+import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -36,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import net.sf.jasperreports.engine.JRException;
 
 public class DrawerController{
 
@@ -74,6 +75,9 @@ public class DrawerController{
 
 	@FXML
 	private Button boletin_btn;
+
+	@FXML
+	private Button historico_btn;
 
 	@FXML
 	private Button config_btn;
@@ -170,6 +174,12 @@ public class DrawerController{
 
 	}
 
+	@FXML
+	void historico_escolar(ActionEvent event) throws JRException, IOException {
+		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Util.LoadWindow(getClass().getResource("/br/com/Acad/view/HistoricoEscolar.fxml"), scene, "y");
+	}
+
 
 	@FXML
 	void log_sistema(ActionEvent event) throws IOException {
@@ -234,13 +244,13 @@ public class DrawerController{
 
 		JFXPasswordField novaSenha = new JFXPasswordField();
 		novaSenha.setLabelFloat(true);
-		novaSenha.setPromptText("Senha nova");
+		novaSenha.setPromptText("Nova senha(De 6 a 11 caracteres)");
 		novaSenha.requestFocus();
 		box.getChildren().add(novaSenha);
 
 		JFXPasswordField confirmarSenha = new JFXPasswordField();
 		confirmarSenha.setLabelFloat(true);
-		confirmarSenha.setPromptText("ConfirmarSenha");
+		confirmarSenha.setPromptText("Confirmar Senha");
 		confirmarSenha.requestFocus();
 		box.getChildren().add(confirmarSenha);
 
@@ -318,11 +328,7 @@ public class DrawerController{
 					Util.Alert("Senha alterada com sucesso!\nÉ nescessário fazer o login novamente.");
 				});
 
-            	LogSistema ls = Util.prepareLog();
-
-            	ls.setAcao("O usuário "+MainTelaController.user.getUser()+" alterou sua própria senha.");
-
-            	UtilDao.daoLog.addLog(ls);
+        	    SysLog.addLog(SysLog.message("O usuário "+MainTelaController.user.getUser()+" alterou sua própria senha."));
 
 			}
 			else{

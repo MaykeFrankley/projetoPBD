@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import br.com.Acad.app.Main;
+import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.dao.interfaces.IDaoProfessor;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.DisciplinaProfessor;
@@ -151,6 +152,14 @@ public class DaoProfessor implements IDaoProfessor{
 			createEM();
 			List<ViewProfessor> list = entityMn.createQuery("from ViewProfessor").getResultList();
 			ObservableList<ViewProfessor>oblist = FXCollections.observableList(list);
+			if(!MainTelaController.user.getTipo().equals("Admin")){
+				for (int i = 0; i < oblist.size(); i++) {
+					ViewProfessor professor = oblist.get(i);
+					if(professor.getStatus().equals("Inativo")){
+						oblist.remove(professor);i--;
+					}
+				}
+			}
 			return oblist;
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

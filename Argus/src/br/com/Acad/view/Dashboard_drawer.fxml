@@ -134,6 +134,17 @@
                         <Insets right="20.0" />
                      </VBox.margin>
                   </Button>
+                  <Button fx:id="historico_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#historico_escolar" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Histórico Escolar" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="TH_LIST" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
                   <Button fx:id="boletin_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#boletim_escolar" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Boletim Escolar" textFill="WHITE">
                      <font>
                         <Font name="Verdana" size="12.0" />
