@@ -7,11 +7,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="Notas")
-public class AlunoNota {
+@Table(name="MediaGeralAluno")
+public class AlunoMedia {
 
 	@EmbeddedId
-	private AlunoNotaID id;
+	private AlunoMediaID id;
 
 	@Transient
 	private String nomeDisciplina;
@@ -22,15 +22,15 @@ public class AlunoNota {
 	@Column
 	private String situacao;
 
-	public AlunoNota() {
+	public AlunoMedia() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlunoNotaID getId() {
+	public AlunoMediaID getId() {
 		return id;
 	}
 
-	public void setId(AlunoNotaID id) {
+	public void setId(AlunoMediaID id) {
 		this.id = id;
 	}
 
@@ -42,20 +42,20 @@ public class AlunoNota {
 		this.media = media;
 	}
 
-	public String getNomeDisciplina() {
-		return nomeDisciplina;
-	}
-
-	public void setNomeDisciplina(String nomeDisciplina) {
-		this.nomeDisciplina = nomeDisciplina;
-	}
-
 	public String getSituacao() {
 		return situacao;
 	}
 
 	public void setSituacao(String situacao) {
 		this.situacao = situacao;
+	}
+
+	public String getNomeDisciplina() {
+		return nomeDisciplina;
+	}
+
+	public void setNomeDisciplina(String nomeDisciplina) {
+		this.nomeDisciplina = nomeDisciplina;
 	}
 
 

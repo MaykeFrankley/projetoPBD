@@ -18,6 +18,7 @@ import org.controlsfx.control.Notifications;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 
@@ -34,16 +35,20 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -85,6 +90,22 @@ public class Util {
 
 		if(options[0] == 0){
 			root.setStyle("-fx-background-color: #ffffff;");
+			try {
+				JFXTabPane pane = (JFXTabPane) root.lookup("#tabPane");
+				for(Tab t : pane.getTabs()){
+					if(t.getContent() instanceof AnchorPane){
+						AnchorPane anchor = (AnchorPane) t.getContent();
+						for (Node n : anchor.getChildren()) {
+							if(n.getEffect() instanceof DropShadow){
+								n.setEffect(null);
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}else{
 			root.setStyle("-fx-background-color: #2A2E37;");
 		}
@@ -145,6 +166,8 @@ public class Util {
 		}else{
 			root.setStyle("-fx-background-color: #2A2E37;");
 		}
+
+
 	}
 
 	public static void Alert(String message){

@@ -9,6 +9,7 @@ import org.hibernate.ejb.Ejb3Configuration;
 
 import br.com.Acad.app.Main;
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoMedia;
 import br.com.Acad.model.AlunoNota;
 import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.Contato;
@@ -65,7 +66,7 @@ public class SetDbUser extends TimerTask {
 			Ejb3Configuration cfg = new Ejb3Configuration();
 
 			ObservableList<Class> classes = FXCollections.observableArrayList();
-			classes.setAll(Aluno.class, AlunoNota.class, AlunoTurma.class, Contato.class, Curriculo.class, CurriculoDisciplina.class, Disciplina.class,
+			classes.setAll(Aluno.class, AlunoNota.class, AlunoMedia.class, AlunoTurma.class, Contato.class, Curriculo.class, CurriculoDisciplina.class, Disciplina.class,
 					DisciplinaProfessor.class, Endereco.class, LogSistema.class, MudarSenha.class, Pessoa.class, Professor.class, ResponsavelFinanceiro.class,
 					Turma.class, Usuario.class, ViewAluno.class, ViewProfessor.class, ViewResponsavelFinanceiro.class, ViewTurma.class, ViewUsuario.class);
 

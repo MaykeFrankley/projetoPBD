@@ -18,6 +18,8 @@ import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoMedia;
+import br.com.Acad.model.AlunoMediaID;
 import br.com.Acad.model.AlunoNota;
 import br.com.Acad.model.AlunoNotaID;
 import br.com.Acad.model.AlunoTurma;
@@ -50,8 +52,10 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.converter.FloatStringConverter;
 
 public class AlunosManagerController implements Initializable{
 
@@ -320,10 +324,10 @@ public class AlunosManagerController implements Initializable{
 	private JFXTextField nota_txt;
 
 	@FXML
-	private JFXCheckBox finalCheck;
+	private JFXButton btn_finalizar;
 
 	@FXML
-	private JFXButton btn_finalizar;
+    private ComboBox<String> unidadeBox;
 
 	private Aluno oldAluno;
 
@@ -432,8 +436,15 @@ public class AlunosManagerController implements Initializable{
 		}
 	}
 
+
+	@FXML
+	void finalizarUnidade(ActionEvent event) {
+
+	}
+
 	@FXML
 	void finalizarAluno(ActionEvent event) {
+		unidadeBox.getItems().clear();
 		if(alunoAprovado != null){
 			UtilDao.daoTurmas.updateAlunoTurma(alunoAprovado);
 			SysLog.addLog(SysLog.message("Atualizou um aluno turma de cód:"+alunoAprovado.getId().getCodAluno()));
@@ -739,20 +750,45 @@ public class AlunosManagerController implements Initializable{
 	}
 
 	@FXML
-	void selecionarAluno(ActionEvent event) {
-
+	void setUnidade(ActionEvent event) {
 		int ano = table_turmas.getSelectionModel().getSelectedItem().getAno();
 		int anoLetivo = table_turmas.getSelectionModel().getSelectedItem().getAnoLetivo();
+		String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
 		ViewAluno selected = table_pessoas2.getSelectionModel().getSelectedItem();
 
 		if(selected != null && ano > 0){
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-			codAluno.setText(String.valueOf(selected.getCodPessoa()));nomeAluno.setText(String.valueOf(selected.getNome()));
-			dt_aluno.setText(format.format(selected.getDt_nascimento()));naturalidadeAluno.setText(selected.getNaturalidade());
-			statusAluno.setText(selected.getStatus());
 
 			ObservableList<AlunoNota> oblist = FXCollections.observableArrayList();
-			oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo);
+			if(tipoUnidade.equals("Bimestral")){
+				if(unidadeBox.getSelectionModel().getSelectedItem() != null && !unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
+					int valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
+					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, valorUnidade);
+				}
+				else{
+					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, 5);
+					for (int i = 0; i < oblist.size(); i++) {
+						AlunoNota alunoNota = oblist.get(i);
+
+						AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
+								alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
+						if(media != null){
+							if(media.getSituacao().equals("AM")){
+								oblist.remove(alunoNota);i--;
+							}
+						}
+					}
+				}
+			}
+			else{
+				if(!unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
+					int valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
+					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, valorUnidade);
+				}
+				else{
+					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, 4);
+				}
+
+			}
 
 			table_notas.setItems(oblist);
 
@@ -762,10 +798,37 @@ public class AlunosManagerController implements Initializable{
 	}
 
 	@FXML
+	void selecionarAluno(ActionEvent event) {
+
+		String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
+		ViewAluno selected = table_pessoas2.getSelectionModel().getSelectedItem();
+
+		if(selected != null){
+			table_notas.getItems().clear();
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			codAluno.setText(String.valueOf(selected.getCodPessoa()));nomeAluno.setText(String.valueOf(selected.getNome()));
+			dt_aluno.setText(format.format(selected.getDt_nascimento()));naturalidadeAluno.setText(selected.getNaturalidade());
+			statusAluno.setText(selected.getStatus());
+
+			if(tipoUnidade.equals("Bimestral")){
+				unidadeBox.getItems().clear();
+				unidadeBox.setPromptText("Bimestres");
+				unidadeBox.getItems().addAll("1º Bimestre", "2º Bimestre", "3º Bimestre", "4º Bimestre", "Final");
+			}
+			else{
+				unidadeBox.getItems().clear();
+				unidadeBox.setPromptText("Trimestres");
+				unidadeBox.getItems().addAll("1º Trimestre", "2º Trimestre", "3º Trimestre", "Final");
+			}
+			tabPane.getSelectionModel().select(notasTab);
+			btn_finalizar.setVisible(false);
+		}
+	}
+
+	@FXML
 	void alterarNota(ActionEvent event) {
 		AlunoNota selected = table_notas.getSelectionModel().getSelectedItem();
 		if(selected != null){
-			nota_txt.requestFocus();
 			try {
 				if(Float.valueOf(nota_txt.getText()) > 10){
 					nota_txt.setText(String.valueOf(10.0));
@@ -776,26 +839,28 @@ public class AlunosManagerController implements Initializable{
 				return;
 			}
 
-			if(finalCheck.isSelected())selected.setFoiFinal(1);
-			else selected.setFoiFinal(0);
-
 			UtilDao.daoAlunos.setAlunoNota(selected);
 			table_notas.getItems().clear();
-			table_notas.setItems(UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo()));
+			int valorUnidade = 0;
+			if(!unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
+				valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
+				table_notas.setItems(UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), valorUnidade));
+			}
+
 			SysLog.addLog(SysLog.message("Alterou a nota do aluno cod:"+selected.getId().getCodAluno()+" para:"+selected.getMedia()+" disciplina:"+selected.getNomeDisciplina()));
 			Util.Alert("Média atualizada!");
 
 			boolean aprovadoCurriculo = false;
 			boolean reprovadoCurriculo = false;
-			for (AlunoNota nota : table_notas.getItems()) {
-				if(nota.getSituacao().equals("AP") || nota.getSituacao().equals("AM")){
+			for (AlunoMedia media : UtilDao.daoAlunos.getMedias(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo())) {
+				if(media.getSituacao().equals("AP") || media.getSituacao().equals("AM")){
 					aprovadoCurriculo = true;
 				}
 				else{
 					aprovadoCurriculo = false;
 				}
 
-				if(nota.getSituacao().equals("RP")){
+				if(media.getSituacao().equals("RP")){
 					aprovadoCurriculo = false;
 					reprovadoCurriculo = true;
 					break;
@@ -1037,6 +1102,15 @@ public class AlunosManagerController implements Initializable{
 			};
 			return cell;
 		});
+
+		table_notas.setEditable(true);
+		col_media.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()));
+		col_media.setOnEditCommit(e -> {
+			nota_txt.setText(String.valueOf(e.getNewValue()));
+			nota_txt.getText().replaceAll(",", ".");
+			e.getTableView().getItems().get(e.getTablePosition().getRow()).setMedia(e.getNewValue());
+			alterarNota(new ActionEvent());
+		});
 	}
 
 	public boolean checkTextFields(){
@@ -1225,7 +1299,7 @@ public class AlunosManagerController implements Initializable{
 					if(new_value.contains(" ")){
 						nota_txt.setText(old_value);
 					}
-					if(new_value.length() > 3){
+					if(new_value.length() > 3 && Float.valueOf(new_value) < 10){
 						nota_txt.setText(old_value);
 					}
 

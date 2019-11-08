@@ -51,9 +51,9 @@
                                        <children>
                                           <JFXTextField fx:id="codigo" editable="false" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="188.0" prefHeight="45.0" prefWidth="201.0" promptText="*Código(Automático)" style="-fx-font-size: 18px;" styleClass="text-field" unFocusColor="RED" />
                                           <JFXTextField fx:id="nome" focusColor="#c3c3c3" labelFloat="true" maxWidth="347.0" onKeyReleased="#setCodigo" prefHeight="43.0" prefWidth="347.0" promptText="*Nome" style="-fx-font-size: 18px;" unFocusColor="RED" />
-                                          <JFXTextArea editable="false" focusColor="RED" maxWidth="513.0" minWidth="511.0" prefHeight="195.0" prefWidth="513.0" style="-fx-text-fill: ffff8d;" text="Só é nescessário cadastrar o nome de uma disciplina. As mesmas irão ser cadastradas nos seus respectivos curriculos e com sua carga horária para aquele curriculo e ano. Professores também serão associados às disciplinas de acordo com o ano e a grade curricular." wrapText="true">
+                                          <JFXTextArea editable="false" focusColor="RED" maxWidth="513.0" minWidth="511.0" prefHeight="195.0" prefWidth="513.0" style="-fx-text-fill: black;" text="Só é nescessário cadastrar o nome de uma disciplina. As mesmas irão ser cadastradas nos seus respectivos curriculos e com sua carga horária para aquele curriculo e ano. Professores também serão associados às disciplinas de acordo com o ano e a grade curricular." wrapText="true">
                                              <font>
-                                                <Font size="17.0" />
+                                                <Font name="System Bold Italic" size="17.0" />
                                              </font>
                                              <VBox.margin>
                                                 <Insets left="10.0" />

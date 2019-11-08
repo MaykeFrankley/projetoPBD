@@ -39,7 +39,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Crosstab_CH" mode="Opaque" backcolor="#D1D1D1">
+	<style name="Crosstab_CH" mode="Opaque" backcolor="#B8B8B8">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -75,64 +75,6 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Crosstab 2_CH" mode="Opaque" backcolor="#D9D9D9">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Crosstab 2_CG" mode="Opaque" backcolor="#BFE1FF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Crosstab 2_CT" mode="Opaque" backcolor="#005FB3">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Crosstab 2_CD" mode="Opaque" backcolor="#FFFFFF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<subDataset name="Dataset1" uuid="f353a876-26e0-4ce3-b095-075603a19c32">
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ArgusDB"/>
-		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<parameter name="codCurriculo" class="java.lang.String">
-			<defaultValueExpression><![CDATA[$P{codCurriculo}]]></defaultValueExpression>
-		</parameter>
-		<queryString>
-			<![CDATA[SELECT ano as Série, SUM( cargaHoraria) AS Cargahorária
-FROM argus.`curriculo-disciplina`
-WHERE 
-	 argus.`curriculo-disciplina`.`codCurriculo` = $P{codCurriculo}
-GROUP BY argus.`curriculo-disciplina`.ano
-ORDER BY argus.`curriculo-disciplina`.ano ASC]]>
-		</queryString>
-		<field name="Série" class="java.lang.Integer">
-			<property name="com.jaspersoft.studio.field.label" value="Série"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="curriculo-disciplina"/>
-		</field>
-		<field name="Cargahorária" class="java.math.BigDecimal">
-			<property name="com.jaspersoft.studio.field.label" value="Cargahorária"/>
-		</field>
-	</subDataset>
 	<parameter name="nomeEscola" class="java.lang.String"/>
 	<parameter name="endereco" class="java.lang.String"/>
 	<parameter name="bairro" class="java.lang.String"/>
@@ -154,18 +96,29 @@ ORDER BY argus.`curriculo-disciplina`.ano ASC]]>
 	<parameter name="argusLogo" class="java.awt.Image">
 		<defaultValueExpression><![CDATA[$P{argusLogo}]]></defaultValueExpression>
 	</parameter>
+	<parameter name="anoLetivo" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT argus.disciplinas.`Nome`,
-	argus.mediageralaluno.serie AS Série,
-	argus.mediageralaluno.`anoLetivo` AS Ano,
-	TRUNCATE(argus.mediageralaluno.media,1) AS Média,
-	mediageralaluno.situacao AS Situação
-FROM argus.mediageralaluno,
+	argus.notas.serie AS Série,
+	argus.notas.`anoLetivo` AS Ano,
+	CASE argus.notas.media 
+		WHEN 0 AND argus.notas.unidade = "Final" THEN concat("NF") 
+        WHEN media THEN media
+	END As Média,
+    CASE  
+		WHEN argus.notas.unidade = "Bimestral" AND argus.notas.valorUnidade = 5 THEN concat('Final')
+        WHEN argus.notas.unidade = "Trimestral" AND argus.notas.valorUnidade = 4 THEN concat(argus.notas.valorUnidade,'Final')
+		WHEN argus.notas.unidade = "Bimestral" THEN concat(argus.notas.valorUnidade,'º Bimestre')
+		WHEN argus.notas.unidade = "Trimestral" THEN concat(argus.notas.valorUnidade,'º Trimestre')
+    END as unidade,
+	situacao AS Situação
+FROM argus.notas,
 	argus.disciplinas
 WHERE 
-	 argus.mediageralaluno.`codAluno` = $P{codAluno} 
-	 AND argus.mediageralaluno.`codDisciplina` = argus.disciplinas.`codDisciplina` 
-ORDER BY argus.mediageralaluno.serie, nome ASC]]>
+	 argus.notas.`codAluno` = $P{codAluno}
+	 AND argus.notas.`anoLetivo` = $P{anoLetivo}
+	 AND argus.notas.`codDisciplina` = argus.disciplinas.`codDisciplina` 
+ORDER BY nome, valorUnidade ASC]]>
 	</queryString>
 	<field name="Nome" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Nome"/>
@@ -173,28 +126,31 @@ ORDER BY argus.mediageralaluno.serie, nome ASC]]>
 	</field>
 	<field name="Série" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="Série"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="mediageralaluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="notas"/>
 	</field>
 	<field name="Ano" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="Ano"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="mediageralaluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="notas"/>
 	</field>
-	<field name="Média" class="java.lang.Float">
+	<field name="Média" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Média"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="mediageralaluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="notas"/>
+	</field>
+	<field name="unidade" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="unidade"/>
 	</field>
 	<field name="Situação" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Situação"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="mediageralaluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="notas"/>
 	</field>
 	<title>
 		<band height="91" splitType="Stretch">
 			<staticText>
-				<reportElement x="200" y="29" width="200" height="20" uuid="c5fc0e75-78ef-4d50-8c13-a1eb1646cbe3"/>
+				<reportElement x="209" y="30" width="200" height="20" uuid="c5fc0e75-78ef-4d50-8c13-a1eb1646cbe3"/>
 				<textElement>
 					<font fontName="Arial" size="16" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[HISTÓRICO ESCOLAR]]></text>
+				<text><![CDATA[BOLETIM ESCOLAR]]></text>
 			</staticText>
 			<image>
 				<reportElement x="409" y="-20" width="172" height="111" uuid="c9db1e8a-6b91-4edb-80af-80ef9cbb513e">
@@ -401,7 +357,7 @@ ORDER BY argus.mediageralaluno.serie, nome ASC]]>
 		</band>
 	</columnHeader>
 	<pageFooter>
-		<band height="109" splitType="Stretch">
+		<band height="108" splitType="Stretch">
 			<textField pattern="MMMMM dd, yyyy">
 				<reportElement x="50" y="90" width="90" height="18" uuid="a676d929-1878-4a6a-a942-590820a96edb"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
@@ -415,65 +371,55 @@ ORDER BY argus.mediageralaluno.serie, nome ASC]]>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="41" y="41" width="168" height="1" uuid="a32a54b5-e10a-434d-974d-53656008f848"/>
+				<reportElement x="202" y="80" width="168" height="1" uuid="a32a54b5-e10a-434d-974d-53656008f848"/>
 			</line>
 			<staticText>
-				<reportElement x="90" y="44" width="100" height="20" uuid="4eed78f6-01c9-4297-8cfb-27dd34d82cb8"/>
+				<reportElement x="221" y="80" width="130" height="20" uuid="4eed78f6-01c9-4297-8cfb-27dd34d82cb8"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Secretário(a)]]></text>
+				<text><![CDATA[Assinatura do responsável]]></text>
 			</staticText>
-			<line>
-				<reportElement x="361" y="41" width="168" height="1" uuid="a52253b3-5b6f-4f3a-80ad-12b26edd1ae4"/>
-			</line>
+			<rectangle>
+				<reportElement x="-9" y="0" width="587" height="59" uuid="28c48bd2-d0ea-4680-9a78-195ab63c831c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+			</rectangle>
 			<staticText>
-				<reportElement x="420" y="44" width="60" height="20" uuid="0920134c-49ad-43f8-98a3-c48dfa03ff0f"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Diretor(a)]]></text>
+				<reportElement x="-9" y="0" width="100" height="30" uuid="88af878d-b297-45cc-b65a-40fc96c99a90"/>
+				<text><![CDATA[Observações:]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="121">
+		<band height="100">
 			<textField>
-				<reportElement x="236" y="0" width="100" height="20" uuid="c74bb0dd-3c18-4997-ba41-293979b2d535"/>
+				<reportElement x="39" y="0" width="120" height="20" uuid="c74bb0dd-3c18-4997-ba41-293979b2d535"/>
 				<textElement>
-					<font isBold="true"/>
+					<font isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nomeCurriculo}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement positionType="FixRelativeToBottom" x="30" y="80" width="100" height="40" backcolor="#CFCFCF" uuid="bfb6f49b-1c00-41a8-887f-d550f062fdd1">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-			</rectangle>
-			<staticText>
-				<reportElement positionType="FixRelativeToBottom" x="30" y="91" width="80" height="19" uuid="bf0cdded-9b34-46f7-8892-d5bfc5d11857"/>
-				<textElement textAlignment="Left">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Carga horária]]></text>
-			</staticText>
 			<crosstab>
-				<reportElement x="30" y="20" width="549" height="60" uuid="42c613b1-0b2a-4105-b00c-59375aa87388">
+				<reportElement x="0" y="50" width="566" height="50" uuid="4e4bedff-8d82-41e7-aa91-97a1717350b7">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.crosstab.style.header" value="Crosstab_CH"/>
 					<property name="com.jaspersoft.studio.crosstab.style.group" value="Crosstab_CG"/>
 					<property name="com.jaspersoft.studio.crosstab.style.total" value="Crosstab_CT"/>
 					<property name="com.jaspersoft.studio.crosstab.style.detail" value="Crosstab_CD"/>
 				</reportElement>
-				<rowGroup name="Nome" width="100" totalPosition="End">
+				<rowGroup name="Nome" width="120" totalPosition="End">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{Nome}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents mode="Opaque" style="Crosstab_CH">
-							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="28dde2cb-e7ce-4690-94ef-b09b8d038944"/>
+								<reportElement x="0" y="0" width="120" height="20" uuid="1dd32347-14a1-449b-9611-9b47203b1430"/>
+								<textElement textAlignment="Left">
+									<font size="12"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$V{Nome}]]></textFieldExpression>
 							</textField>
 						</cellContents>
@@ -482,16 +428,18 @@ ORDER BY argus.mediageralaluno.serie, nome ASC]]>
 						<cellContents mode="Opaque" style="Crosstab_CT"/>
 					</crosstabTotalRowHeader>
 				</rowGroup>
-				<columnGroup name="Ano" height="20" totalPosition="End">
-					<bucket class="java.lang.Integer">
-						<bucketExpression><![CDATA[$F{Ano}]]></bucketExpression>
+				<columnGroup name="unidade" height="30" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{unidade}]]></bucketExpression>
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="Crosstab_CH">
 							<textField>
-								<reportElement x="0" y="0" width="60" height="20" uuid="bfd739be-e629-4e19-9df5-fe863c66296d"/>
-								<textElement textAlignment="Center"/>
-								<textFieldExpression><![CDATA[$V{Ano}]]></textFieldExpression>
+								<reportElement x="0" y="0" width="80" height="30" uuid="2e04b023-b5f1-408d-8144-2b479e450676"/>
+								<textElement textAlignment="Center">
+									<font size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{unidade}]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabColumnHeader>
@@ -501,164 +449,89 @@ ORDER BY argus.mediageralaluno.serie, nome ASC]]>
 						</cellContents>
 					</crosstabTotalColumnHeader>
 				</columnGroup>
-				<columnGroup name="Série" height="20" totalPosition="End">
-					<bucket class="java.lang.Integer">
-						<bucketExpression><![CDATA[$F{Série}]]></bucketExpression>
-					</bucket>
-					<crosstabColumnHeader>
-						<cellContents mode="Opaque" style="Crosstab_CH">
-							<textField>
-								<reportElement x="0" y="0" width="60" height="20" uuid="1044ea0d-c08b-4e9f-b4e7-dd83ba1b5938"/>
-								<textElement textAlignment="Center"/>
-								<textFieldExpression><![CDATA[$V{Série}+"º Ano"]]></textFieldExpression>
-							</textField>
-						</cellContents>
-					</crosstabColumnHeader>
-					<crosstabTotalColumnHeader>
-						<cellContents mode="Opaque" style="Crosstab_CG"/>
-					</crosstabTotalColumnHeader>
-				</columnGroup>
-				<measure name="Situação_MEASURE" class="java.lang.String">
-					<measureExpression><![CDATA[$F{Situação}]]></measureExpression>
-				</measure>
-				<measure name="Média_MEASURE" class="java.lang.Float" calculation="Average">
+				<measure name="Média_MEASURE" class="java.lang.String" calculation="Average">
 					<measureExpression><![CDATA[$F{Média}]]></measureExpression>
 				</measure>
-				<crosstabCell width="60" height="20">
+				<measure name="Situação_MEASURE" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$F{Situação}]]></measureExpression>
+				</measure>
+				<crosstabCell width="80" height="20">
 					<cellContents mode="Opaque" style="Crosstab_CD">
 						<textField>
-							<reportElement x="0" y="0" width="60" height="20" uuid="e63ea522-fe4d-4187-b3ae-8c43a3e82527"/>
-							<textElement textAlignment="Center"/>
-							<textFieldExpression><![CDATA[$V{Média_MEASURE}+" ("+$V{Situação_MEASURE}+")"]]></textFieldExpression>
+							<reportElement x="0" y="0" width="80" height="20" uuid="56170ec0-ca84-477c-96b1-9f9eab99c088"/>
+							<textElement textAlignment="Center">
+								<font size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{Média_MEASURE}]]></textFieldExpression>
 						</textField>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="0" height="20" columnTotalGroup="Ano">
+				<crosstabCell width="0" height="20" columnTotalGroup="unidade">
 					<cellContents mode="Opaque" style="Crosstab_CT"/>
 				</crosstabCell>
-				<crosstabCell width="0" height="20" columnTotalGroup="Série">
-					<cellContents mode="Opaque" style="Crosstab_CG">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</cellContents>
-				</crosstabCell>
-				<crosstabCell width="60" height="0" rowTotalGroup="Nome">
+				<crosstabCell width="80" height="0" rowTotalGroup="Nome">
 					<cellContents mode="Opaque" style="Crosstab_CT">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</cellContents>
 				</crosstabCell>
-				<crosstabCell width="0" height="0" rowTotalGroup="Nome" columnTotalGroup="Ano">
-					<cellContents mode="Opaque" style="Crosstab_CT"/>
-				</crosstabCell>
-				<crosstabCell width="0" height="0" rowTotalGroup="Nome" columnTotalGroup="Série">
+				<crosstabCell width="0" height="0" rowTotalGroup="Nome" columnTotalGroup="unidade">
 					<cellContents mode="Opaque" style="Crosstab_CT"/>
 				</crosstabCell>
 			</crosstab>
 			<rectangle>
-				<reportElement x="30" y="20" width="100" height="40" uuid="e9c55e29-6b33-4545-872f-46fbece5081b"/>
+				<reportElement x="0" y="50" width="120" height="30" uuid="1c4ca51f-352c-43d5-9936-706958643e49">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="30" y="21" width="89" height="30" uuid="7b2088d6-dc60-4fb7-8f00-03acaf5e2c4b"/>
+				<reportElement x="0" y="50" width="89" height="30" uuid="5ffa8446-7ff8-4f9a-bb73-5f8c0f903a3b"/>
 				<textElement textAlignment="Left">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Componentes
 Curriculares]]></text>
 			</staticText>
-			<crosstab>
-				<reportElement positionType="FixRelativeToBottom" x="130" y="80" width="448" height="40" uuid="bdab8d26-a213-4a71-b0f6-d9094efb1ee1">
-					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<property name="com.jaspersoft.studio.crosstab.style.header" value="Crosstab 2_CH"/>
-					<property name="com.jaspersoft.studio.crosstab.style.group" value="Crosstab 2_CG"/>
-					<property name="com.jaspersoft.studio.crosstab.style.total" value="Crosstab 2_CT"/>
-					<property name="com.jaspersoft.studio.crosstab.style.detail" value="Crosstab 2_CD"/>
-				</reportElement>
-				<crosstabDataset>
-					<dataset>
-						<datasetRun subDataset="Dataset1" uuid="fc1e806d-c41b-41ef-85a1-e7c2e6e6e6c6">
-							<datasetParameter name="codCurriculo">
-								<datasetParameterExpression><![CDATA[$P{codCurriculo}]]></datasetParameterExpression>
-							</datasetParameter>
-							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-						</datasetRun>
-					</dataset>
-				</crosstabDataset>
-				<rowGroup name="codCurriculo" width="0" totalPosition="End">
-					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[$P{codCurriculo}]]></bucketExpression>
-					</bucket>
-					<crosstabRowHeader>
-						<cellContents mode="Opaque" style="Crosstab 2_CH">
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						</cellContents>
-					</crosstabRowHeader>
-					<crosstabTotalRowHeader>
-						<cellContents mode="Opaque" style="Crosstab 2_CT"/>
-					</crosstabTotalRowHeader>
-				</rowGroup>
-				<columnGroup name="Série" height="20" totalPosition="End">
-					<bucket class="java.lang.Integer">
-						<bucketExpression><![CDATA[$F{Série}]]></bucketExpression>
-					</bucket>
-					<crosstabColumnHeader>
-						<cellContents mode="Opaque" style="Crosstab 2_CH">
-							<textField>
-								<reportElement x="0" y="0" width="60" height="20" uuid="92df87dd-329d-4a61-91f3-6010c22c7a29"/>
-								<textElement textAlignment="Center"/>
-								<textFieldExpression><![CDATA[$V{Série}+"º Ano"]]></textFieldExpression>
-							</textField>
-						</cellContents>
-					</crosstabColumnHeader>
-					<crosstabTotalColumnHeader>
-						<cellContents mode="Opaque" style="Crosstab 2_CT">
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						</cellContents>
-					</crosstabTotalColumnHeader>
-				</columnGroup>
-				<columnGroup name="Cargahorária" height="20" totalPosition="End">
-					<bucket class="java.math.BigDecimal">
-						<bucketExpression><![CDATA[$F{Cargahorária}]]></bucketExpression>
-					</bucket>
-					<crosstabColumnHeader>
-						<cellContents mode="Opaque" style="Crosstab 2_CH">
-							<textField>
-								<reportElement x="0" y="0" width="60" height="20" uuid="f4fda4ef-3932-4f6d-9718-f694c1cde53d"/>
-								<textElement textAlignment="Center"/>
-								<textFieldExpression><![CDATA[$V{Cargahorária}+" horas"]]></textFieldExpression>
-							</textField>
-						</cellContents>
-					</crosstabColumnHeader>
-					<crosstabTotalColumnHeader>
-						<cellContents mode="Opaque" style="Crosstab 2_CG">
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						</cellContents>
-					</crosstabTotalColumnHeader>
-				</columnGroup>
-				<measure name="Cargahorária_MEASURE" class="java.lang.Integer" calculation="Count">
-					<measureExpression><![CDATA[$F{Cargahorária}]]></measureExpression>
-				</measure>
-				<crosstabCell width="60" height="0">
-					<cellContents mode="Opaque" style="Crosstab 2_CD">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</cellContents>
-				</crosstabCell>
-				<crosstabCell width="0" height="0" columnTotalGroup="Série">
-					<cellContents mode="Opaque" style="Crosstab 2_CT"/>
-				</crosstabCell>
-				<crosstabCell width="0" height="0" columnTotalGroup="Cargahorária">
-					<cellContents mode="Opaque" style="Crosstab 2_CG"/>
-				</crosstabCell>
-				<crosstabCell width="60" height="0" rowTotalGroup="codCurriculo">
-					<cellContents mode="Opaque" style="Crosstab 2_CT">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</cellContents>
-				</crosstabCell>
-				<crosstabCell width="0" height="0" rowTotalGroup="codCurriculo" columnTotalGroup="Série">
-					<cellContents mode="Opaque" style="Crosstab 2_CT"/>
-				</crosstabCell>
-				<crosstabCell width="0" height="0" rowTotalGroup="codCurriculo" columnTotalGroup="Cargahorária">
-					<cellContents mode="Opaque" style="Crosstab 2_CT"/>
-				</crosstabCell>
-			</crosstab>
+			<textField>
+				<reportElement x="470" y="0" width="84" height="20" uuid="f304c816-5b79-4fad-bcfe-a65c1e3b7bea"/>
+				<textFieldExpression><![CDATA[$P{anoLetivo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="414" y="0" width="56" height="20" uuid="d61a329c-9325-4f39-8a1a-239fefed99d4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ano Letivo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="0" width="30" height="20" uuid="cfba38a7-1c23-4d17-aa49-ca6633c93b1d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Série]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="330" y="0" width="70" height="20" uuid="de4095eb-5382-41b4-a9fa-39b2fab2146d"/>
+				<textFieldExpression><![CDATA[$F{Série}+"º Ano"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="38" height="20" uuid="c1fb6ddd-5609-4757-89af-ab8685723708"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Curso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="50" height="20" uuid="354b7dfe-bed8-4966-b074-2454b1b3da3b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Matrícula]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="230" y="0" width="70" height="20" uuid="cc4b9270-e447-4631-a17c-475a4d01132c"/>
+				<textFieldExpression><![CDATA[$P{codAluno}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

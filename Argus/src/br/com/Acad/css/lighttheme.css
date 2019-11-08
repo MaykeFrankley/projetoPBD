@@ -96,6 +96,11 @@
 
 /*Main Screen CSS Styling starts here*/
 
+.text-field-table-cell{
+    -fx-font-size:16px;
+    -fx-background-color: #FFFFFF;
+}
+
 /*TablPane styling*/
 .tab{
     -fx-background-color: #FFFFFF;

@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.model.Contato;
@@ -32,6 +33,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
 
 public class CadastrarUsuarioController implements Initializable{
+
+	@FXML
+    private JFXTabPane tabPane;
 
     @FXML
     private JFXTextField nome;

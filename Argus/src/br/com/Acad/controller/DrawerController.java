@@ -74,9 +74,6 @@ public class DrawerController{
 	private Button pagamentos_btn;
 
 	@FXML
-	private Button boletin_btn;
-
-	@FXML
 	private Button historico_btn;
 
 	@FXML
@@ -169,10 +166,6 @@ public class DrawerController{
 		Util.LoadWindow(getClass().getResource("/br/com/Acad/view/Settings.fxml"), scene, "x");
 	}
 
-	@FXML
-	void boletim_escolar(ActionEvent event) {
-
-	}
 
 	@FXML
 	void historico_escolar(ActionEvent event) throws JRException, IOException {

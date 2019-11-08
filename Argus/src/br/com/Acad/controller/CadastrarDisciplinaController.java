@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.model.Curriculo;
@@ -31,6 +32,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
 public class CadastrarDisciplinaController implements Initializable{
+
+	@FXML
+    private JFXTabPane tabPane;
 
 	@FXML
 	private JFXTextField codigo;

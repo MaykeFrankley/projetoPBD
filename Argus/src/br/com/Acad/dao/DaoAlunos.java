@@ -10,6 +10,8 @@ import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.dao.interfaces.IDaoAlunos;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Aluno;
+import br.com.Acad.model.AlunoMedia;
+import br.com.Acad.model.AlunoMediaID;
 import br.com.Acad.model.AlunoNota;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
@@ -113,6 +115,13 @@ public class DaoAlunos implements IDaoAlunos{
 		return null;
 	}
 
+	public AlunoMedia getAlunoMedia(AlunoMediaID id) {
+		createEM();
+		AlunoMedia a = entityMn.find(AlunoMedia.class, id);
+		entityMn.close();
+		return a;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ObservableList<Aluno> getAllAlunos() {
@@ -164,15 +173,35 @@ public class DaoAlunos implements IDaoAlunos{
 	}
 
 	@SuppressWarnings("unchecked")
-	public ObservableList<AlunoNota> getNotas(int codAluno, int ano, int anoLetivo) {
+	public ObservableList<AlunoNota> getNotas(int codAluno, int ano, int anoLetivo, int valorUnidade) {
 		try {
 			createEM();
-			List<AlunoNota> list = entityMn.createQuery("from AlunoNota where codAluno = :al and serie = :a and anoLetivo = :alt").
-					setParameter("al", codAluno).setParameter("a", ano).setParameter("alt", anoLetivo).getResultList();
+			List<AlunoNota> list = entityMn.createQuery("from AlunoNota where codAluno = :al and serie = :a and anoLetivo = :alt and valorUnidade = :vu").
+					setParameter("al", codAluno).setParameter("a", ano).setParameter("alt", anoLetivo).setParameter("vu", valorUnidade).getResultList();
 			ObservableList<AlunoNota> oblist = FXCollections.observableList(list);
 
 			for (AlunoNota alunoNota : oblist) {
 				alunoNota.setNomeDisciplina(UtilDao.daoDisciplina.getDisciplina(alunoNota.getId().getCodDisciplina()).getNome());
+			}
+			return oblist;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ObservableList<AlunoMedia> getMedias(int codAluno, int ano, int anoLetivo) {
+		try {
+			createEM();
+			List<AlunoMedia> list = entityMn.createQuery("from AlunoMedia where codAluno = :al and serie = :a and anoLetivo = :alt").
+					setParameter("al", codAluno).setParameter("a", ano).setParameter("alt", anoLetivo).getResultList();
+			ObservableList<AlunoMedia> oblist = FXCollections.observableList(list);
+
+			for (AlunoMedia AlunoMedia : oblist) {
+				AlunoMedia.setNomeDisciplina(UtilDao.daoDisciplina.getDisciplina(AlunoMedia.getId().getCodDisciplina()).getNome());
 			}
 			return oblist;
 		} catch (PersistenceException e) {

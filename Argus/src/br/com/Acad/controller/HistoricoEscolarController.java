@@ -20,6 +20,7 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.Escola;
+import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
@@ -34,11 +35,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -49,6 +53,9 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
 public class HistoricoEscolarController implements Initializable{
+
+	@FXML
+    private AnchorPane selecionaPane;
 
 	@FXML
 	private JFXTabPane tabPane;
@@ -118,6 +125,12 @@ public class HistoricoEscolarController implements Initializable{
 
 	@FXML
 	private TableColumn<ViewAluno, String> col_situacaoAluno;
+
+	@FXML
+    private DialogPane dialogPane;
+
+    @FXML
+    private ComboBox<String> boxAnoLetivo;
 
 	private ObservableList<Curriculo> oblist_curriculo = FXCollections.observableArrayList();
 
@@ -220,6 +233,81 @@ public class HistoricoEscolarController implements Initializable{
 		sortedData.comparatorProperty().bind(table_alunos.comparatorProperty());
 		table_alunos.setItems(sortedData);
 	}
+
+	@FXML
+    void cancelarBoletim(ActionEvent event) {
+		dialogPane.setVisible(false);
+		selecionaPane.setEffect(null);
+		selecionaPane.setMouseTransparent(false);
+    }
+
+    @FXML
+    void gerarBoletim(ActionEvent event) throws JRException, IOException {
+    	if(!boxAnoLetivo.getSelectionModel().isEmpty()){
+    		ViewAluno aluno = table_alunos.getSelectionModel().getSelectedItem();
+    		Curriculo curriculo = table_curriculo.getSelectionModel().getSelectedItem();
+    		if(aluno != null && curriculo != null){
+    			Connection con = ConnectionClass.createConnection();
+    			JasperDesign jd = JRXmlLoader.load(new File("").getClass().getResourceAsStream("/br/com/Acad/reports/BoletimEscolar.jrxml"));
+    			HashMap<String, Object> param = new HashMap<>();
+    			param.put("nomeEscola", nomeEscola.getText());param.put("endereco", endereco.getText());
+    			param.put("bairro", bairro.getText());param.put("cnpj", cnpj.getText());
+    			param.put("uf", estado.getSelectionModel().getSelectedItem());param.put("cidade", cidade.getSelectionModel().getSelectedItem());
+    			param.put("telefone", telefone.getText());param.put("nomeAluno", aluno.getNome());
+    			param.put("dt_nascimento", aluno.getDt_nascimento());
+    			param.put("naturalidade", aluno.getNaturalidade());param.put("nomeMae", aluno.getNomeMae());
+    			param.put("nomePai", aluno.getNomePai());param.put("ufAluno", UtilDao.daoEnderecos.getEndereco(aluno.getCodPessoa()).getEstado());
+    			param.put("codAluno", aluno.getCodPessoa());param.put("nomeCurriculo", curriculo.getNome());
+    			Image img = ImageIO.read(new File(getClass().getResource("/images/argus_logo_transparent.png").getFile()));
+    			param.put("codCurriculo", curriculo.getCodCurriculo());param.put("argusLogo", img);
+    			param.put("anoLetivo", Integer.valueOf(boxAnoLetivo.getSelectionModel().getSelectedItem()));
+
+    			Thread thread = new Thread(){
+    				public void run() {
+    					JasperReport jr;
+    					JasperPrint jp = null;
+    					try {
+    						jr = JasperCompileManager.compileReport(jd);
+    						jp = JasperFillManager.fillReport(jr, param, con);
+    					} catch (JRException e) {
+    						// TODO Auto-generated catch block
+    						e.printStackTrace();
+    					}
+
+    					JasperViewer jv = new JasperViewer(jp, false);
+    					jv.setVisible(true);
+    				};
+    			};
+
+    			thread.start();
+    			Util.Alert("Aguarde um instante!");
+
+    		}else{
+    			Util.Alert("Selecione um aluno!");
+    		}
+    	}
+    }
+
+    @FXML
+    void openDialog(ActionEvent event) {
+    	Curriculo curriculo = table_curriculo.getSelectionModel().getSelectedItem();
+    	ViewAluno aluno = table_alunos.getSelectionModel().getSelectedItem();
+    	if(curriculo != null && aluno != null){
+    		dialogPane.setVisible(true);
+    		BoxBlur blur = new BoxBlur(3, 3, 3);
+    		selecionaPane.setEffect(blur);
+    		selecionaPane.setMouseTransparent(true);
+    		ObservableList<Turma> turmas = UtilDao.daoTurmas.getAllTurmas();
+    		boxAnoLetivo.getItems().clear();
+    		for (Turma turma : turmas) {
+				if(turma.getCodCurriculo().equals(curriculo.getCodCurriculo())){
+					boxAnoLetivo.getItems().add(String.valueOf(turma.getAnoLetivo()));
+				}
+			}
+    	}
+
+
+    }
 
 	void initTables(){
 		oblist_curriculo = UtilDao.daoCurriculo.getAllCurriculo();

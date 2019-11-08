@@ -5,7 +5,6 @@
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ContextMenu?>
@@ -387,14 +386,11 @@
                                     <JFXTextField fx:id="statusAluno" editable="false" focusColor="RED" labelFloat="true" maxWidth="480.0" minWidth="129.0" prefHeight="45.0" prefWidth="159.0" promptText="Status" style="-fx-font-size: 18px;" unFocusColor="RED" />
                                  </children>
                               </HBox>
-                              <Label contentDisplay="BOTTOM" text="Notas" textFill="YELLOW">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                                 <graphic>
-                                    <FontAwesomeIconView fill="RED" glyphName="ARROW_DOWN" size="16" />
-                                 </graphic>
-                              </Label>
+                              <ComboBox fx:id="unidadeBox" onAction="#setUnidade" prefHeight="48.0" prefWidth="177.0" promptText="unidade" style="-fx-font-size: 20px;">
+                                 <VBox.margin>
+                                    <Insets bottom="-30.0" />
+                                 </VBox.margin>
+                              </ComboBox>
                               <TableView fx:id="table_notas" editable="true" minWidth="-Infinity" prefHeight="346.0" prefWidth="851.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_disciplina" minWidth="1.0" prefWidth="196.0" text="Disciplina" />
@@ -407,22 +403,18 @@
                               <HBox spacing="40.0">
                                  <children>
                                     <JFXTextField fx:id="nota_txt" alignment="TOP_CENTER" focusColor="RED" labelFloat="true" maxWidth="97.0" minWidth="84.0" prefHeight="50.0" prefWidth="84.0" promptText="Media" style="-fx-font-size: 20px;" unFocusColor="RED" />
-                                    <JFXCheckBox fx:id="finalCheck" text="Foi para a final?" textFill="#ffff8d">
-                                       <font>
-                                          <Font size="16.0" />
-                                       </font>
-                                       <HBox.margin>
-                                          <Insets top="16.0" />
-                                       </HBox.margin>
-                                    </JFXCheckBox>
                                  </children>
                               </HBox>
-                              <HBox spacing="80.0">
+                              <VBox>
                                  <children>
-                                    <JFXButton onAction="#alterarNota" text="Alterar" />
-                                    <JFXButton fx:id="btn_finalizar" onAction="#finalizarAluno" text="Finalizar" visible="false" />
+                                    <HBox alignment="TOP_CENTER" fillHeight="false" minWidth="-Infinity" prefHeight="49.0" prefWidth="610.0" spacing="80.0">
+                                       <children>
+                                          <JFXButton onAction="#alterarNota" text="Alterar" />
+                                          <JFXButton fx:id="btn_finalizar" onAction="#finalizarAluno" text="Finalizar" visible="false" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </children>
                         </VBox>
                      </children>

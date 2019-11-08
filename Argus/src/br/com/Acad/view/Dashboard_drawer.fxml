@@ -145,17 +145,6 @@
                         <Insets right="20.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="boletin_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#boletim_escolar" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Boletim Escolar" textFill="WHITE">
-                     <font>
-                        <Font name="Verdana" size="12.0" />
-                     </font>
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="LIST_ALT" size="18" />
-                     </graphic>
-                     <VBox.margin>
-                        <Insets right="20.0" />
-                     </VBox.margin>
-                  </Button>
                   <Button fx:id="config_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#configuracoes" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Configurações" textFill="WHITE">
                      <font>
                         <Font name="Verdana" size="12.0" />
