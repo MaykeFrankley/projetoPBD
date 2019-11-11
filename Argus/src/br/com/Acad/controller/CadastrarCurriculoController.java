@@ -1,6 +1,9 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.Normalizer;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -14,6 +17,8 @@ import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.CurriculoDisciplinaID;
 import br.com.Acad.model.Disciplina;
+import br.com.Acad.model.Preco;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -149,7 +154,7 @@ public class CadastrarCurriculoController implements Initializable{
 		codCurriculo = primeiroNome+segundoNome+ultimoNome;
 		codCurriculo = Normalizer.normalize(codCurriculo, Normalizer.Form.NFD);
 		codCurriculo = codCurriculo.replaceAll("\\p{M}", "");
-		
+
 		System.out.println(codCurriculo);
 
 
@@ -165,10 +170,15 @@ public class CadastrarCurriculoController implements Initializable{
 
 			UtilDao.daoCurriculo.addCurriculo(c);
 			SysLog.addLog(SysLog.createCurriculo(c));
+
+			Preco p = new Preco();
+			p.setCodCurriculo(codCurriculo);
+			p.setValor(0);
 		}else{
 			updateCurriculo.setNome(txt_nome.getText());
 			UtilDao.daoCurriculo.updateCurriculo(updateCurriculo);
 			SysLog.addLog(SysLog.message("atualizou o curriculo \""+txt_nome.getText()+"\"!"));
+
 		}
 
 		initTables();
@@ -439,6 +449,18 @@ public class CadastrarCurriculoController implements Initializable{
 
 
 		initTables();
+
+		Connection con = ConnectionClass.createConnection();
+		try {
+			ResultSet rs = con.prepareStatement("SELECT Tipo FROM argus.curriculo;").executeQuery();
+			if(rs.next()){
+				box_tipo.getSelectionModel().select(rs.getString(1));
+			}
+			rs.close();
+			con.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 
 	}
 

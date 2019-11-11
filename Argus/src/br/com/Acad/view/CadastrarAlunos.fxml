@@ -32,7 +32,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox fx:id="box_cadastroAluno" alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
                                  <children>
@@ -94,12 +94,7 @@
                               </HBox>
                               <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="129.0" prefWidth="1250.0" spacing="35.0">
                                  <children>
-                                    <VBox fillWidth="false">
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                    </VBox>
-                                    <HBox alignment="BOTTOM_LEFT" fillHeight="false" prefHeight="129.0" prefWidth="344.0" spacing="30.0">
+                                    <HBox alignment="BOTTOM_LEFT" fillHeight="false" prefHeight="60.0" prefWidth="516.0" spacing="30.0">
                                        <children>
                                           <JFXButton fx:id="btn_proximo" buttonType="RAISED" defaultButton="true" onAction="#proximo" prefHeight="49.0" prefWidth="133.0" ripplerFill="WHITE" text="Próximo">
                                              <font>
@@ -107,6 +102,11 @@
                                              </font>
                                           </JFXButton>
                                           <JFXButton buttonType="RAISED" cancelButton="true" onAction="#limpar" ripplerFill="WHITE" text="Limpar">
+                                             <font>
+                                                <Font size="19.0" />
+                                             </font>
+                                          </JFXButton>
+                                          <JFXButton buttonType="RAISED" defaultButton="true" onAction="#selecionarAluno" prefHeight="49.0" prefWidth="207.0" ripplerFill="WHITE" text="Selecionar aluno">
                                              <font>
                                                 <Font size="19.0" />
                                              </font>
@@ -123,6 +123,61 @@
                                     <Insets bottom="10.0" />
                                  </VBox.margin>
                               </Label>
+                           </children>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </VBox>
+                        <VBox fx:id="box_tableAluno" alignment="CENTER" fillWidth="false" layoutX="84.0" layoutY="15.0" prefHeight="665.0" prefWidth="1280.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <JFXTextField fx:id="campo_pesquisa" labelFloat="true" maxWidth="842.0" minWidth="842.0" onKeyReleased="#searchAluno" prefHeight="43.0" prefWidth="842.0" promptText="Filtrar aluno" />
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
+                                 <children>
+                                    <VBox fillWidth="false" prefHeight="395.0" prefWidth="1151.0" spacing="40.0">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                       <children>
+                                          <TableView fx:id="table_alunos" editable="true" prefHeight="388.0" prefWidth="1151.0" tableMenuButtonVisible="true">
+                                             <columns>
+                                                <TableColumn fx:id="col_codPessoa2" minWidth="50.0" prefWidth="63.0" text="Cod" />
+                                                <TableColumn fx:id="col_nome2" minWidth="285.0" prefWidth="287.0" text="Nome" />
+                                                <TableColumn fx:id="col_cpf2" minWidth="200.0" prefWidth="200.0" text="CPF" visible="false" />
+                                                <TableColumn fx:id="col_dt_nascimento2" minWidth="200.0" prefWidth="200.0" text="Data de Nascimento" />
+                                                <TableColumn fx:id="col_naturalidade2" minWidth="200.0" prefWidth="247.0" text="Naturalidade" />
+                                                <TableColumn fx:id="col_nomeMae" minWidth="300.0" prefWidth="300.0" text="Nome da mãe" />
+                                                <TableColumn fx:id="col_nomePai" minWidth="300.0" prefWidth="300.0" text="Nome do pai" />
+                                                <TableColumn fx:id="col_status2" minWidth="200.0" prefWidth="247.0" text="Status" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="40.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="129.0" prefWidth="1250.0" spacing="35.0">
+                                 <children>
+                                    <HBox alignment="BOTTOM_LEFT" fillHeight="false" prefHeight="60.0" prefWidth="388.0" spacing="30.0">
+                                       <children>
+                                          <JFXButton buttonType="RAISED" defaultButton="true" onAction="#proximo" prefHeight="49.0" prefWidth="133.0" ripplerFill="WHITE" text="Próximo">
+                                             <font>
+                                                <Font size="19.0" />
+                                             </font>
+                                          </JFXButton>
+                                          <JFXButton buttonType="RAISED" defaultButton="true" onAction="#cadastrarAluno" prefHeight="49.0" prefWidth="207.0" ripplerFill="WHITE" text="Cadastrar aluno">
+                                             <font>
+                                                <Font size="19.0" />
+                                             </font>
+                                          </JFXButton>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
                            </children>
                            <effect>
                               <DropShadow />
@@ -206,7 +261,7 @@
                                                 <Font size="19.0" />
                                              </font>
                                           </JFXButton>
-                                          <JFXButton buttonType="RAISED" defaultButton="true" onAction="#selecionar" prefHeight="49.0" prefWidth="258.0" ripplerFill="WHITE" text="Selecionar responsável">
+                                          <JFXButton buttonType="RAISED" defaultButton="true" onAction="#selecionarResponsavel" prefHeight="49.0" prefWidth="258.0" ripplerFill="WHITE" text="Selecionar responsável">
                                              <font>
                                                 <Font size="19.0" />
                                              </font>
@@ -233,14 +288,15 @@
                               <Insets left="40.0" />
                            </padding>
                         </VBox>
-                        <VBox fx:id="box_table" alignment="TOP_CENTER" spacing="40.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox fx:id="box_table" alignment="TOP_CENTER" spacing="10.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <Label text="Responsáveis Cadastrados" textFill="#ffff8d">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TableView fx:id="table_pessoas" editable="true" prefHeight="444.0" prefWidth="1860.0" tableMenuButtonVisible="true">
+                              <JFXTextField fx:id="campo_pesquisa2" labelFloat="true" maxWidth="1061.0" minWidth="1061.0" onKeyReleased="#searchResponsavel" prefHeight="43.0" prefWidth="1061.0" promptText="Filtrar responsável" />
+                              <TableView fx:id="table_responsaveis" editable="true" prefHeight="444.0" prefWidth="1860.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa" prefWidth="75.0" text="Cod" />
                                     <TableColumn fx:id="col_nome1" prefWidth="345.0" text="Nome" />
@@ -253,7 +309,7 @@
                               <HBox alignment="TOP_CENTER" spacing="40.0">
                                  <children>
                                     <JFXButton onAction="#proximo2" text="Próximo" />
-                                    <JFXButton onAction="#cadastrar" text="Cadastrar novo responsável" />
+                                    <JFXButton onAction="#cadastrarResponsavel" text="Cadastrar novo responsável" />
                                  </children>
                               </HBox>
                            </children>

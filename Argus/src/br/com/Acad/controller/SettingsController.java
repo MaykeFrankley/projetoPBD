@@ -2,26 +2,42 @@ package br.com.Acad.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ResourceBundle;
 
+import org.json.simple.JSONObject;
+
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXToggleButton;
 
+import br.com.Acad.model.Preco;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.BackupManager;
 import br.com.Acad.util.Settings;
 import br.com.Acad.util.Util;
+import br.com.Acad.util.UtilDao;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.converter.DoubleStringConverter;
 
 public class SettingsController implements Initializable{
 
@@ -46,9 +62,37 @@ public class SettingsController implements Initializable{
     @FXML
     private VBox box_backup;
 
-    private int[] options = Settings.get();
+    @FXML
+    private VBox boxCurriculo;
+
+    @FXML
+    private ComboBox<String> tipoCurriculo;
+
+    @FXML
+    private TableView<Preco> table_precos;
+
+    @FXML
+    private TableColumn<Preco, String> col_curriculo;
+
+    @FXML
+    private TableColumn<Preco, Double> col_preco;
+
+    private JSONObject options = Settings.get();
 
     public static boolean callFromSettings = false;
+
+    @FXML
+    void updateCurriculo(ActionEvent event) throws SQLException {
+    	if(!tipoCurriculo.getSelectionModel().isEmpty()){
+    		Connection con = ConnectionClass.createConnection();
+        	PreparedStatement stmt = con.prepareStatement("UPDATE argus.curriculo SET argus.curriculo.tipo = ?;");
+        	stmt.setString(1, tipoCurriculo.getSelectionModel().getSelectedItem());
+        	stmt.execute();
+        	stmt.close();
+        	con.close();
+    	}
+
+    }
 
     @FXML
     void fazerBackup(ActionEvent event) {
@@ -90,36 +134,58 @@ public class SettingsController implements Initializable{
 		}
     }
 
-    @FXML
+    @SuppressWarnings("unchecked")
+	@FXML
     void setBackupTimer(ActionEvent event) {
-    	String hor = hora.getTime().toString().substring(0, 2);
-    	String min = hora.getTime().toString().substring(3, 5);
-
-    	options[2] = Integer.valueOf(hor);
-    	options[3] = Integer.valueOf(min);
-    	options[4] = LocalDate.now(ZoneId.of("America/Sao_Paulo")).getDayOfMonth();
+    	options.put("Hora", hora.getTime().toString());
+    	options.put("DiaDoMes", LocalDate.now(ZoneId.of("America/Sao_Paulo")).getDayOfMonth());
     	Settings.Save(options);
 
     	MainTelaController.startBackupTimer();
     }
 
+    void initTable(){
+    	ObservableList<Preco> precos = UtilDao.daoCurriculo.getPrecos();
+
+    	col_curriculo.setCellValueFactory(new PropertyValueFactory<>("nomeCurriculo"));
+    	col_preco.setCellValueFactory(new PropertyValueFactory<>("valor"));
+    	table_precos.setItems(precos);
+
+    	table_precos.setEditable(true);
+    	col_preco.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+    	col_preco.setOnEditCommit(e -> {
+    		e.getTableView().getItems().get(e.getTablePosition().getRow()).setValor(e.getNewValue());;
+    		UtilDao.daoCurriculo.updatePrecoCurriculo(e.getTableView().getItems().get(e.getTablePosition().getRow()));
+    	});
+    }
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
-		switch (options[0]) {
-		case 1:
-			temaEscuro.setSelected(true);
-			break;
-
-		case 0:
-			temaClaro.setSelected(true);
-			break;
-
-		default:
-			break;
+		initTable();
+		tipoCurriculo.getItems().addAll("Bimestral", "Trimestral");
+		Connection con = ConnectionClass.createConnection();
+		try {
+			ResultSet rs = con.prepareStatement("SELECT Tipo FROM argus.curriculo;").executeQuery();
+			if(rs.next()){
+				tipoCurriculo.getSelectionModel().select(rs.getString(1));
+			}
+			rs.close();
+			con.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
 
-		if(options[1] == 1){
+
+		if((boolean) options.get("TemaEscuro"))
+			temaEscuro.setSelected(true);
+
+		else{
+			temaClaro.setSelected(true);
+		}
+
+
+		if((boolean) options.get("Animacoes")){
 			animacoes.setSelected(true);
 		}else{
 			animacoes.setSelected(false);
@@ -127,9 +193,9 @@ public class SettingsController implements Initializable{
 
 		temaEscuro.setOnAction(e -> {
 			if(temaEscuro.isSelected()){
-				options[0] = 1;
+				options.put("TemaEscuro", true);
 			}else{
-				options[0] = 0;
+				options.put("TemaEscuro", false);
 				temaClaro.setSelected(true);
 			}
 
@@ -139,9 +205,9 @@ public class SettingsController implements Initializable{
 
 		temaClaro.setOnAction(e -> {
 			if(temaClaro.isSelected()){
-				options[0] = 0;
+				options.put("TemaEscuro", false);
 			}else{
-				options[0] = 1;
+				options.put("TemaEscuro", true);
 				temaEscuro.setSelected(true);
 			}
 
@@ -151,33 +217,19 @@ public class SettingsController implements Initializable{
 
 		animacoes.setOnAction(e -> {
 			if(animacoes.isSelected()){
-				options[1] = 1;
+				options.put("Animacoes", true);
 			}else{
-				options[1] = 0;
+				options.put("Animacoes", false);
 			}
 
 			Settings.Save(options);
 		});
 
-		if(options[2] < 10 && options[3] < 10){
-			LocalTime h = LocalTime.parse("0"+String.valueOf(options[2])+":"+"0"+String.valueOf(options[3]));
-			hora.setTime(h);
-		}
-		else if(options[2] < 10 && options[3] >= 10){
-			LocalTime h = LocalTime.parse("0"+String.valueOf(options[2])+":"+String.valueOf(options[3]));
-			hora.setTime(h);
-		}
-		else if(options[2] >= 10 && options[3] < 10){
-			LocalTime h = LocalTime.parse(String.valueOf(options[2])+":"+"0"+String.valueOf(options[3]));
-			hora.setTime(h);
-		}
-		else{
-			LocalTime h = LocalTime.parse(String.valueOf(options[2])+":"+String.valueOf(options[3]));
-			hora.setTime(h);
-		}
+		hora.setTime(LocalTime.parse((CharSequence) options.get("Hora")));
 
 		if(!MainTelaController.user.getTipo().equals("Admin")){
 			box_backup.setVisible(false);
+			boxCurriculo.setVisible(false);
 		}
 
 	}

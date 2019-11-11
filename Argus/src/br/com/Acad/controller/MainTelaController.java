@@ -14,6 +14,8 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.simple.JSONObject;
+
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
@@ -179,38 +181,27 @@ public class MainTelaController implements Initializable{
 
 	}
 
+	@SuppressWarnings("unchecked")
 	static void startBackupTimer(){
-		int[] options = Settings.get();
+		JSONObject options = Settings.get();
 
 		LocalDateTime localDate = null;
 		Timer backupTimer = new Timer();
-		if(options[2] < 10 && options[3] < 10){
-			LocalTime h = LocalTime.parse("0"+String.valueOf(options[2])+":"+"0"+String.valueOf(options[3]));
-			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
-		}
-		else if(options[2] < 10 && options[3] >= 10){
-			LocalTime h = LocalTime.parse("0"+String.valueOf(options[2])+":"+String.valueOf(options[3]));
-			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
-		}
-		else if(options[2] >= 10 && options[3] < 10){
-			LocalTime h = LocalTime.parse(String.valueOf(options[2])+":"+"0"+String.valueOf(options[3]));
-			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
-		}
-		else{
-			LocalTime h = LocalTime.parse(String.valueOf(options[2])+":"+String.valueOf(options[3]));
-			localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
-		}
+
+		LocalTime h = LocalTime.parse((CharSequence) options.get("Hora"));
+		localDate = LocalDateTime.of(LocalDate.now(ZoneId.of("America/Sao_Paulo")), h);
 
 		Calendar c = Calendar.getInstance();
 
 		ZonedDateTime zdt = localDate.atZone(ZoneId.of("America/Sao_Paulo"));
 		Date date = Date.from(zdt.toInstant());
-		if(options[4] == LocalDate.now(ZoneId.of("America/Sao_Paulo")).getDayOfMonth()){
+		if((Long)options.get("DiaDoMes") == LocalDate.now(ZoneId.of("America/Sao_Paulo")).getDayOfMonth()){
 			backupTimer.schedule(new backupDB(), date);
 
 			c.setTime(date);
 			c.add(Calendar.DAY_OF_MONTH, 1);
-			options[4] = c.get(Calendar.DAY_OF_MONTH);
+
+			options.put("DiaDoMes", c.get(Calendar.DAY_OF_MONTH)) ;
 			Settings.Save(options);
 		}
 

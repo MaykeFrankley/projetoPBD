@@ -21,7 +21,6 @@
 	<classpathentry kind="lib" path="Libs/javassist.jar"/>
 	<classpathentry kind="lib" path="Libs/jboss-archive-browsing.jar"/>
 	<classpathentry kind="lib" path="Libs/jfoenix.jar"/>
-	<classpathentry kind="lib" path="Libs/jfxswt.jar"/>
 	<classpathentry kind="lib" path="Libs/jta.jar"/>
 	<classpathentry kind="lib" path="Libs/log4j-1.2.11.jar"/>
 	<classpathentry kind="lib" path="Libs/mysql-connector-java-8.0.16.jar"/>
@@ -44,5 +43,8 @@
 	<classpathentry kind="lib" path="Libs/commons-collections4-4.4.jar"/>
 	<classpathentry kind="lib" path="Libs/joda-time-2.10.5.jar"/>
 	<classpathentry kind="lib" path="Libs/net.tascalate.javaflow.api-2.2.1.jar"/>
+	<classpathentry kind="lib" path="Libs/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="Libs/jfxswt.jar"/>
+	<classpathentry kind="lib" path="Libs/caelum-stella-boleto-2.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

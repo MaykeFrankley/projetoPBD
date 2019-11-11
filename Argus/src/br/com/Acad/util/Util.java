@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.controlsfx.control.Notifications;
+import org.json.simple.JSONObject;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
@@ -56,7 +57,7 @@ import javafx.util.Duration;
 public class Util {
 
 	public static StackPane contentPane;
-	private static int[] options = new int[2];
+	private static JSONObject options = new JSONObject();;
 
 	static JFXDialogLayout dialogLayout = new JFXDialogLayout();
 	static JFXDialogLayout dialogLayoutAlert = new JFXDialogLayout();
@@ -88,7 +89,7 @@ public class Util {
 		loader.setLocation(loc);
 		Parent root = loader.load();
 
-		if(options[0] == 0){
+		if(!(boolean) options.get("TemaEscuro")){
 			root.setStyle("-fx-background-color: #ffffff;");
 			try {
 				JFXTabPane pane = (JFXTabPane) root.lookup("#tabPane");
@@ -110,7 +111,7 @@ public class Util {
 			root.setStyle("-fx-background-color: #2A2E37;");
 		}
 
-		if(options[1] == 1) {
+		if((boolean) options.get("Animacoes")) {
 			if(or.equals("x")){
 				root.translateXProperty().set(scene.getWidth());
 			}else{
@@ -154,19 +155,14 @@ public class Util {
 	}
 
 	public static void setStyle(Parent root){
-		int[] options = Settings.get();
-		if(options[0] == 1){
+		options = Settings.get();
+		if((boolean) options.get("TemaEscuro")){
 			root.getStylesheets().add("/br/com/Acad/css/darktheme.css");
+			root.setStyle("-fx-background-color: #2A2E37;");
 		}else{
 			root.getStylesheets().add("/br/com/Acad/css/lighttheme.css");
-		}
-
-		if(options[0] == 0){
 			root.setStyle("-fx-background-color: #ffffff;");
-		}else{
-			root.setStyle("-fx-background-color: #2A2E37;");
 		}
-
 
 	}
 

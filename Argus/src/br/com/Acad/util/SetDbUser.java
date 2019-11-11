@@ -21,6 +21,7 @@ import br.com.Acad.model.Endereco;
 import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
+import br.com.Acad.model.Preco;
 import br.com.Acad.model.Professor;
 import br.com.Acad.model.ResponsavelFinanceiro;
 import br.com.Acad.model.Turma;
@@ -68,7 +69,7 @@ public class SetDbUser extends TimerTask {
 			ObservableList<Class> classes = FXCollections.observableArrayList();
 			classes.setAll(Aluno.class, AlunoNota.class, AlunoMedia.class, AlunoTurma.class, Contato.class, Curriculo.class, CurriculoDisciplina.class, Disciplina.class,
 					DisciplinaProfessor.class, Endereco.class, LogSistema.class, MudarSenha.class, Pessoa.class, Professor.class, ResponsavelFinanceiro.class,
-					Turma.class, Usuario.class, ViewAluno.class, ViewProfessor.class, ViewResponsavelFinanceiro.class, ViewTurma.class, ViewUsuario.class);
+					Turma.class, Usuario.class, ViewAluno.class, ViewProfessor.class, ViewResponsavelFinanceiro.class, ViewTurma.class, ViewUsuario.class, Preco.class);
 
 			for (Class clazz : classes) {
 				cfg.addAnnotatedClass(clazz);

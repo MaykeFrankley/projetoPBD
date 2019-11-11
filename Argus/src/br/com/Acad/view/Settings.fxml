@@ -5,8 +5,11 @@
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -37,6 +40,26 @@
                               <Insets left="40.0" />
                            </padding>
                            <children>
+                              <HBox prefHeight="170.0" prefWidth="834.0">
+                                 <children>
+                                    <VBox fx:id="boxCurriculo" alignment="TOP_CENTER" prefHeight="120.0" prefWidth="289.0">
+                                       <children>
+                                          <Label text="Currículo" textFill="#ffff8d">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                             </font>
+                                          </Label>
+                                          <ComboBox fx:id="tipoCurriculo" onAction="#updateCurriculo" prefWidth="150.0" promptText="Tipo" />
+                                       </children>
+                                    </VBox>
+                                    <TableView fx:id="table_precos" prefHeight="144.0" prefWidth="535.0">
+                                      <columns>
+                                        <TableColumn fx:id="col_curriculo" prefWidth="386.0" text="Currículo" />
+                                        <TableColumn fx:id="col_preco" prefWidth="118.0" text="Preço" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </HBox>
                               <HBox>
                                  <children>
                                     <VBox alignment="TOP_CENTER" prefHeight="120.0" prefWidth="189.0">
@@ -80,14 +103,14 @@
                                     </VBox>
                                  </children>
                               </HBox>
-                              <VBox fx:id="box_backup" alignment="TOP_CENTER">
+                              <VBox fx:id="box_backup" alignment="TOP_CENTER" prefHeight="221.0" prefWidth="731.0">
                                  <children>
                                     <Label text="Horário do backup" textFill="#ffff8d">
                                        <font>
                                           <Font name="System Bold" size="18.0" />
                                        </font>
                                     </Label>
-                                    <JFXDatePicker fx:id="hora" defaultColor="RED" editable="false" prefHeight="43.0" prefWidth="180.0" showTime="true" />
+                                    <JFXDatePicker fx:id="hora" defaultColor="RED" editable="false" prefHeight="110.0" prefWidth="180.0" showTime="true" />
                                     <JFXButton buttonType="RAISED" onAction="#setBackupTimer" ripplerFill="RED" text="Aplicar">
                                        <VBox.margin>
                                           <Insets top="25.0" />

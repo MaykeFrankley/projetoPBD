@@ -11,6 +11,7 @@ import br.com.Acad.dao.interfaces.IDaoCurriculo;
 import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
+import br.com.Acad.model.Preco;
 import br.com.Acad.util.Util;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -92,6 +93,43 @@ public class DaoCurriculo implements IDaoCurriculo{
 		return c;
 	}
 
+	public void addPrecoCurriculo(Preco p) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.persist(p);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Preço atualizado com sucesso!");
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
+	public void updatePrecoCurriculo(Preco p) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(p);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+			Util.Alert("Preço atualizado com sucesso!");
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
+
 	@Override
 	public void addDisciplinaToCurriculo(CurriculoDisciplina cd) {
 		try {
@@ -159,6 +197,25 @@ public class DaoCurriculo implements IDaoCurriculo{
 
 		return ob_cd;
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public ObservableList<Preco> getPrecos(){
+		try {
+			createEM();
+			List<Preco> list = entityMn.createQuery("from Preco").getResultList();
+			ObservableList<Preco> oblist = FXCollections.observableList(list);
+			for (Preco preco : oblist) {
+				preco.setNomeCurriculo(getCurriculo(preco.getCodCurriculo()).getNome());
+			}
+			return oblist;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}finally {
+			if(entityMn.isOpen())
+				entityMn.close();
+		}
+		return null;
 	}
 
 }

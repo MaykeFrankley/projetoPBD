@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import java.util.TimeZone;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.json.simple.JSONObject;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
@@ -228,8 +229,8 @@ public class LoginController implements Initializable{
 
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 
-		int[] options = Settings.get();
-		if(options[0] == 1){
+		JSONObject options = Settings.get();
+		if((boolean) options.get("TemaEscuro")){
 			background.setImage(new Image("/images/argus_logo2.png"));
 		}else{
 			background.setImage(new Image("/images/argus_logo_light.png"));

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
@@ -24,6 +25,7 @@ import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.ResponsavelFinanceiro;
 import br.com.Acad.model.ResponsavelFinanceiroID;
 import br.com.Acad.model.Turma;
+import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.SysLog;
@@ -32,6 +34,8 @@ import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -155,13 +159,19 @@ public class CadastrarAlunoController implements Initializable{
     private VBox box_cadastro;
 
     @FXML
+    private VBox box_cadastroAluno;
+
+    @FXML
     private VBox box_table;
+
+    @FXML
+    private VBox box_tableAluno;
 
     @FXML
     private VBox box_contatos;
 
     @FXML
-    private TableView<ViewResponsavelFinanceiro> table_pessoas;
+    private TableView<ViewResponsavelFinanceiro> table_responsaveis;
 
     @FXML
     private TableColumn<ViewResponsavelFinanceiro, ResponsavelFinanceiroID> col_codPessoa;
@@ -182,6 +192,40 @@ public class CadastrarAlunoController implements Initializable{
     private TableColumn<ViewResponsavelFinanceiro, String> col_status;
 
     @FXML
+    private JFXTextField campo_pesquisa;
+
+    @FXML
+    private JFXTextField campo_pesquisa2;
+
+    @FXML
+    private TableView<ViewAluno> table_alunos;
+
+    @FXML
+    private TableColumn<ViewAluno, Integer> col_codPessoa2;
+
+    @FXML
+    private TableColumn<ViewAluno, String> col_nome2;
+
+    @FXML
+    private TableColumn<ViewAluno, String> col_cpf2;
+
+    @FXML
+    private TableColumn<ViewAluno, Date> col_dt_nascimento2;
+
+    @FXML
+    private TableColumn<ViewAluno, String> col_naturalidade2;
+
+    @FXML
+    private TableColumn<ViewAluno, String> col_nomeMae;
+
+    @FXML
+    private TableColumn<ViewAluno, String> col_nomePai;
+
+    @FXML
+    private TableColumn<ViewAluno, String> col_status2;
+
+
+    @FXML
     private Tab tab_grade;
 
     @FXML
@@ -200,12 +244,20 @@ public class CadastrarAlunoController implements Initializable{
 
     private ObservableList<ViewResponsavelFinanceiro> oblist_resp = FXCollections.observableArrayList();
 
+    private ObservableList<ViewAluno> oblist_alunos = FXCollections.observableArrayList();
+
+    private FilteredList<ViewResponsavelFinanceiro> filtered_resp;
+
+    private FilteredList<ViewAluno> filtered_aluno;
+
+    private int codAluno;
+
     private int codResponsavel;
 
     @FXML
     void confirmar(ActionEvent event) {
     	Curriculo selectedCurriculo = table_curriculo.getSelectionModel().getSelectedItem();
-    	if(selectedCurriculo != null){
+    	if(selectedCurriculo != null && codAluno == 0){
 	    	Pessoa pessoaAluno = new Pessoa();
 	    	Endereco alunoEnd = new Endereco();
 	    	Contato alunoCont = new Contato();
@@ -354,6 +406,7 @@ public class CadastrarAlunoController implements Initializable{
 
 					codResponsavel = 0;
 			    	initTable();
+			    	Util.Alert("Aluno cadastrado com sucesso!");
 					return;
 				}
 			}
@@ -376,7 +429,61 @@ public class CadastrarAlunoController implements Initializable{
 
 	    	codResponsavel = 0;
 	    	initTable();
+	    	Util.Alert("Aluno cadastrado com sucesso!");
 
+    	}
+    	else if(selectedCurriculo != null && codAluno > 0){
+    		ObservableList<CurriculoDisciplina> disciplinas = UtilDao.daoCurriculo.getAllDisciplinas(selectedCurriculo.getCodCurriculo());
+	    	ObservableList<Turma> turmas = UtilDao.daoTurmas.getAllTurmas();
+	    	for (int i = 0; i < turmas.size(); i++) {
+				Turma turma = turmas.get(i);
+
+				if(turma.getCodCurriculo().equals(selectedCurriculo.getCodCurriculo()) && turma.getAnoLetivo() == disciplinas.get(0).getId().getAnoLetivo() &&
+						turma.getCodCurriculo().equals(selectedCurriculo.getCodCurriculo()) && turma.getAnoLetivo() == disciplinas.get(1).getId().getAnoLetivo()){
+					if(turma.getAno() == disciplinas.get(0).getId().getAno()){
+						AlunoTurma at = new AlunoTurma();
+						at.setId(new AlunoTurmaID(codAluno, turma.getCodTurma()));
+						at.setSituacao("Pendente");
+						UtilDao.daoTurmas.addAlunoTurma(at);
+						SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
+
+						codResponsavel = 0;
+				    	initTable();
+						return;
+					}
+				}
+				else if(turma.getCodCurriculo().equals(selectedCurriculo.getCodCurriculo()) && turma.getAnoLetivo() == disciplinas.get(1).getId().getAnoLetivo()){
+					AlunoTurma at = new AlunoTurma();
+					at.setId(new AlunoTurmaID(codAluno, turma.getCodTurma()));
+					at.setSituacao("Pendente");
+					UtilDao.daoTurmas.addAlunoTurma(at);
+					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
+
+					codResponsavel = 0;
+			    	initTable();
+			    	Util.Alert("Aluno cadastrado com sucesso!");
+					return;
+				}
+			}
+
+	    	Turma turma = new Turma();
+	    	turma.setCodCurriculo(selectedCurriculo.getCodCurriculo());
+	    	turma.setAnoLetivo(disciplinas.get(0).getId().getAnoLetivo());
+	    	turma.setAno(disciplinas.get(0).getId().getAno());
+
+	    	UtilDao.daoTurmas.addTurma(turma);
+	    	SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+turma.getCodTurma()+
+	    			" para o curriculo:"+turma.getCodCurriculo()+
+	    			" ano/Série: "+turma.getAno()+" e ano letivo:"+turma.getAnoLetivo()));
+
+	    	AlunoTurma at = new AlunoTurma();
+			at.setId(new AlunoTurmaID(codAluno, turma.getCodTurma()));
+			at.setSituacao("Pendente");
+			UtilDao.daoTurmas.addAlunoTurma(at);
+			SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getCodTurma()));
+
+	    	initTable();
+	    	Util.Alert("Aluno cadastrado com sucesso!");
     	}
     }
 
@@ -437,26 +544,118 @@ public class CadastrarAlunoController implements Initializable{
     }
 
     @FXML
-    void proximo(ActionEvent event) {
-    	if(checkTextFields()){
-    		ObservableList<Pessoa> oblist = UtilDao.daoPessoa.getAllPessoa();
-			for (int i = 0; i < oblist.size(); i++) {
-				String obCPF = oblist.get(i).getCpf();
-
-				if(cpf.getText().length() > 10 && obCPF != null && obCPF.equals(cpf.getText())){
-					Util.Alert("CPF já está cadastrado no sistema!");
-					return;
+    void searchAluno(KeyEvent event) {
+    	campo_pesquisa.textProperty().addListener((observableValue, oldValue,newValue)->{
+			filtered_aluno.setPredicate(viewAluno->{
+				if(newValue==null || newValue.isEmpty()){
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				if(viewAluno.getNome().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(viewAluno.getNaturalidade().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(String.valueOf(viewAluno.getCodPessoa()).contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(viewAluno.getStatus().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(viewAluno.getDt_nascimento().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(viewAluno.getCpf() != null){
+					if(viewAluno.getCpf().toLowerCase().contains(lowerCaseFilter)){
+						return true;
+					}
+				}
+				else if(viewAluno.getNomeMae().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+				else if(viewAluno.getNomePai().toLowerCase().contains(lowerCaseFilter)){
+					return true;
 				}
 
-			}
-    		if(responsavelFin.isSelected()){
+				return false;
+			});
+		});
+		SortedList<ViewAluno> sortedData = new SortedList<>(filtered_aluno);
+		sortedData.comparatorProperty().bind(table_alunos.comparatorProperty());
+		table_alunos.setItems(sortedData);
+    }
+
+    @FXML
+	    void searchResponsavel(KeyEvent event) {
+	    	campo_pesquisa2.textProperty().addListener((observableValue, oldValue,newValue)->{
+				filtered_resp.setPredicate(pessoa->{
+					if(newValue==null || newValue.isEmpty()){
+						return true;
+					}
+					String lowerCaseFilter = newValue.toLowerCase();
+					if(pessoa.getNome().toLowerCase().contains(lowerCaseFilter)){
+						return true;
+					}
+					else if(pessoa.getNaturalidade().toLowerCase().contains(lowerCaseFilter)){
+						return true;
+					}
+					else if(String.valueOf(pessoa.getCodPessoa()).contains(lowerCaseFilter)){
+						return true;
+					}
+					else if(pessoa.getStatus().toLowerCase().contains(lowerCaseFilter)){
+						return true;
+					}
+					else if(pessoa.getDt_nascimento().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(lowerCaseFilter)){
+						return true;
+					}
+					else if(pessoa.getCpf() != null){
+						if(pessoa.getCpf().toLowerCase().contains(lowerCaseFilter)){
+							return true;
+						}
+					}
+
+					return false;
+				});
+			});
+			SortedList<ViewResponsavelFinanceiro> sortedData = new SortedList<>(filtered_resp);
+			sortedData.comparatorProperty().bind(table_responsaveis.comparatorProperty());
+			table_responsaveis.setItems(sortedData);
+	    }
+
+
+    @FXML
+    void proximo(ActionEvent event) {
+    	if(event.getSource() == btn_proximo){
+	    	if(checkTextFields()){
+	    		ObservableList<Pessoa> oblist = UtilDao.daoPessoa.getAllPessoa();
+				for (int i = 0; i < oblist.size(); i++) {
+					String obCPF = oblist.get(i).getCpf();
+
+					if(cpf.getText().length() > 10 && obCPF != null && obCPF.equals(cpf.getText())){
+						Util.Alert("CPF já está cadastrado no sistema!");
+						return;
+					}
+
+				}
+	    		if(responsavelFin.isSelected()){
+	    			tab_grade.setDisable(false);
+	    			tab_responsavel.setDisable(true);
+	        		tabPane.getSelectionModel().select(tab_grade);
+	    		}
+	    		else{
+	    			tab_responsavel.setDisable(false);
+	    			tabPane.getSelectionModel().select(tab_responsavel);
+	    		}
+	    	}
+    	}
+    	else{
+    		ViewAluno selected = table_alunos.getSelectionModel().getSelectedItem();
+    		if(selected != null){
+    			codAluno = selected.getCodPessoa();
     			tab_grade.setDisable(false);
     			tab_responsavel.setDisable(true);
         		tabPane.getSelectionModel().select(tab_grade);
-    		}
-    		else{
-    			tab_responsavel.setDisable(false);
-    			tabPane.getSelectionModel().select(tab_responsavel);
     		}
     	}
     }
@@ -480,7 +679,7 @@ public class CadastrarAlunoController implements Initializable{
     		}
     	}
     	else{
-    		ViewResponsavelFinanceiro select = table_pessoas.getSelectionModel().getSelectedItem();
+    		ViewResponsavelFinanceiro select = table_responsaveis.getSelectionModel().getSelectedItem();
         	if(select != null){
         		codResponsavel = select.getCodPessoa();
         		tab_grade.setDisable(false);
@@ -500,13 +699,26 @@ public class CadastrarAlunoController implements Initializable{
     }
 
     @FXML
-    void selecionar(ActionEvent event) {
+    void selecionarAluno(ActionEvent event) {
+    	box_cadastroAluno.setVisible(false);
+    	box_tableAluno.setVisible(true);
+    }
+
+    @FXML
+    void cadastrarAluno(ActionEvent event) {
+    	box_cadastroAluno.setVisible(true);
+    	box_tableAluno.setVisible(false);
+    }
+
+
+    @FXML
+    void selecionarResponsavel(ActionEvent event) {
     	box_cadastro.setVisible(false);
     	box_table.setVisible(true);
     }
 
     @FXML
-    void cadastrar(ActionEvent event) {
+    void cadastrarResponsavel(ActionEvent event) {
     	box_cadastro.setVisible(true);
     	box_table.setVisible(false);
     }
@@ -514,6 +726,10 @@ public class CadastrarAlunoController implements Initializable{
     void initTable(){
     	oblist_curriculos = UtilDao.daoCurriculo.getAllCurriculo();
     	oblist_resp = UtilDao.daoResponsaveis.getAllViewResponsavel();
+    	oblist_alunos = UtilDao.daoAlunos.getAllAlunosView();
+
+    	filtered_resp = new FilteredList<>(oblist_resp);
+    	filtered_aluno = new FilteredList<>(oblist_alunos);
 
     	col_cod.setCellValueFactory(new PropertyValueFactory<>("codCurriculo"));
 		col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -546,7 +762,36 @@ public class CadastrarAlunoController implements Initializable{
 			return cell;
 		});
 
-		table_pessoas.setItems(oblist_resp);
+		table_responsaveis.setItems(oblist_resp);
+
+		col_nome2.setCellValueFactory(new PropertyValueFactory<>("nome"));
+		col_cpf2.setCellValueFactory(new PropertyValueFactory<>("cpf"));
+		col_naturalidade2.setCellValueFactory(new PropertyValueFactory<>("naturalidade"));
+		col_status2.setCellValueFactory(new PropertyValueFactory<>("status"));
+		col_codPessoa2.setCellValueFactory(new PropertyValueFactory<>("codPessoa"));
+		col_dt_nascimento2.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
+		col_nomeMae.setCellValueFactory(new PropertyValueFactory<>("nomeMae"));
+		col_nomePai.setCellValueFactory(new PropertyValueFactory<>("nomePai"));
+
+		col_dt_nascimento2.setCellFactory(column -> {
+			TableCell<ViewAluno, Date> cell = new TableCell<ViewAluno, Date>() {
+				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+				@Override
+				protected void updateItem(Date item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(format.format(item));
+					}
+				}
+			};
+			return cell;
+		});
+
+		table_alunos.setItems(oblist_alunos);
 
 
     }
