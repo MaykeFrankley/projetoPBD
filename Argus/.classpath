@@ -46,5 +46,6 @@
 	<classpathentry kind="lib" path="Libs/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="Libs/jfxswt.jar"/>
 	<classpathentry kind="lib" path="Libs/caelum-stella-boleto-2.1.2.jar"/>
+	<classpathentry kind="lib" path="Libs/scenicView.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

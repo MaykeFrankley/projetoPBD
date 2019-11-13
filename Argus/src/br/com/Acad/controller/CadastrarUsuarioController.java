@@ -2,6 +2,7 @@ package br.com.Acad.controller;
 
 import java.net.URL;
 import java.sql.Date;
+import java.text.Normalizer;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -124,6 +125,9 @@ public class CadastrarUsuarioController implements Initializable{
 
                 if (m.find( )) {
                 	primeiroNome = m.group(0);
+                	primeiroNome = Normalizer
+     	           .normalize(primeiroNome, Normalizer.Form.NFD)
+     	           .replaceAll("[^\\p{ASCII}]", "");
                 }
 
         		String passWord = primeiroNome+cpf.getText().substring(0, 3);
@@ -216,7 +220,7 @@ public class CadastrarUsuarioController implements Initializable{
 				"Rio Grande do Norte","Rio Grande do Sul","Rondônia",
 				"Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins");
 
-    	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "CoordenacaoPedagogica");
+    	tipoUsuario.getItems().addAll("Admin", "Secretaria", "Direção", "Pedagogo");
 		new AutoCompleteComboBoxListener<>(estado);
 		new AutoCompleteComboBoxListener<>(cidade);
     }
@@ -271,6 +275,9 @@ public class CadastrarUsuarioController implements Initializable{
 			}
 		}
 
+        nomeUsuario.setText(Normalizer
+        	           .normalize(nomeUsuario.getText(), Normalizer.Form.NFD)
+        	           .replaceAll("[^\\p{ASCII}]", ""));
 
     }
 

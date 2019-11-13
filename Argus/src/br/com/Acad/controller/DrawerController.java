@@ -182,6 +182,23 @@ public class DrawerController{
 	}
 
 	@FXML
+	void gerenciar_pedagogia(ActionEvent event) throws IOException {
+		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Util.LoadWindow(getClass().getResource("/br/com/Acad/view/PedagogiaManager.fxml"), scene, "x");
+	}
+
+	@FXML
+	void cadastrar_acompanhamento(ActionEvent event) throws IOException {
+		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Util.LoadWindow(getClass().getResource("/br/com/Acad/view/CadastrarAcompanhamento.fxml"), scene, "y");
+	}
+
+	@FXML
+	void pagamentos(ActionEvent event) {
+		Util.Alert("Não implementado ainda!");
+	}
+
+	@FXML
 	void logout_handler(ActionEvent event) {
 		JFXButton yes = new JFXButton("LogOut");
 		yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
@@ -298,6 +315,7 @@ public class DrawerController{
 
 			String hashantigo = DigestUtils.md5Hex(antigaSenha.getText());
 			if(hashantigo.equals(MainTelaController.user.getSenha()) && pair.getKey().equals(pair.getValue()) && pair.getKey().length() >= 6){
+				new SetDbUser("root", "9612").run();;
 				String hashNovo = DigestUtils.md5Hex(novaSenha.getText());
 
             	MainTelaController.user.setSenha(hashNovo);
@@ -318,7 +336,8 @@ public class DrawerController{
 				}
 
         	    Platform.runLater(() -> {
-					Util.Alert("Senha alterada com sucesso!\nÉ nescessário fazer o login novamente.");
+					Util.Alert("Senha alterada com sucesso!");
+					 new SetDbUser(MainTelaController.user.getUser(), hashNovo);
 				});
 
         	    SysLog.addLog(SysLog.message("O usuário "+MainTelaController.user.getUser()+" alterou sua própria senha."));
@@ -330,11 +349,6 @@ public class DrawerController{
 				});
 			}
 		});
-	}
-
-	@FXML
-	void pagamentos(ActionEvent event) {
-
 	}
 
 	void setUser(Usuario user){

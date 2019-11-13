@@ -7,6 +7,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -450,7 +452,7 @@ public class Util {
 
 			break;
 
-		case "CoordenacaoPedagogica":
+		case "Pedagogo":
 			stmt.close();
 			stmt = con.prepareStatement("grant select, insert, update on argus.SessaoPedagogica to ?@localhost;");
     	    stmt.setString(1, u.getUser());
@@ -459,6 +461,19 @@ public class Util {
 			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.viewaluno to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.viewsessao to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.pessoas to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
 
 			break;
 
@@ -474,6 +489,19 @@ public class Util {
 	    	UtilDao.daoUsuarios.addUsuario(u);
 	    	SysLog.addLog(SysLog.createUser(u.getCodPessoa()));
 	    }
+
+	}
+
+	public static String getUF(String estado){
+
+		ArrayList<String> siglaEstados = new ArrayList<>(Arrays.asList("AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG",
+				"PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"));
+
+		ArrayList<String> nomesEstados = new ArrayList<>(Arrays.asList("Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal","Espírito Santo",
+				"Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte",
+				"Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins"));
+
+		return siglaEstados.get(nomesEstados.indexOf(estado));
 
 	}
 

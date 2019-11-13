@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="acompanhamentoPorAluno" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="85553012-5bef-4d90-aaab-8587dfa8e183">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ArgusDB"/>
+	<parameter name="nomeAluno" class="java.lang.String"/>
+	<parameter name="dt_nascimento" class="java.util.Date"/>
+	<parameter name="nomeEscola" class="java.lang.String"/>
+	<parameter name="nomePedagogo" class="java.lang.String"/>
+	<parameter name="dt_atendimento" class="java.util.Date"/>
+	<parameter name="idadeAluno" class="java.lang.Integer"/>
+	<parameter name="codPedagogo" class="java.lang.Integer"/>
+	<parameter name="codAluno" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT *
+FROM argus.sessaopedagogica
+WHERE 
+	 argus.sessaopedagogica.`codPedagogo` = $P{codPedagogo}
+	 AND argus.sessaopedagogica.`codAluno` = $P{codAluno} 
+	 AND argus.sessaopedagogica.data = $P{dt_atendimento}]]>
+	</queryString>
+	<field name="codPedagogo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codPedagogo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sessaopedagogica"/>
+	</field>
+	<field name="codAluno" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="codAluno"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sessaopedagogica"/>
+	</field>
+	<field name="data" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="data"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sessaopedagogica"/>
+	</field>
+	<field name="detalhamento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="detalhamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sessaopedagogica"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sessaopedagogica"/>
+	</field>
+	<group name="codPedagogo">
+		<groupExpression><![CDATA[$F{codPedagogo}]]></groupExpression>
+	</group>
+	<group name="codAluno">
+		<groupExpression><![CDATA[$F{codAluno}]]></groupExpression>
+	</group>
+	<group name="data">
+		<groupExpression><![CDATA[$F{data}]]></groupExpression>
+	</group>
+	<group name="detalhamento">
+		<groupExpression><![CDATA[$F{detalhamento}]]></groupExpression>
+	</group>
+	<group name="status">
+		<groupExpression><![CDATA[$F{status}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement x="40" y="10" width="380" height="30" uuid="e3c113aa-9866-4632-80f7-8f9e867cdba8"/>
+				<textElement>
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de acompanhamento do aluno]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="230">
+			<staticText>
+				<reportElement x="220" y="160" width="114" height="30" uuid="6d3eeaa7-468a-4d93-a984-aa541e759899"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detalhamento]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="40" y="190" width="514" height="30" isPrintWhenDetailOverflows="true" uuid="0ed83197-8821-4b4b-9d53-cd5000e457c8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8dbfa140-0f5e-4850-9522-5a31cb549a76"/>
+				</reportElement>
+				<textElement>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalhamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="134" width="50" height="20" uuid="c7b29454-9087-4f04-b611-955063f2ec04"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Pedagogo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="134" width="100" height="20" uuid="870b12eb-666d-4f8f-ba50-ecc625a369b9"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{nomePedagogo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="108" width="40" height="20" uuid="8635f9e7-f0ff-40c2-a190-b089d235f190"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Escola:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="108" width="100" height="20" uuid="abde1580-72ba-4e37-8eda-0fee3d82c047"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{nomeEscola}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="78" width="30" height="20" uuid="06f394e1-7f9c-4719-a465-f25aa6d7b347"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nasc:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="78" width="100" height="20" uuid="958f0537-b78b-4419-9b1a-a67eabfb2a58"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dt_nascimento})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="48" width="30" height="20" uuid="beee3f1c-6ffe-4232-bf30-84a4ad828aa8"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nome:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="48" width="100" height="20" uuid="b5da765c-fb55-43b7-879a-e940247d885e"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{nomeAluno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="48" width="100" height="20" uuid="808de3e6-c152-4875-9fcd-dee441025fce"/>
+				<textFieldExpression><![CDATA[$P{idadeAluno}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="360" y="48" width="30" height="20" uuid="e7ab5506-3035-4dcc-a332-9fd72eb41492"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Idade:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="88" width="100" height="20" uuid="3b713980-5b6f-4810-87d5-1ee2d3bc2aed"/>
+				<textElement>
+					<font isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Data de atendimento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="450" y="88" width="104" height="20" uuid="fe57ec0b-fe15-4c2e-a2f2-4ae835b71439"/>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dt_atendimento})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="10" width="80" height="30" uuid="5c2db16d-9109-4c10-9c05-d06e8c3e8411"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aluno]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="37" splitType="Stretch">
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="0" y="19" width="100" height="18" uuid="18761ee6-bb05-4ce6-9edb-4279c84225b7"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="470" y="19" width="84" height="18" uuid="00ae5eca-ef16-41ed-ac9a-fa1437e2026c"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

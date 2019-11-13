@@ -38,8 +38,8 @@ public class DaoLog implements IDaoLog{
 
 			return true;
 		} catch (PersistenceException e) {
-			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
+			entityMn.getTransaction().rollback();	
 		} finally {
 			entityMn.close();
 		}

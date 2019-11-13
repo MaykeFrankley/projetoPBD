@@ -120,10 +120,8 @@ public class LoginController implements Initializable{
                     		mainTela.setUser(check);
                 			mainTela.enableHamburger();
                 			mainTela.enableNotificationTask();
-
                 			if(!check.getTipo().equals("Direção"))
                 				SysLog.addLog(SysLog.login(check.getUser()));
-
                         });
         		        return null;
         		    }

@@ -371,7 +371,6 @@
                               <DropShadow />
                            </effect>
                            <children>
-                              <HBox alignment="TOP_CENTER" fillHeight="false" />
                               <Label text="Dados do aluno" textFill="YELLOW">
                                  <font>
                                     <Font size="16.0" />

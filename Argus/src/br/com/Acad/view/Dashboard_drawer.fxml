@@ -42,6 +42,11 @@
                         <FontAwesomeIconView fill="WHITE" glyphName="BLACK_TIE" size="16" />
                      </graphic>
                   </JFXButton>
+                  <JFXButton alignment="TOP_LEFT" onAction="#cadastrar_acompanhamento" prefHeight="31.0" prefWidth="201.0" style="-fx-font-size: 15px;" styleClass="options-btn" text="Acompanhamento">
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="COMMENTS_ALT" size="16" />
+                     </graphic>
+                  </JFXButton>
                </children>
             </VBox>
             <VBox fx:id="box_buttons" alignment="TOP_CENTER" fillWidth="false" prefHeight="695.0" prefWidth="280.0" spacing="15.0">
@@ -110,6 +115,17 @@
                      </graphic>
                      <VBox.margin>
                         <Insets right="20.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="28.0" mnemonicParsing="false" onAction="#gerenciar_pedagogia" prefHeight="41.0" prefWidth="255.0" styleClass="options-btn" text="Pedagogia" textFill="WHITE">
+                     <font>
+                        <Font name="Verdana" size="12.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="COMMENTING" size="18" />
+                     </graphic>
+                     <VBox.margin>
+                        <Insets right="16.0" />
                      </VBox.margin>
                   </Button>
                   <Button fx:id="log_btn" alignment="BASELINE_LEFT" defaultButton="true" focusTraversable="false" graphicTextGap="30.0" mnemonicParsing="false" onAction="#log_sistema" prefHeight="33.0" prefWidth="250.0" styleClass="options-btn" text="Log do Sistema" textFill="WHITE">

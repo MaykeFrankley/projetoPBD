@@ -360,6 +360,9 @@ public class CadastrarAlunoController implements Initializable{
 
 	    			UtilDao.daoResponsaveis.addResponsavel(resp);
 	    			SysLog.addLog(SysLog.message("Cadastrou um novo responsável financeiro de cod:"+resp.getId().getCodPessoa()));
+
+	    			gerarBoletos(resp);
+
 	    		}
 	    	}
 	    	else{ //ALUNORESPONSAVEL
@@ -370,6 +373,8 @@ public class CadastrarAlunoController implements Initializable{
 
 				UtilDao.daoResponsaveis.addResponsavel(resp);
 				SysLog.addLog(SysLog.message("Cadastrou um novo responsável financeiro de cod:"+resp.getId().getCodPessoa()));
+
+				gerarBoletos(resp);
 	    	}
 	    	a.setNomeMae(nomeMae.getText());
 	    	a.setNomePai(nomePai.getText());
@@ -794,6 +799,27 @@ public class CadastrarAlunoController implements Initializable{
 		table_alunos.setItems(oblist_alunos);
 
 
+    }
+
+    ///// Geração de boletos /////////
+
+    void gerarBoletos(ResponsavelFinanceiro resp){
+
+//		for (int i = 2; i < 12; i++) {
+//			LocalDate hj = LocalDate.now();
+//			Datas datas = Datas.novasDatas()
+//					.comDocumento(hj.getDayOfMonth(), hj.getMonthValue(), hj.getYear())
+//					.comProcessamento(hj.getDayOfMonth(), hj.getMonthValue(), hj.getYear())
+//					.comVencimento(hj.getDayOfMonth(), i, hj.getYear());
+//
+//			Endereco end = UtilDao.daoEnderecos.getEndereco(resp.getId().getCodPessoa());
+//			br.com.caelum.stella.boleto.Endereco enderecoBeneficiario = br.com.caelum.stella.boleto.Endereco.novoEndereco()
+//					.comBairro(end.getBairro())
+//					.comCidade(end.getCidade())
+//					.comUf(Util.getUF(end.getEstado()))
+//					.comLogradouro(end.getRua()+", "+end.getNumero());
+//
+//		}
     }
 
     boolean checkTextFields2(){
