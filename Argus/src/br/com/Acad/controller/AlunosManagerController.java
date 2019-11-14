@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
@@ -26,9 +27,11 @@ import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
+import br.com.Acad.model.Matricula;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
+import br.com.Acad.model.ViewMatricula;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.model.ViewTurma;
 import br.com.Acad.sql.ConnectionReserva;
@@ -54,6 +57,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.FloatStringConverter;
 
@@ -329,6 +333,33 @@ public class AlunosManagerController implements Initializable{
 	@FXML
     private ComboBox<String> unidadeBox;
 
+	@FXML
+    private Tab matriculasTab;
+
+    @FXML
+    private TableView<ViewMatricula> table_matriculas;
+
+    @FXML
+    private TableColumn<ViewMatricula, String> col_codAluno_mat;
+
+    @FXML
+    private TableColumn<ViewMatricula, String> col_nomeAluno_mat;
+
+    @FXML
+    private TableColumn<ViewMatricula, String> col_curriculo_mat;
+
+    @FXML
+    private TableColumn<ViewMatricula, String> col_ano_mat;
+
+    @FXML
+    private TableColumn<ViewMatricula, Date> col_dtMatricula;
+
+    @FXML
+    private TableColumn<ViewMatricula, String> col_anoLetivo_mat;
+
+    @FXML
+    private TableColumn<ViewMatricula, String> col_situacao_mat;
+
 	private Aluno oldAluno;
 
 	private Pessoa oldPessoa;
@@ -348,6 +379,8 @@ public class AlunosManagerController implements Initializable{
 	private ObservableList<ViewAluno> oblist_pessoas = FXCollections.observableArrayList();
 
 	private ObservableList<ViewTurma> oblist_turmas= FXCollections.observableArrayList();
+
+	private ObservableList<ViewMatricula> oblist_matriculas = FXCollections.observableArrayList();
 
 	private AlunoTurma alunoAprovado;
 
@@ -436,12 +469,6 @@ public class AlunosManagerController implements Initializable{
 		}
 	}
 
-
-	@FXML
-	void finalizarUnidade(ActionEvent event) {
-
-	}
-
 	@FXML
 	void finalizarAluno(ActionEvent event) {
 		unidadeBox.getItems().clear();
@@ -488,9 +515,19 @@ public class AlunosManagerController implements Initializable{
 							aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), codNovaTurma));
 							aluno.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(aluno);
+
+							Matricula matricula = new Matricula();
+							Date dt_matricula = Date.valueOf(LocalDate.now());
+							matricula.setDt_matricula(dt_matricula);
+							matricula.setId(aluno.getId());
+							matricula.setSituacao("Pendente");
+
+							UtilDao.daoAlunos.addMatricula(matricula);
+
 							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
-							Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
+							Util.Alert("O Aluno foi aprovado nas disciplinas e foi cadastrado em uma nova turma!"
+									+"\nÉ nescessário confirmar a matrícula do aluno!");
 						}
 						else{
 							Util.Alert("O Aluno foi aprovado no currículo!");
@@ -504,7 +541,18 @@ public class AlunosManagerController implements Initializable{
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
 					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
-					Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
+					Matricula matricula = new Matricula();
+					Date dt_matricula = Date.valueOf(LocalDate.now());
+					matricula.setDt_matricula(dt_matricula);
+					matricula.setId(aluno.getId());
+					matricula.setSituacao("Pendente");
+
+					UtilDao.daoAlunos.addMatricula(matricula);
+
+					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
+
+					Util.Alert("O Aluno foi aprovado nas disciplinas e foi cadastrado em uma nova turma!"
+							+"\nÉ nescessário confirmar a matrícula do aluno!");
 				}
 
 
@@ -904,9 +952,33 @@ public class AlunosManagerController implements Initializable{
 
 	}
 
+	@FXML
+	void confirmar_matricula(ActionEvent event) {
+		ViewMatricula m = table_matriculas.getSelectionModel().getSelectedItem();
+		if(m != null){
+			JFXButton yes = new JFXButton("Confirmar");
+			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
+				Matricula matricula = UtilDao.daoAlunos.getMatricula(new AlunoTurmaID(m.getCodAluno(), m.getCodTurma()));
+				matricula.setSituacao("Confirmada");
+				UtilDao.daoAlunos.updateMatricula(matricula);
+				initTables();
+				Util.contentPane.getChildren().get(0).setEffect(null);
+
+				SysLog.addLog(SysLog.message("Confirmou a matrícula do aluno de cod:"+m.getCodAluno()));
+			});
+			JFXButton cancel = new JFXButton("Cancelar");
+			cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even2) ->{
+				Util.contentPane.getChildren().get(0).setEffect(null);
+			});
+
+			Util.confirmation(Arrays.asList(yes, cancel),"Deseja confirmar a matrícula do aluno: "+m.getAluno());
+		}
+	}
+
 	void initTables(){
 		oblist_pessoas = UtilDao.daoAlunos.getAllAlunosView();
 		oblist_turmas = UtilDao.daoTurmas.getAllTurmasView();
+		oblist_matriculas = UtilDao.daoAlunos.getMatriculasView();
 
 		if(oblist_pessoas != null)filteredData = new FilteredList<>(oblist_pessoas);
 		if(oblist_turmas != null)filteredData2 = new FilteredList<>(oblist_turmas);
@@ -920,6 +992,32 @@ public class AlunosManagerController implements Initializable{
 		col_dt_nascimento.setCellValueFactory(new PropertyValueFactory<>("dt_nascimento"));
 		col_nomeMae.setCellValueFactory(new PropertyValueFactory<>("nomeMae"));
 		col_nomePai.setCellValueFactory(new PropertyValueFactory<>("nomePai"));
+
+		col_codAluno_mat.setCellValueFactory(new PropertyValueFactory<>("codAluno"));
+		col_nomeAluno_mat.setCellValueFactory(new PropertyValueFactory<>("aluno"));
+		col_curriculo_mat.setCellValueFactory(new PropertyValueFactory<>("curriculo"));
+		col_situacao_mat.setCellValueFactory(new PropertyValueFactory<>("situacao"));
+		col_ano_mat.setCellValueFactory(new PropertyValueFactory<>("serie"));
+		col_anoLetivo_mat.setCellValueFactory(new PropertyValueFactory<>("anoLetivo"));
+		col_dtMatricula.setCellValueFactory(new PropertyValueFactory<>("dt_matricula"));
+
+		col_dtMatricula.setCellFactory(column -> {
+			TableCell<ViewMatricula, Date> cell = new TableCell<ViewMatricula, Date>() {
+				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+				@Override
+				protected void updateItem(Date item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(format.format(item));
+					}
+				}
+			};
+			return cell;
+		});
 
 
 		col_dt_nascimento.setCellFactory(column -> {
@@ -941,6 +1039,7 @@ public class AlunosManagerController implements Initializable{
 		});
 
 		table_pessoas.setItems(oblist_pessoas);
+		table_matriculas.setItems(oblist_matriculas);
 
 		table_pessoas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {

@@ -215,7 +215,7 @@ public class PedagogiaManagerController implements Initializable{
     	if(a != null && dt_atendimento.getValue() != null && !detalhamentoArea.getText().isEmpty()){
     		new SetDbUser("root", "9612").run();
     		Connection con = ConnectionClass.createConnection();
-			JasperDesign jd = JRXmlLoader.load(new File("").getClass().getResourceAsStream("/br/com/Acad/reports/acompanhamentoPoraluno.jrxml"));
+			JasperDesign jd = JRXmlLoader.load(new File("").getClass().getResourceAsStream("/br/com/Acad/reports/acompanhamentoPorAluno.jrxml"));
 			HashMap<String, Object> param = new HashMap<>();
 			Escola escola = EscolaXML.get();
 			Date at = Date.valueOf(dt_atendimento.getValue());
@@ -424,23 +424,20 @@ public class PedagogiaManagerController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initTables();
-		if(MainTelaController.user.getTipo().equals("Admin")){
-			box_admin.setVisible(true);
-		}
-		else{
-			codigoPedagogoInt = MainTelaController.user.getCodPessoa();
-			Connection con = ConnectionClass.createConnection();
-			try {
-				ResultSet rs = con.prepareStatement("SELECT YEAR(data) FROM argus.sessaopedagogica;").executeQuery();
-				while(rs.next()){
-					box_ano.getItems().add(String.valueOf(rs.getInt(1)));
-				}
-				rs.close();
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+
+		codigoPedagogoInt = MainTelaController.user.getCodPessoa();
+		Connection con = ConnectionClass.createConnection();
+		try {
+			ResultSet rs = con.prepareStatement("SELECT YEAR(data) FROM argus.sessaopedagogica WHERE codPedagogo = "+codigoPedagogoInt).executeQuery();
+			while(rs.next()){
+				box_ano.getItems().add(String.valueOf(rs.getInt(1)));
 			}
+			rs.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+
 
 		box_situacao.getItems().setAll("Em atendimento", "Concluído");
 	}

@@ -14,9 +14,9 @@
 	<queryString language="SQL">
 		<![CDATA[SELECT *
 FROM argus.sessaopedagogica
-WHERE 
+WHERE
 	 argus.sessaopedagogica.`codPedagogo` = $P{codPedagogo}
-	 AND argus.sessaopedagogica.`codAluno` = $P{codAluno} 
+	 AND argus.sessaopedagogica.`codAluno` = $P{codAluno}
 	 AND argus.sessaopedagogica.data = $P{dt_atendimento}]]>
 	</queryString>
 	<field name="codPedagogo" class="java.lang.Integer">
@@ -87,7 +87,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{detalhamento}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="40" y="134" width="50" height="20" uuid="c7b29454-9087-4f04-b611-955063f2ec04"/>
+				<reportElement x="40" y="134" width="100" height="20" uuid="c7b29454-9087-4f04-b611-955063f2ec04"/>
 				<textElement>
 					<font size="10" isItalic="true"/>
 				</textElement>
@@ -106,7 +106,7 @@ WHERE
 				<text><![CDATA[Escola:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="108" width="100" height="20" uuid="abde1580-72ba-4e37-8eda-0fee3d82c047"/>
+				<reportElement x="80" y="108" width="200" height="20" uuid="abde1580-72ba-4e37-8eda-0fee3d82c047"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{nomeEscola}]]></textFieldExpression>
 			</textField>
@@ -130,7 +130,7 @@ WHERE
 				<text><![CDATA[Nome:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="70" y="48" width="100" height="20" uuid="b5da765c-fb55-43b7-879a-e940247d885e"/>
+				<reportElement x="70" y="48" width="150" height="20" uuid="b5da765c-fb55-43b7-879a-e940247d885e"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{nomeAluno}]]></textFieldExpression>
 			</textField>

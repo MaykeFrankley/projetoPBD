@@ -13,7 +13,10 @@ import br.com.Acad.model.Aluno;
 import br.com.Acad.model.AlunoMedia;
 import br.com.Acad.model.AlunoMediaID;
 import br.com.Acad.model.AlunoNota;
+import br.com.Acad.model.AlunoTurmaID;
+import br.com.Acad.model.Matricula;
 import br.com.Acad.model.ViewAluno;
+import br.com.Acad.model.ViewMatricula;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -77,6 +80,47 @@ public class DaoAlunos implements IDaoAlunos{
 		Aluno a = entityMn.find(Aluno.class, ID);
 		entityMn.close();
 		return a;
+	}
+
+	public void addMatricula(Matricula m){
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.persist(m);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
+	public void updateMatricula(Matricula m){
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(m);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+	}
+
+	public Matricula getMatricula(AlunoTurmaID id){
+		createEM();
+		Matricula m = entityMn.find(Matricula.class, id);
+		entityMn.close();
+		return m;
 	}
 
 	public void setAlunoNota(AlunoNota nota) {
@@ -203,6 +247,22 @@ public class DaoAlunos implements IDaoAlunos{
 			for (AlunoMedia AlunoMedia : oblist) {
 				AlunoMedia.setNomeDisciplina(UtilDao.daoDisciplina.getDisciplina(AlunoMedia.getId().getCodDisciplina()).getNome());
 			}
+			return oblist;
+		} catch (PersistenceException e) {
+			new HandleSQLException(e);
+		}finally {
+			entityMn.close();
+		}
+		return null;
+	}
+
+	public ObservableList<ViewMatricula> getMatriculasView(){
+		try {
+			createEM();
+			@SuppressWarnings("unchecked")
+			List<ViewMatricula> list = entityMn.createQuery("from ViewMatricula").getResultList();
+			ObservableList<ViewMatricula> oblist = FXCollections.observableList(list);
+
 			return oblist;
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

@@ -366,10 +366,6 @@ public class Util {
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
-			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
-    	    stmt.setString(1, u.getUser());
-			stmt.execute();
-
 			break;
 
 		case "Secretaria":
@@ -379,6 +375,10 @@ public class Util {
 			stmt.execute();
 
 			stmt = con.prepareStatement("grant select on argus.ViewTurma to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.ViewMatricula to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
@@ -447,6 +447,10 @@ public class Util {
 			stmt.execute();
 
 			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.matriculas to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 

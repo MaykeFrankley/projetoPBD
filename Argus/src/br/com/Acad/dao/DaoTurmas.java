@@ -13,7 +13,9 @@ import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
+import br.com.Acad.model.ViewMatricula;
 import br.com.Acad.model.ViewTurma;
+import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -138,6 +140,19 @@ public class DaoTurmas implements IDaoTurmas{
 					}
 				}
 			}
+
+			ObservableList<ViewMatricula> mts = UtilDao.daoAlunos.getMatriculasView();
+			for (ViewMatricula m : mts) {
+				if(m.getSituacao().equals("Pendente")){
+					for (int i = 0; i < oblist.size(); i++) {
+						ViewAluno aluno = oblist.get(i);
+						if(m.getCodAluno() == aluno.getCodPessoa()){
+							oblist.remove(aluno);i--;
+						}
+					}
+				}
+			}
+
 			return oblist;
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

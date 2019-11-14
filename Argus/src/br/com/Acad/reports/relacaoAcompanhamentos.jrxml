@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relacaoAcompanhamentos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="32b161d6-0bd3-4715-b28c-61368a2daefb">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ArgusDB"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="argusDB"/>
 	<parameter name="codPedagogo" class="java.lang.Integer"/>
 	<parameter name="data" class="java.lang.Integer"/>
 	<parameter name="pedagogo" class="java.lang.String"/>
@@ -47,11 +47,14 @@
 	<detail>
 		<band height="125" splitType="Stretch">
 			<textField>
-				<reportElement x="20" y="70" width="100" height="20" uuid="42e94b92-e2be-43ee-aac3-a218254f4d7f"/>
+				<reportElement x="20" y="70" width="160" height="20" uuid="42e94b92-e2be-43ee-aac3-a218254f4d7f"/>
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="20" y="40" width="100" height="30" uuid="27033667-5fe5-4a76-bffa-c6222172e636"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Aluno]]></text>
 			</staticText>
 			<textField>
@@ -60,15 +63,21 @@
 			</textField>
 			<staticText>
 				<reportElement x="190" y="40" width="100" height="30" uuid="33745bc8-61a9-4bae-8b7c-902c29d22e31"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Data de atendimento]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="380" y="70" width="100" height="20" uuid="04948cee-c9e2-4497-826e-d5139968ca70"/>
+				<reportElement x="380" y="70" width="130" height="20" uuid="04948cee-c9e2-4497-826e-d5139968ca70"/>
 				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="380" y="40" width="100" height="30" uuid="16d3ea69-90fa-4420-beee-16471cd6f3fe"/>
-				<text><![CDATA[status]]></text>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Situação]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="20" y="0" width="70" height="20" uuid="3d1b3025-9b8a-4ccb-8ddf-397f5875f0c1"/>
@@ -78,7 +87,7 @@
 				<text><![CDATA[Pedagogo:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="90" y="0" width="290" height="20" uuid="bcb6e8e7-571d-4afa-84c1-39dd69642c09"/>
+				<reportElement x="90" y="0" width="390" height="20" uuid="bcb6e8e7-571d-4afa-84c1-39dd69642c09"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="12"/>
 				</textElement>

@@ -6,6 +6,7 @@
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
@@ -414,6 +415,39 @@
                                     </HBox>
                                  </children>
                               </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="matriculasTab" closable="false" text="Confirmar matrículas">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1366.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="960.0" prefWidth="1366.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <children>
+                              <TableView fx:id="table_matriculas" prefHeight="200.0" prefWidth="1249.0">
+                                <columns>
+                                  <TableColumn fx:id="col_codAluno_mat" prefWidth="114.0" text="Cód. Aluno" />
+                                  <TableColumn fx:id="col_nomeAluno_mat" prefWidth="344.0" text="Nome" />
+                                    <TableColumn fx:id="col_curriculo_mat" prefWidth="359.33349609375" text="Curriculo" />
+                                    <TableColumn fx:id="col_ano_mat" prefWidth="96.66650390625" text="Série/Ano" />
+                                    <TableColumn fx:id="col_anoLetivo_mat" prefWidth="107.0" text="Ano letivo" />
+                                    <TableColumn fx:id="col_dtMatricula" prefWidth="194.0" text="Data de matrícula" />
+                                    <TableColumn fx:id="col_situacao_mat" prefWidth="240.0" text="Situação" />
+                                </columns>
+                                 <VBox.margin>
+                                    <Insets top="40.0" />
+                                 </VBox.margin>
+                              </TableView>
+                              <Button mnemonicParsing="false" onAction="#confirmar_matricula" text="Confirmar matrícula" />
                            </children>
                         </VBox>
                      </children>
