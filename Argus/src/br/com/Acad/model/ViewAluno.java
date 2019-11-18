@@ -3,7 +3,6 @@ package br.com.Acad.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name="ViewAluno")

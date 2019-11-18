@@ -1133,6 +1133,84 @@ public class CadastrarAlunoController implements Initializable{
 		initTable();
 		initValidation();
 		populateBoxes();
+
+		celular.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						celular.setText(old_value);
+					}
+					if(new_value.length() > 11 && new_value.length() < 14){
+						celular.setText(old_value);
+					}
+
+				}
+				);
+
+		cpf.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						cpf.setText(old_value);
+					}
+					if(new_value.length() > 11 && new_value.length() < 14){
+						cpf.setText(old_value);
+					}
+
+				}
+				);
+
+		celular1.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						celular1.setText(old_value);
+					}
+					if(new_value.length() > 11 && new_value.length() < 14){
+						celular1.setText(old_value);
+					}
+
+				}
+				);
+
+		cpf1.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						cpf1.setText(old_value);
+					}
+					if(new_value.length() > 11 && new_value.length() < 14){
+						cpf1.setText(old_value);
+					}
+
+				}
+				);
+
+		telefone.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						telefone.setText(old_value);
+					}
+					if(new_value.length() > 10 && new_value.length() < 13){
+						telefone.setText(old_value);
+					}
+
+				}
+				);
+
+		telefone1.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						telefone1.setText(old_value);
+					}
+					if(new_value.length() > 10 && new_value.length() < 13){
+						telefone1.setText(old_value);
+					}
+
+				}
+				);
 	}
 
 }
