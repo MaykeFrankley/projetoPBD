@@ -47,5 +47,7 @@
 	<classpathentry kind="lib" path="Libs/jfxswt.jar"/>
 	<classpathentry kind="lib" path="Libs/caelum-stella-boleto-2.1.2.jar"/>
 	<classpathentry kind="lib" path="Libs/scenicView.jar"/>
+	<classpathentry kind="lib" path="Libs/org.eclipse.jdt.compiler.apt-1.3.60.jar"/>
+	<classpathentry kind="lib" path="Libs/org.eclipse.jdt.core-3.19.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
