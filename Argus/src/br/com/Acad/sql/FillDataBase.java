@@ -10,7 +10,9 @@ import java.sql.SQLException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import br.com.Acad.model.Usuario;
 import br.com.Acad.util.ScriptRunner;
+import br.com.Acad.util.Util;
 
 public class FillDataBase {
 
@@ -30,12 +32,12 @@ public class FillDataBase {
 			BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/createDB.sql"), "UTF8"));
 			runner.runScript(in);
 
-			String admin = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Mayke Frankley', 'Serra Talhada', '1997-08-08', '116.734.914-80', 'Ativo');";
+			String admin = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Mayke Frankley', 'Serra Talhada', '1997-08-08', '000.000.000-00', 'Ativo');";
 			stmt = con.prepareStatement(admin);
 			stmt.execute();
 
 			String hashPass = DigestUtils.md5Hex("1");
-			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(1, '116.734.914-80', 'admin', ?, 'Admin', 'Ativo')");
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(1, '000.000.000-00', 'admin', ?, 'Admin', 'Ativo')");
 			stmt.setString(1, hashPass);
 			stmt.execute();
 
@@ -68,110 +70,49 @@ public class FillDataBase {
 			stmt = con.prepareStatement("INSERT INTO enderecos VALUES(2, 'testeRua', 10, 'teste', 'teste', 'teste', 'teste');");
 			stmt.execute();
 
-			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
-			stmt.setString(1, "JoseSilva");
-			stmt.setString(2, hashPass);
-			stmt.execute();
+			Usuario u1 = new Usuario();
+			u1.setUser("JoseSilva");
+			u1.setTipo("Secretaria");
+			u1.setSenha(hashPass);
+			Util.setPrivileges(u1);
 
-			stmt = con.prepareStatement("grant select on argus.ViewAluno to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select on argus.ViewTurma to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getAlunos to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant execute on PROCEDURE argus.generateNotas to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsaveis to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsavelDoAluno to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select on argus.curriculo to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select on argus.`curriculo-disciplina`to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select on argus.curriculo to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.Turmas to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.`Aluno-Turma` to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.Alunos to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.Pessoas to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.enderecos to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.contatos to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.Disciplinas to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
-
-			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
-    	    stmt.setString(1, "JoseSilva");
-			stmt.execute();
 
 			//////////////////////////////////////
-			String user3 = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Maria Silva', 'Serra Talhada', '1980-05-16', '111.111.111-11', 'Ativo');";
+			String user3 = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Maria Silva', 'Serra Talhada', '1980-05-16', '121.141.131-11', 'Ativo');";
 			stmt = con.prepareStatement(user3);
 			stmt.execute();
 
 			stmt = con.prepareStatement("INSERT INTO enderecos VALUES(last_insert_id(), 'testeRua', 10, 'teste', 'teste', 'teste', 'teste')");
 			stmt.execute();
 
-			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(103, '111.111.111-11', 'MariaSilva', ?, 'Direção', 'Ativo')");
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(103, '121.141.131-11', 'MariaSilva', ?, 'Direção', 'Ativo')");
 			stmt.setString(1, hashPass);
 			stmt.execute();
 
-			stmt = con.prepareStatement("CREATE USER ?@'localhost' IDENTIFIED BY ?;");
-			stmt.setString(1, "MariaSilva");
-			stmt.setString(2, hashPass);
+			Usuario u2 = new Usuario();
+			u2.setUser("MariaSilva");
+			u2.setTipo("Direção");
+			u2.setSenha(hashPass);
+			Util.setPrivileges(u2);
+
+			/////////////////////////////////////
+
+			String user4 = "INSERT INTO `Pessoas` VALUES (codPessoa, 'João Cleber Silva', 'Serra Talhada', '1980-05-16', '211.151.411-81', 'Ativo');";
+			stmt = con.prepareStatement(user4);
 			stmt.execute();
 
-			stmt = con.prepareStatement("grant select on argus.* to ?@localhost;");
-    	    stmt.setString(1, "MariaSilva");
+			stmt = con.prepareStatement("INSERT INTO enderecos VALUES(last_insert_id(), 'testeRua', 10, 'teste', 'teste', 'teste', 'teste')");
 			stmt.execute();
 
-			stmt.close();
-			con.close();
+			stmt = con.prepareStatement("INSERT INTO Usuarios VALUES(104, '211.151.411-81', 'JoaoSilva', ?, 'Pedagogo', 'Ativo')");
+			stmt.setString(1, hashPass);
+			stmt.execute();
+
+			Usuario u3 = new Usuario();
+			u3.setUser("JoaoSilva");
+			u3.setTipo("Direção");
+			u3.setSenha(hashPass);
+			Util.setPrivileges(u3);
 
 			return false;
 		}

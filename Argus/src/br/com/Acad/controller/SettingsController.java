@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 
 import br.com.Acad.model.Preco;
@@ -29,6 +30,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
@@ -43,6 +45,9 @@ public class SettingsController implements Initializable{
 
     @FXML
     private JFXTabPane tabPane;
+
+    @FXML
+    private Tab adminTab;
 
     @FXML
     private JFXToggleButton temaEscuro;
@@ -78,6 +83,15 @@ public class SettingsController implements Initializable{
     private TableColumn<Preco, Double> col_preco;
 
     private JSONObject options = Settings.get();
+
+    @FXML
+    private VBox box_minMax;
+
+    @FXML
+    private JFXTextField minAlunos;
+
+    @FXML
+    private JFXTextField maxAlunos;
 
     public static boolean callFromSettings = false;
 
@@ -159,6 +173,16 @@ public class SettingsController implements Initializable{
     	});
     }
 
+    @SuppressWarnings("unchecked")
+	@FXML
+    void minMaxAlunos(ActionEvent event) {
+    	if(!minAlunos.getText().isEmpty() && !maxAlunos.getText().isEmpty()){
+	    	options.put("minAlunos", Integer.valueOf(minAlunos.getText()));
+	    	options.put("maxAlunos", Integer.valueOf(maxAlunos.getText()));
+	    	Settings.Save(options);
+    	}
+    }
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -227,10 +251,44 @@ public class SettingsController implements Initializable{
 
 		hora.setTime(LocalTime.parse((CharSequence) options.get("Hora")));
 
+		minAlunos.setText(String.valueOf((Long)options.get("minAlunos")));
+		maxAlunos.setText(String.valueOf((Long)options.get("maxAlunos")));
+
 		if(!MainTelaController.user.getTipo().equals("Admin")){
-			box_backup.setVisible(false);
-			boxCurriculo.setVisible(false);
+			adminTab.setDisable(true);
 		}
+
+		minAlunos.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						minAlunos.setText(old_value);
+					}
+					if(new_value.contains("")){
+						minAlunos.setText(new_value);
+					}
+					if(new_value.matches("\\d+")){
+						minAlunos.setText(new_value);
+					}
+
+				}
+				);
+
+		maxAlunos.textProperty().addListener(
+				(observable, old_value, new_value) -> {
+
+					if(new_value.contains(" ")){
+						maxAlunos.setText(old_value);
+					}
+					if(new_value.contains("")){
+						maxAlunos.setText(new_value);
+					}
+					if(!new_value.matches("\\d+")){
+						maxAlunos.setText(old_value);
+					}
+
+				}
+				);
 
 	}
 

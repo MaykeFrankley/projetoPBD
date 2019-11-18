@@ -378,7 +378,7 @@ public class Util {
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
-			stmt = con.prepareStatement("grant select on argus.ViewMatricula to ?@localhost;");
+			stmt = con.prepareStatement("grant select on argus.ViewconfirmarAlunos to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
@@ -450,7 +450,7 @@ public class Util {
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
-			stmt = con.prepareStatement("grant select, insert, update on argus.matriculas to ?@localhost;");
+			stmt = con.prepareStatement("grant select, insert, update on argus.confirmarAlunos to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
@@ -486,12 +486,14 @@ public class Util {
 		}
 	    stmt.close();
 
-	    if(UtilDao.daoUsuarios.getUsuario(u.getCpf()) != null){
-	    	UtilDao.daoUsuarios.updateUsuario(u);
-	    }
-	    else{
-	    	UtilDao.daoUsuarios.addUsuario(u);
-	    	SysLog.addLog(SysLog.createUser(u.getCodPessoa()));
+	    if(MainTelaController.user != null){
+		    if(UtilDao.daoUsuarios.getUsuario(u.getCpf()) != null){
+		    	UtilDao.daoUsuarios.updateUsuario(u);
+		    }
+		    else{
+		    	UtilDao.daoUsuarios.addUsuario(u);
+		    	SysLog.addLog(SysLog.createUser(u.getCodPessoa()));
+		    }
 	    }
 
 	}

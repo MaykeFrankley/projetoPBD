@@ -75,7 +75,7 @@
                                           <Insets />
                                        </HBox.margin>
                                     </VBox>
-                                    <VBox fx:id="box_contatos" fillWidth="false" prefHeight="249.0" prefWidth="375.0" spacing="25.0">
+                                    <VBox fx:id="box_contatos" fillWidth="false" prefHeight="249.0" prefWidth="375.0" spacing="25.0" visible="false">
                                        <children>
                                           <JFXTextField fx:id="email" focusColor="#c3c3c3" labelFloat="true" maxWidth="397.0" minWidth="351.0" prefHeight="43.0" prefWidth="397.0" promptText="Email" style="-fx-font-size: 18;" unFocusColor="RED" />
                                           <JFXTextField fx:id="telefone" focusColor="#c3c3c3" labelFloat="true" maxWidth="427.0" minWidth="272.0" prefHeight="43.0" prefWidth="272.0" promptText="Telefone (Apenas Números)" style="-fx-font-size: 18;" unFocusColor="RED" />
@@ -349,6 +349,7 @@
                                     <Insets top="30.0" />
                                  </VBox.margin>
                               </HBox>
+                              <ComboBox fx:id="box_anoLetivo" prefHeight="41.0" prefWidth="134.0" promptText="Ano letivo" />
                               <JFXButton buttonType="RAISED" defaultButton="true" onAction="#confirmar" prefHeight="49.0" prefWidth="133.0" ripplerFill="WHITE" text="Confirmar">
                                  <font>
                                     <Font size="19.0" />

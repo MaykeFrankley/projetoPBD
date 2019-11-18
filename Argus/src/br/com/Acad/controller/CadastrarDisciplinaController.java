@@ -79,9 +79,6 @@ public class CadastrarDisciplinaController implements Initializable{
 	private TableColumn<CurriculoDisciplina, CurriculoDisciplinaID> col_serieDisciplina;
 
 	@FXML
-	private TableColumn<CurriculoDisciplina, CurriculoDisciplinaID> col_anoLetivo;
-
-	@FXML
 	private TableColumn<CurriculoDisciplina, Integer> col_cargaHoraria;
 
 	@FXML
@@ -104,9 +101,6 @@ public class CadastrarDisciplinaController implements Initializable{
 
 	@FXML
 	private JFXTextField cargaHoraria_add;
-
-	@FXML
-	private JFXTextField anoLetivo_add;
 
 	private boolean update;
 
@@ -142,12 +136,12 @@ public class CadastrarDisciplinaController implements Initializable{
 				ano = Integer.valueOf(m.group());
 			}
 			CurriculoDisciplina cd = new CurriculoDisciplina();
-			cd.setId(new CurriculoDisciplinaID(c.getCodCurriculo(), d.getCodDisciplina(), ano, Integer.valueOf(anoLetivo_add.getText())));
+			cd.setId(new CurriculoDisciplinaID(c.getCodCurriculo(), d.getCodDisciplina(), ano));
 			cd.setCargaHoraria(Integer.valueOf(cargaHoraria_add.getText()));
 			cd.setNomeCurriculo(c.getNome());
 			cd.setNomeDisciplina(d.getNome());
 			UtilDao.daoCurriculo.addDisciplinaToCurriculo(cd);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getCodCurriculo()+" e ano letivo: "+cd.getId().getAnoLetivo()));
+			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getCodCurriculo()));
 
 			cancelar(event);
 			oblist_disciplinasCur.clear();
@@ -310,7 +304,6 @@ public class CadastrarDisciplinaController implements Initializable{
 		col_codDisciplina.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_nomeDisciplina.setCellValueFactory(new PropertyValueFactory<>("nomeDisciplina"));
 		col_serieDisciplina.setCellValueFactory(new PropertyValueFactory<>("id"));
-		col_anoLetivo.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_cargaHoraria.setCellValueFactory(new PropertyValueFactory<>("cargaHoraria"));
 
 		col_codDisciplina.setCellFactory(column -> {
@@ -343,25 +336,6 @@ public class CadastrarDisciplinaController implements Initializable{
 						this.setText("");
 					}else{
 						this.setText(String.valueOf(item.getAno())+"ª ano");
-					}
-				}
-
-			};
-			return cell;
-
-		});
-
-		col_anoLetivo.setCellFactory(column -> {
-			final TableCell<CurriculoDisciplina, CurriculoDisciplinaID> cell = new TableCell<CurriculoDisciplina, CurriculoDisciplinaID>(){
-
-				@Override
-				protected void updateItem(CurriculoDisciplinaID item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if(empty){
-						this.setText("");
-					}else{
-						this.setText(String.valueOf(item.getAnoLetivo()));
 					}
 				}
 
@@ -416,14 +390,6 @@ public class CadastrarDisciplinaController implements Initializable{
 				(observable, old_value, new_value) -> {
 					if (!new_value.matches("\\d*")) {
 						cargaHoraria_add.setText(new_value.replaceAll("[^\\d]", ""));
-					}
-				}
-			);
-
-		anoLetivo_add.textProperty().addListener(
-				(observable, old_value, new_value) -> {
-					if (!new_value.matches("\\d*")) {
-						anoLetivo_add.setText(new_value.replaceAll("[^\\d]", ""));
 					}
 				}
 			);

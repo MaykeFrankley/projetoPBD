@@ -7,13 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class ViewMatricula {
+public class ViewconfirmarAlunos {
 
 	@Id
 	private int codAluno;
 
 	@Column
-	private int codTurma;
+	private String codTurma;
 
 	@Column
 	private String aluno;
@@ -33,7 +33,7 @@ public class ViewMatricula {
 	@Column
 	private String situacao;
 
-	public ViewMatricula() {
+	public ViewconfirmarAlunos() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -93,11 +93,11 @@ public class ViewMatricula {
 		this.situacao = situacao;
 	}
 
-	public int getCodTurma() {
+	public String getCodTurma() {
 		return codTurma;
 	}
 
-	public void setCodTurma(int codTurma) {
+	public void setCodTurma(String codTurma) {
 		this.codTurma = codTurma;
 	}
 

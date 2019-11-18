@@ -7,11 +7,11 @@ import javafx.collections.ObservableList;
 
 public interface IDaoTurmas {
 
-	public int addTurma(Turma turma);
+	public void addTurma(Turma turma);
 	public void updateTurma(Turma turma);
 	public Turma getTurma(int codTurma);
 	public void addAlunoTurma(AlunoTurma alunoturma);
-	public ObservableList<ViewAluno> getAlunos(int codTurma);
+	public ObservableList<ViewAluno> getAlunos(String codTurma, int anoLetivo);
 	public ObservableList<Turma> getAllTurmas();
 
 }

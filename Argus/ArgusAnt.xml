@@ -31,7 +31,6 @@
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/javassist.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jboss-archive-browsing.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jfoenix.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jfxswt.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jta.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/log4j-1.2.11.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/mysql-connector-java-8.0.16.jar"/>
@@ -44,6 +43,19 @@
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/protobuf-java-2.6.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/slf4j-api-1.7.25.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/zt-zip-1.12.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-lang3-3.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jasperreports-javaflow-6.10.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jasperreports-functions-6.10.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jasperreports-metadata-6.10.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-digester-2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-beanutils-1.9.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/commons-collections4-4.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/joda-time-2.10.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/net.tascalate.javaflow.api-2.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/json-simple-1.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/jfxswt.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/caelum-stella-boleto-2.1.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.buildfile}/Libs/scenicView.jar"/>
         </jar>
     </target>
 </project>

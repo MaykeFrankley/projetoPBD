@@ -50,6 +50,15 @@ public class Main extends Application{
 		primaryStage.show();
 
 		stage = primaryStage;
+//		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+//		stage.setX(primaryScreenBounds.getMinX());
+//		stage.setY(primaryScreenBounds.getMinY());
+//
+//		stage.setMaxWidth(primaryScreenBounds.getWidth());
+//		stage.setMinWidth(primaryScreenBounds.getWidth());
+//
+//		stage.setMaxHeight(primaryScreenBounds.getHeight());
+//		stage.setMinHeight(primaryScreenBounds.getHeight());
 
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		    @Override

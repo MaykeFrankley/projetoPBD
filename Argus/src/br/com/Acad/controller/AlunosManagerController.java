@@ -30,8 +30,9 @@ import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Matricula;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Turma;
+import br.com.Acad.model.TurmaID;
 import br.com.Acad.model.ViewAluno;
-import br.com.Acad.model.ViewMatricula;
+import br.com.Acad.model.ViewconfirmarAlunos;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.model.ViewTurma;
 import br.com.Acad.sql.ConnectionReserva;
@@ -40,6 +41,7 @@ import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -247,7 +249,7 @@ public class AlunosManagerController implements Initializable{
 	private TableView<ViewTurma> table_turmas;
 
 	@FXML
-	private TableColumn<ViewTurma, Integer> col_codTurma;
+	private TableColumn<ViewTurma, TurmaID> col_codTurma;
 
 	@FXML
 	private TableColumn<ViewTurma, String> col_curriculo;
@@ -256,10 +258,10 @@ public class AlunosManagerController implements Initializable{
 	private TableColumn<ViewTurma, String> col_ano;
 
 	@FXML
-	private TableColumn<ViewTurma, Integer> col_anoLetivo;
+	private TableColumn<ViewTurma, TurmaID> col_anoLetivo;
 
 	@FXML
-	private TableView<ViewAluno> table_pessoas2;
+	private TableView<ViewAluno> table_alunos;
 
 	@FXML
 	private TableColumn<ViewAluno, Integer> col_codPessoa2;
@@ -331,34 +333,34 @@ public class AlunosManagerController implements Initializable{
 	private JFXButton btn_finalizar;
 
 	@FXML
-    private ComboBox<String> unidadeBox;
+	private ComboBox<String> unidadeBox;
 
 	@FXML
-    private Tab matriculasTab;
+	private Tab matriculasTab;
 
-    @FXML
-    private TableView<ViewMatricula> table_matriculas;
+	@FXML
+	private TableView<ViewconfirmarAlunos> table_matriculas;
 
-    @FXML
-    private TableColumn<ViewMatricula, String> col_codAluno_mat;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, String> col_codAluno_mat;
 
-    @FXML
-    private TableColumn<ViewMatricula, String> col_nomeAluno_mat;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, String> col_nomeAluno_mat;
 
-    @FXML
-    private TableColumn<ViewMatricula, String> col_curriculo_mat;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, String> col_curriculo_mat;
 
-    @FXML
-    private TableColumn<ViewMatricula, String> col_ano_mat;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, String> col_ano_mat;
 
-    @FXML
-    private TableColumn<ViewMatricula, Date> col_dtMatricula;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, Date> col_dtMatricula;
 
-    @FXML
-    private TableColumn<ViewMatricula, String> col_anoLetivo_mat;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, String> col_anoLetivo_mat;
 
-    @FXML
-    private TableColumn<ViewMatricula, String> col_situacao_mat;
+	@FXML
+	private TableColumn<ViewconfirmarAlunos, String> col_situacao_mat;
 
 	private Aluno oldAluno;
 
@@ -380,7 +382,7 @@ public class AlunosManagerController implements Initializable{
 
 	private ObservableList<ViewTurma> oblist_turmas= FXCollections.observableArrayList();
 
-	private ObservableList<ViewMatricula> oblist_matriculas = FXCollections.observableArrayList();
+	private ObservableList<ViewconfirmarAlunos> oblist_matriculas = FXCollections.observableArrayList();
 
 	private AlunoTurma alunoAprovado;
 
@@ -470,7 +472,74 @@ public class AlunosManagerController implements Initializable{
 	}
 
 	@FXML
+	void askFinalizar(ActionEvent event){
+		JFXButton yes = new JFXButton("Confirmar");
+		yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
+			finalizarAluno(event);
+			Util.contentPane.getChildren().get(0).setEffect(null);
+		});
+		JFXButton cancel = new JFXButton("Cancelar");
+		cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even2) ->{
+			Util.contentPane.getChildren().get(0).setEffect(null);
+		});
+
+		Util.confirmation(Arrays.asList(yes, cancel),"Deseja finalizar as notas do aluno?\nNão será possível edita-las após confirmar.");
+	}
+
 	void finalizarAluno(ActionEvent event) {
+		///Determinar situacao do aluno
+		unidadeBox.getSelectionModel().selectFirst();
+
+		if(table_turmas.getSelectionModel().isEmpty()){
+			return;
+		}
+
+		ViewTurma selected = table_turmas.getSelectionModel().getSelectedItem();
+
+		boolean aprovadoCurriculo = false;
+		boolean reprovadoCurriculo = false;
+		for (AlunoMedia media : UtilDao.daoAlunos.getMedias(Integer.valueOf(codAluno.getText()), selected.getAno(), selected.getId().getAnoLetivo())) {
+			if(media.getSituacao().equals("AP") || media.getSituacao().equals("AM")){
+				aprovadoCurriculo = true;
+			}
+			else{
+				aprovadoCurriculo = false;
+			}
+
+			if(media.getSituacao().equals("RP")){
+				aprovadoCurriculo = false;
+				reprovadoCurriculo = true;
+				break;
+			}
+		}
+
+		if(aprovadoCurriculo){
+			String codTurma = table_turmas.getSelectionModel().getSelectedItem().getId().getCodTurma();
+			if(codTurma != null){
+				btn_finalizar.setVisible(true);
+				AlunoTurma at = UtilDao.daoTurmas.getAlunoTurma(new AlunoTurmaID(Integer.valueOf(codAluno.getText()), codTurma, selected.getId().getAnoLetivo()));
+				at.setSituacao("Aprovado");
+				alunoAprovado = at;
+				alunoReprovado = null;
+			}
+		}
+		else if(reprovadoCurriculo){
+			String codTurma = table_turmas.getSelectionModel().getSelectedItem().getId().getCodTurma();
+			if(codTurma != null){
+				AlunoTurma at = new AlunoTurma();
+				at.setId(new AlunoTurmaID(Integer.valueOf(codAluno.getText()), codTurma, selected.getId().getAnoLetivo()));
+				at.setSituacao("Reprovado");
+				alunoAprovado = null;
+				alunoReprovado = at;
+			}
+		}
+
+		table_notas.getItems().clear();
+		table_alunos.getSelectionModel().clearSelection();
+		codAluno.clear();naturalidadeAluno.clear();nomeAluno.clear();dt_aluno.clear();statusAluno.clear();
+
+		//////////////////////////////////////////////////////////////////////
+
 		unidadeBox.getItems().clear();
 		if(alunoAprovado != null){
 			UtilDao.daoTurmas.updateAlunoTurma(alunoAprovado);
@@ -483,7 +552,7 @@ public class AlunosManagerController implements Initializable{
 			PreparedStatement stmt;
 			try {
 				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ?;");
-				stmt.setInt(1, alunoAprovado.getId().getCodTurma());
+				stmt.setString(1, alunoAprovado.getId().getCodTurma());
 				ResultSet getTurma = stmt.executeQuery();
 				if(getTurma.next()){
 					codCurriculo = getTurma.getString("codCurriculo");
@@ -491,28 +560,28 @@ public class AlunosManagerController implements Initializable{
 					ano = getTurma.getInt("ano");
 				}
 
-				stmt = con.prepareStatement("Select codTurma FROM Turmas WHERE codCurriculo = ? AND anoLetivo = ? AND ano = ?");
+				stmt = con.prepareStatement("Select codTurma, anoLetivo FROM Turmas WHERE codCurriculo = ? AND anoLetivo = ? AND ano = ?");
 				stmt.setString(1, codCurriculo);
 				stmt.setInt(2, anoLetivo+1);
 				stmt.setInt(3, ano+1);
 
 				ResultSet checkNovaTurma = stmt.executeQuery();
 				if(!checkNovaTurma.next()){
-					stmt = con.prepareStatement("SELECT DISTINCT `Curriculo-disciplina`.ano FROM "
-							+ "`Curriculo-disciplina` WHERE `Curriculo-disciplina`.codCurriculo = ? ORDER BY ano DESC LIMIT 1");
+					stmt = con.prepareStatement("SELECT MAX(`Curriculo-disciplina`.ano) as maxAno FROM "
+							+ "`Curriculo-disciplina` WHERE `Curriculo-disciplina`.codCurriculo = ?;");
 					stmt.setString(1, codCurriculo);
 
 					ResultSet rs = stmt.executeQuery();
 					if(rs.next()){
-						if(rs.getInt("ano") >= ano+1){
+						if(rs.getInt("maxAno") >= ano+1){
 							Turma novaTurma = new Turma();
+							novaTurma.setId(new TurmaID(codCurriculo+"-A", anoLetivo+1));
 							novaTurma.setCodCurriculo(codCurriculo);
-							novaTurma.setAnoLetivo(anoLetivo+1);
 							novaTurma.setAno(ano+1);
-							int codNovaTurma = UtilDao.daoTurmas.addTurma(novaTurma);
+							UtilDao.daoTurmas.addTurma(novaTurma);
 
 							AlunoTurma aluno = new AlunoTurma();
-							aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), codNovaTurma));
+							aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
 							aluno.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(aluno);
 
@@ -528,6 +597,7 @@ public class AlunosManagerController implements Initializable{
 
 							Util.Alert("O Aluno foi aprovado nas disciplinas e foi cadastrado em uma nova turma!"
 									+"\nÉ nescessário confirmar a matrícula do aluno!");
+
 						}
 						else{
 							Util.Alert("O Aluno foi aprovado no currículo!");
@@ -536,7 +606,7 @@ public class AlunosManagerController implements Initializable{
 
 				}else{
 					AlunoTurma aluno = new AlunoTurma();
-					aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), checkNovaTurma.getInt("codTurma")));
+					aluno.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), checkNovaTurma.getString("codTurma"), checkNovaTurma.getInt("anoLetivo")));
 					aluno.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
 					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
@@ -555,6 +625,11 @@ public class AlunosManagerController implements Initializable{
 							+"\nÉ nescessário confirmar a matrícula do aluno!");
 				}
 
+				stmt = con.prepareStatement("UPDATE `argus`.`notas` SET `situacao` = 'Finalizado' WHERE codAluno = ? AND anoLetivo = ? AND serie = ?");
+				stmt.setInt(1, alunoAprovado.getId().getCodAluno());
+				stmt.setInt(2, anoLetivo);
+				stmt.setInt(3, ano);
+				stmt.executeUpdate();
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -572,7 +647,7 @@ public class AlunosManagerController implements Initializable{
 			PreparedStatement stmt;
 			try {
 				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ?;");
-				stmt.setInt(1, alunoReprovado.getId().getCodTurma());
+				stmt.setString(1, alunoReprovado.getId().getCodTurma());
 				ResultSet getTurma = stmt.executeQuery();
 				if(getTurma.next()){
 					codCurriculo = getTurma.getString("codCurriculo");
@@ -580,7 +655,7 @@ public class AlunosManagerController implements Initializable{
 					ano = getTurma.getInt("ano");
 				}
 
-				stmt = con.prepareStatement("Select codTurma FROM Turmas WHERE codCurriculo = ? AND anoLetivo = ? AND ano = ?");
+				stmt = con.prepareStatement("Select codTurma, anoLetivo FROM Turmas WHERE codCurriculo = ? AND anoLetivo = ? AND ano = ?");
 				stmt.setString(1, codCurriculo);
 				stmt.setInt(2, anoLetivo+1);
 				stmt.setInt(3, ano);
@@ -589,14 +664,14 @@ public class AlunosManagerController implements Initializable{
 				if(!checkNovaTurma.next()){
 
 					Turma novaTurma = new Turma();
+					novaTurma.setId(new TurmaID(codCurriculo+"-A", anoLetivo+1));
 					novaTurma.setCodCurriculo(codCurriculo);
-					novaTurma.setAnoLetivo(anoLetivo+1);
-					novaTurma.setAno(ano);
-					int codNovaTurma = UtilDao.daoTurmas.addTurma(novaTurma);
-					SysLog.addLog(SysLog.message("gerou uma nova turma de cod:"+codNovaTurma));
+					novaTurma.setAno(ano+1);
+					UtilDao.daoTurmas.addTurma(novaTurma);
+					SysLog.addLog(SysLog.message("gerou uma nova turma de cod:"+novaTurma.getId().getCodTurma()));
 
 					AlunoTurma aluno = new AlunoTurma();
-					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), codNovaTurma));
+					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
 					aluno.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
 					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
@@ -606,13 +681,19 @@ public class AlunosManagerController implements Initializable{
 
 				}else{
 					AlunoTurma aluno = new AlunoTurma();
-					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), checkNovaTurma.getInt("codTurma")));
+					aluno.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), checkNovaTurma.getString("codTurma"), checkNovaTurma.getInt("anoLetivo")));
 					aluno.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(aluno);
 					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
 
 					Util.Alert("O Aluno foi aprovado no currículo e foi cadastrado em uma nova turma!");
 				}
+
+				stmt = con.prepareStatement("UPDATE `argus`.`notas` SET `situacao` = 'Finalizado' WHERE codAluno = ? AND anoLetivo = ? AND ano = ?");
+				stmt.setInt(1, alunoReprovado.getId().getCodAluno());
+				stmt.setInt(2, anoLetivo);
+				stmt.setInt(3, ano);
+				stmt.executeUpdate();
 
 
 			} catch (SQLException e) {
@@ -637,13 +718,13 @@ public class AlunosManagerController implements Initializable{
 					return true;
 				}
 				String lowerCaseFilter = newValue.toLowerCase();
-				if(String.valueOf(turma.getCodTurma()).contains(lowerCaseFilter)){
+				if(turma.getId().getCodTurma().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
 				else if(String.valueOf(turma.getAno()).contains(lowerCaseFilter)){
 					return true;
 				}
-				else if(String.valueOf(turma.getAnoLetivo()).contains(lowerCaseFilter)){
+				else if(String.valueOf(turma.getId().getAnoLetivo()).contains(lowerCaseFilter)){
 					return true;
 				}
 				else if(turma.getNome().toLowerCase().contains(lowerCaseFilter)){
@@ -733,8 +814,8 @@ public class AlunosManagerController implements Initializable{
 			});
 		});
 		SortedList<ViewAluno> sortedData = new SortedList<>(filteredData3);
-		sortedData.comparatorProperty().bind(table_pessoas2.comparatorProperty());
-		table_pessoas2.setItems(sortedData);
+		sortedData.comparatorProperty().bind(table_alunos.comparatorProperty());
+		table_alunos.setItems(sortedData);
 	}
 
 	@FXML
@@ -800,13 +881,13 @@ public class AlunosManagerController implements Initializable{
 	@FXML
 	void setUnidade(ActionEvent event) {
 		int ano = table_turmas.getSelectionModel().getSelectedItem().getAno();
-		int anoLetivo = table_turmas.getSelectionModel().getSelectedItem().getAnoLetivo();
+		int anoLetivo = table_turmas.getSelectionModel().getSelectedItem().getId().getAnoLetivo();
 		String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
-		ViewAluno selected = table_pessoas2.getSelectionModel().getSelectedItem();
+		ViewAluno selected = table_alunos.getSelectionModel().getSelectedItem();
 
-		if(selected != null && ano > 0){
-
+		if(selected != null && ano > 0 && !unidadeBox.getSelectionModel().isEmpty()){
 			ObservableList<AlunoNota> oblist = FXCollections.observableArrayList();
+
 			if(tipoUnidade.equals("Bimestral")){
 				if(unidadeBox.getSelectionModel().getSelectedItem() != null && !unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
 					int valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
@@ -816,7 +897,6 @@ public class AlunosManagerController implements Initializable{
 					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, 5);
 					for (int i = 0; i < oblist.size(); i++) {
 						AlunoNota alunoNota = oblist.get(i);
-
 						AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
 								alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
 						if(media != null){
@@ -825,15 +905,34 @@ public class AlunosManagerController implements Initializable{
 							}
 						}
 					}
+
+					if(oblist.isEmpty()){
+						unidadeBox.getItems().remove("Final");
+					}
 				}
 			}
-			else{
+			else{ //if Trimestral
 				if(!unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
 					int valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
 					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, valorUnidade);
 				}
 				else{
 					oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), ano, anoLetivo, 4);
+
+					for (int i = 0; i < oblist.size(); i++) {
+						AlunoNota alunoNota = oblist.get(i);
+						AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
+								alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
+						if(media != null){
+							if(media.getSituacao().equals("AM")){
+								oblist.remove(alunoNota);i--;
+							}
+						}
+					}
+
+					if(oblist.isEmpty()){
+						unidadeBox.getItems().remove("Final");
+					}
 				}
 
 			}
@@ -841,7 +940,7 @@ public class AlunosManagerController implements Initializable{
 			table_notas.setItems(oblist);
 
 			tabPane.getSelectionModel().select(notasTab);
-			btn_finalizar.setVisible(false);
+
 		}
 	}
 
@@ -849,7 +948,8 @@ public class AlunosManagerController implements Initializable{
 	void selecionarAluno(ActionEvent event) {
 
 		String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
-		ViewAluno selected = table_pessoas2.getSelectionModel().getSelectedItem();
+		ViewAluno selected = table_alunos.getSelectionModel().getSelectedItem();
+		ViewTurma turma = table_turmas.getSelectionModel().getSelectedItem();
 
 		if(selected != null){
 			table_notas.getItems().clear();
@@ -858,18 +958,102 @@ public class AlunosManagerController implements Initializable{
 			dt_aluno.setText(format.format(selected.getDt_nascimento()));naturalidadeAluno.setText(selected.getNaturalidade());
 			statusAluno.setText(selected.getStatus());
 
+			boolean nextUnidade;
+			boolean showFinalizar = true;
 			if(tipoUnidade.equals("Bimestral")){
+				unidadeBox.getSelectionModel().clearSelection();
 				unidadeBox.getItems().clear();
 				unidadeBox.setPromptText("Bimestres");
-				unidadeBox.getItems().addAll("1º Bimestre", "2º Bimestre", "3º Bimestre", "4º Bimestre", "Final");
+				unidadeBox.getItems().add("1º Bimestre");
+				for(int i = 2; i < 6; i++){
+					nextUnidade = true;
+					ObservableList<AlunoNota> oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), turma.getAno(), turma.getId().getAnoLetivo(), i-1);
+					for (AlunoNota alunoNota : oblist) {
+						if(alunoNota.getSituacao().equals("Pendente")){
+							nextUnidade = false;
+							showFinalizar = false;
+							break;
+						}
+					}
+
+					if(nextUnidade){
+						if(i < 5 && i > 1){
+							unidadeBox.getItems().add(i+"º Bimestre");
+						}
+						else if(i == 5){
+							unidadeBox.getItems().add("Final");
+							oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), turma.getAno(), turma.getId().getAnoLetivo(), 5);
+							for (int j = 0; j < oblist.size(); j++) {
+								AlunoNota alunoNota = oblist.get(j);
+								AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
+										alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
+								if(media != null){
+									if(media.getSituacao().equals("AM")){
+										oblist.remove(alunoNota);j--;
+									}
+								}
+							}
+
+							if(oblist.isEmpty()){
+								unidadeBox.getItems().remove("Final");
+							}
+						}
+					}
+				}
+
 			}
 			else{
 				unidadeBox.getItems().clear();
 				unidadeBox.setPromptText("Trimestres");
-				unidadeBox.getItems().addAll("1º Trimestre", "2º Trimestre", "3º Trimestre", "Final");
+				unidadeBox.getItems().add("1º Trimestre");
+				for(int i = 1; i < 5; i++){
+					nextUnidade = true;
+					ObservableList<AlunoNota> oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), turma.getAno(), turma.getId().getAnoLetivo(), i-1);
+					for (AlunoNota alunoNota : oblist) {
+						if(alunoNota.getSituacao().equals("Pendente")){
+							nextUnidade = false;
+							showFinalizar = false;
+							break;
+						}
+					}
+
+					if(nextUnidade){
+						if(i < 4 && i > 1){
+							unidadeBox.getItems().add(i+"º Trimestre");
+						}
+						else if(i == 4){
+							unidadeBox.getItems().add("Final");
+							oblist = UtilDao.daoAlunos.getNotas(selected.getCodPessoa(), turma.getAno(), turma.getId().getAnoLetivo(), 5);
+							for (int j = 0; j < oblist.size(); j++) {
+								AlunoNota alunoNota = oblist.get(j);
+								AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
+										alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
+								if(media != null){
+									if(media.getSituacao().equals("AM")){
+										oblist.remove(alunoNota);j--;
+									}
+								}
+							}
+
+							if(oblist.isEmpty()){
+								unidadeBox.getItems().remove("Final");
+							}
+						}
+					}
+				}
 			}
-			tabPane.getSelectionModel().select(notasTab);
+
 			btn_finalizar.setVisible(false);
+
+			if(showFinalizar){
+				Platform.runLater(()-> {
+					btn_finalizar.setVisible(true);
+				});
+
+			}
+
+			tabPane.getSelectionModel().select(notasTab);
+
 		}
 	}
 
@@ -887,62 +1071,99 @@ public class AlunosManagerController implements Initializable{
 				return;
 			}
 
+			selected.setSituacao("Atualizado");
+			table_notas.getItems().remove(selected);
+			table_notas.getItems().add(selected);
 			UtilDao.daoAlunos.setAlunoNota(selected);
-			table_notas.getItems().clear();
-			int valorUnidade = 0;
-			if(!unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
-				valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
-				table_notas.setItems(UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), valorUnidade));
-			}
 
 			SysLog.addLog(SysLog.message("Alterou a nota do aluno cod:"+selected.getId().getCodAluno()+" para:"+selected.getMedia()+" disciplina:"+selected.getNomeDisciplina()));
 			Util.Alert("Média atualizada!");
 
-			boolean aprovadoCurriculo = false;
-			boolean reprovadoCurriculo = false;
-			for (AlunoMedia media : UtilDao.daoAlunos.getMedias(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo())) {
-				if(media.getSituacao().equals("AP") || media.getSituacao().equals("AM")){
-					aprovadoCurriculo = true;
-				}
-				else{
-					aprovadoCurriculo = false;
-				}
+			int valorUnidade = 0;
+			if(!unidadeBox.getSelectionModel().getSelectedItem().equals("Final")){
+				valorUnidade = Integer.valueOf(unidadeBox.getSelectionModel().getSelectedItem().substring(0, 1));
+			}
 
-				if(media.getSituacao().equals("RP")){
-					aprovadoCurriculo = false;
-					reprovadoCurriculo = true;
+			boolean nextUnidade = true;
+			for (AlunoNota nota : table_notas.getItems()) {
+				if(nota.getSituacao().equals("Pendente")){
+					nextUnidade = false;
 					break;
 				}
 			}
 
-			if(aprovadoCurriculo){
-				int codTurma = table_turmas.getSelectionModel().getSelectedItem().getCodTurma();
-				if(codTurma > 0){
-					btn_finalizar.setVisible(true);
-					AlunoTurma at = UtilDao.daoTurmas.getAlunoTurma(new AlunoTurmaID(Integer.valueOf(codAluno.getText()), codTurma));
-					at.setSituacao("Aprovado");
-					alunoAprovado = at;
-					alunoReprovado = null;
-				}
-			}
-			else if(reprovadoCurriculo){
-				int codTurma = table_turmas.getSelectionModel().getSelectedItem().getCodTurma();
-				if(codTurma > 0){
-					AlunoTurma at = new AlunoTurma();
-					at.setId(new AlunoTurmaID(Integer.valueOf(codAluno.getText()), codTurma));
-					at.setSituacao("Reprovado");
-					alunoAprovado = null;
-					alunoReprovado = at;
+			if(nextUnidade){
+				String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
+				if(tipoUnidade.equals("Bimestral")){
+					if(valorUnidade == 4){
+						unidadeBox.getItems().add("Final");
+						ObservableList<AlunoNota> tempOb = UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), 5);
+						for (int j = 0; j < tempOb.size(); j++) {
+							AlunoNota alunoNota = tempOb.get(j);
+							AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
+									alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
+							if(media != null){
+								if(media.getSituacao().equals("AM")){
+									tempOb.remove(alunoNota);j--;
+								}
+							}
+						}
 
-					for(AlunoNota nota: table_notas.getItems()){
-						if(nota.getSituacao().equals("Pendente")){
-							btn_finalizar.setVisible(false);
-							break;
-						}else{
-							btn_finalizar.setVisible(true);
+						if(tempOb.isEmpty()){
+							unidadeBox.getItems().remove("Final");
+						}
+					}
+					else if(valorUnidade > 0){
+						if(!unidadeBox.getItems().contains(valorUnidade+1+"º Bimestre")){
+							unidadeBox.getItems().add(valorUnidade+1+"º Bimestre");
 						}
 					}
 				}
+				else{
+					if(valorUnidade == 3){
+						unidadeBox.getItems().add("Final");
+						ObservableList<AlunoNota> tempOb = UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), 4);
+						for (int j = 0; j < tempOb.size(); j++) {
+							AlunoNota alunoNota = tempOb.get(j);
+							AlunoMedia media = UtilDao.daoAlunos.getAlunoMedia(new AlunoMediaID(alunoNota.getId().getCodAluno(), alunoNota.getId().getCodDisciplina(),
+									alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
+							if(media != null){
+								if(media.getSituacao().equals("AM")){
+									tempOb.remove(alunoNota);j--;
+								}
+							}
+						}
+
+						if(tempOb.isEmpty()){
+							unidadeBox.getItems().remove("Final");
+						}
+					}
+					else if(valorUnidade > 0){
+						if(!unidadeBox.getItems().contains(valorUnidade+1+"º Trimestre")){
+							unidadeBox.getItems().add(valorUnidade+1+"º Trimestre");
+						}
+					}
+
+				}
+			}
+
+			boolean showFinalizar = true;
+			for(int i = 1; i < 5; i++){
+				nextUnidade = true;
+				ObservableList<AlunoNota> oblist = UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), i);
+				for (AlunoNota alunoNota : oblist) {
+					if(alunoNota.getSituacao().equals("Pendente")){
+						showFinalizar = false;
+						break;
+					}
+				}
+			}
+
+			btn_finalizar.setVisible(false);
+			if(showFinalizar){
+				Platform.runLater(() -> {
+					btn_finalizar.setVisible(true);
+				});
 			}
 
 		}
@@ -954,11 +1175,11 @@ public class AlunosManagerController implements Initializable{
 
 	@FXML
 	void confirmar_matricula(ActionEvent event) {
-		ViewMatricula m = table_matriculas.getSelectionModel().getSelectedItem();
+		ViewconfirmarAlunos m = table_matriculas.getSelectionModel().getSelectedItem();
 		if(m != null){
 			JFXButton yes = new JFXButton("Confirmar");
 			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
-				Matricula matricula = UtilDao.daoAlunos.getMatricula(new AlunoTurmaID(m.getCodAluno(), m.getCodTurma()));
+				Matricula matricula = UtilDao.daoAlunos.getMatricula(new AlunoTurmaID(m.getCodAluno(), m.getCodTurma(), m.getAnoLetivo()));
 				matricula.setSituacao("Confirmada");
 				UtilDao.daoAlunos.updateMatricula(matricula);
 				initTables();
@@ -1002,7 +1223,7 @@ public class AlunosManagerController implements Initializable{
 		col_dtMatricula.setCellValueFactory(new PropertyValueFactory<>("dt_matricula"));
 
 		col_dtMatricula.setCellFactory(column -> {
-			TableCell<ViewMatricula, Date> cell = new TableCell<ViewMatricula, Date>() {
+			TableCell<ViewconfirmarAlunos, Date> cell = new TableCell<ViewconfirmarAlunos, Date>() {
 				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
 				@Override
@@ -1116,6 +1337,14 @@ public class AlunosManagerController implements Initializable{
 		col_nomePai2.setCellValueFactory(new PropertyValueFactory<>("nomePai"));
 		col_situacaoAluno.setCellValueFactory(new PropertyValueFactory<>("situacao"));
 
+		table_alunos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if(newSelection != null){
+				if(table_turmas.getSelectionModel().isEmpty()){
+					table_alunos.getItems().clear();
+				}
+			}
+		});
+
 
 		col_dt_nascimento2.setCellFactory(column -> {
 			TableCell<ViewAluno, Date> cell = new TableCell<ViewAluno, Date>() {
@@ -1135,22 +1364,62 @@ public class AlunosManagerController implements Initializable{
 			return cell;
 		});
 
-		col_codTurma.setCellValueFactory(new PropertyValueFactory<>("codTurma"));
+		col_codTurma.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_curriculo.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		col_ano.setCellValueFactory(new PropertyValueFactory<>("ano"));
-		col_anoLetivo.setCellValueFactory(new PropertyValueFactory<>("anoLetivo"));
+		col_anoLetivo.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+		col_codTurma.setCellFactory(column -> {
+			final TableCell<ViewTurma, TurmaID> cell = new TableCell<ViewTurma, TurmaID>(){
+				@Override
+				protected void updateItem(TurmaID item, boolean empty){
+					super.updateItem(item, empty);
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(item.getCodTurma());
+					}
+
+				}
+
+			};return cell;
+		});
+
+		col_anoLetivo.setCellFactory(column -> {
+			final TableCell<ViewTurma, TurmaID> cell = new TableCell<ViewTurma, TurmaID>(){
+				@Override
+				protected void updateItem(TurmaID item, boolean empty){
+					super.updateItem(item, empty);
+					if(empty){
+						this.setText("");
+					}else{
+						this.setText(String.valueOf(item.getAnoLetivo()));
+					}
+
+				}
+
+			};return cell;
+		});
 
 		table_turmas.setItems(oblist_turmas);
 
 		table_turmas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection)->{
 			if(newSelection != null){
 				ViewTurma selected = table_turmas.getSelectionModel().getSelectedItem();
-				ObservableList<ViewAluno> alunos = UtilDao.daoTurmas.getAlunos(selected.getCodTurma());
-				for (int i = 0; i < alunos.size(); i++) {
-					ViewAluno aluno = alunos.get(i);
-					aluno.setSituacao(UtilDao.daoTurmas.getAlunoTurma(new AlunoTurmaID(aluno.getCodPessoa(), selected.getCodTurma())).getSituacao());
+				ObservableList<ViewAluno> alunos = UtilDao.daoTurmas.getAlunos(selected.getId().getCodTurma(), selected.getId().getAnoLetivo());
+
+				ObservableList<ViewconfirmarAlunos> mts = UtilDao.daoAlunos.getMatriculasView();
+				for (ViewconfirmarAlunos m : mts) {
+					if(m.getSerie() == selected.getAno() && m.getSituacao().equals("Pendente")){
+						for (int i = 0; i < alunos.size(); i++) {
+							ViewAluno aluno = alunos.get(i);
+							if(m.getCodAluno() == aluno.getCodPessoa()){
+								alunos.remove(aluno);i--;
+							}
+						}
+					}
 				}
-				table_pessoas2.setItems(alunos);
+				table_alunos.setItems(alunos);
 				filteredData3 = new FilteredList<>(alunos);
 			}
 		});
@@ -1205,10 +1474,25 @@ public class AlunosManagerController implements Initializable{
 		table_notas.setEditable(true);
 		col_media.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()));
 		col_media.setOnEditCommit(e -> {
+			if(e.getTableView().getItems().get(e.getTablePosition().getRow()).getSituacao().equals("Finalizado")){
+				Util.Alert("Não é possível atualizar notas finalizadas!");
+				e.consume();return;
+			}
+			if(unidadeBox.getSelectionModel().isEmpty()){
+				Util.Alert("Selecione uma unidade!");
+				e.consume();return;
+			}
 			nota_txt.setText(String.valueOf(e.getNewValue()));
 			nota_txt.getText().replaceAll(",", ".");
-			e.getTableView().getItems().get(e.getTablePosition().getRow()).setMedia(e.getNewValue());
-			alterarNota(new ActionEvent());
+			if(e.getNewValue() < 0){
+				e.getTableView().getItems().get(e.getTablePosition().getRow()).setMedia(0);
+				alterarNota(new ActionEvent());
+			}
+			else{
+				e.getTableView().getItems().get(e.getTablePosition().getRow()).setMedia(e.getNewValue());
+				alterarNota(new ActionEvent());
+			}
+
 		});
 	}
 

@@ -334,7 +334,7 @@
                                  </children>
                               </HBox>
                               <JFXTextField fx:id="campoPesquisa3" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchAlunoTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar alunos" />
-                              <TableView fx:id="table_pessoas2" editable="true" minWidth="-Infinity" prefHeight="447.0" prefWidth="1306.0" tableMenuButtonVisible="true">
+                              <TableView fx:id="table_alunos" editable="true" minWidth="-Infinity" prefHeight="447.0" prefWidth="1306.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa2" minWidth="50.0" text="Cod" />
                                     <TableColumn fx:id="col_nome2" minWidth="300.0" prefWidth="302.9999694824219" text="Nome" />
@@ -410,7 +410,7 @@
                                     <HBox alignment="TOP_CENTER" fillHeight="false" minWidth="-Infinity" prefHeight="49.0" prefWidth="610.0" spacing="80.0">
                                        <children>
                                           <JFXButton onAction="#alterarNota" text="Alterar" />
-                                          <JFXButton fx:id="btn_finalizar" onAction="#finalizarAluno" text="Finalizar" visible="false" />
+                                          <JFXButton fx:id="btn_finalizar" onAction="#askFinalizar" text="Finalizar" visible="false" />
                                        </children>
                                     </HBox>
                                  </children>

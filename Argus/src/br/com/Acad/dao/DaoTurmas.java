@@ -13,9 +13,7 @@ import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.ViewAluno;
-import br.com.Acad.model.ViewMatricula;
 import br.com.Acad.model.ViewTurma;
-import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -28,17 +26,15 @@ public class DaoTurmas implements IDaoTurmas{
 	}
 
 	@Override
-	public int addTurma(Turma turma) {
+	public void addTurma(Turma turma) {
 		try {
 			createEM();
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
 			entityMn.persist(turma);
-			int cod = turma.getCodTurma();
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			return cod;
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 			new HandleSQLException(e);
@@ -46,7 +42,6 @@ public class DaoTurmas implements IDaoTurmas{
 		} finally {
 			entityMn.close();
 		}
-		return 0;
 
 	}
 
@@ -126,29 +121,17 @@ public class DaoTurmas implements IDaoTurmas{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ObservableList<ViewAluno> getAlunos(int codTurma) {
+	public ObservableList<ViewAluno> getAlunos(String codTurma, int anoLetivo) {
 		try {
 			createEM();
 
-			List<ViewAluno> list = entityMn.createNativeQuery("CALL getAlunos(:cod);", ViewAluno.class).setParameter("cod", codTurma).getResultList();
+			List<ViewAluno> list = entityMn.createNativeQuery("CALL getAlunos(:t, :a);", ViewAluno.class).setParameter("t", codTurma).setParameter("a", anoLetivo).getResultList();
 			ObservableList<ViewAluno> oblist = FXCollections.observableList(list);
 			if(!MainTelaController.user.getTipo().equals("Admin")){
 				for (int i = 0; i < oblist.size(); i++) {
 					ViewAluno aluno = oblist.get(i);
 					if(aluno.getStatus().equals("Inativo")){
 						oblist.remove(aluno);i--;
-					}
-				}
-			}
-
-			ObservableList<ViewMatricula> mts = UtilDao.daoAlunos.getMatriculasView();
-			for (ViewMatricula m : mts) {
-				if(m.getSituacao().equals("Pendente")){
-					for (int i = 0; i < oblist.size(); i++) {
-						ViewAluno aluno = oblist.get(i);
-						if(m.getCodAluno() == aluno.getCodPessoa()){
-							oblist.remove(aluno);i--;
-						}
 					}
 				}
 			}

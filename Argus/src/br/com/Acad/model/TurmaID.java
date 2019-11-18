@@ -8,10 +8,7 @@ import javax.persistence.Embeddable;
 
 @SuppressWarnings("serial")
 @Embeddable
-public class AlunoTurmaID implements Serializable{
-
-	@Column
-	private int codAluno;
+public class TurmaID implements Serializable{
 
 	@Column
 	private String codTurma;
@@ -19,18 +16,13 @@ public class AlunoTurmaID implements Serializable{
 	@Column
 	private int anoLetivo;
 
-	public AlunoTurmaID() {
+	public TurmaID() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlunoTurmaID(int codAluno, String codTurma, int anoLetivo) {
-		this.codAluno = codAluno;
+	public TurmaID(String codTurma, int anoLetivo) {
 		this.codTurma = codTurma;
 		this.anoLetivo = anoLetivo;
-	}
-
-	public int getCodAluno() {
-		return codAluno;
 	}
 
 	public String getCodTurma() {
@@ -44,15 +36,14 @@ public class AlunoTurmaID implements Serializable{
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
-		if(!(obj instanceof AlunoTurmaID))return false;
-		AlunoTurmaID that = (AlunoTurmaID) obj;
-		return Objects.equals(getCodAluno(), that.getCodAluno()) && Objects.equals(getCodTurma(), that.getCodTurma()) &&
-				Objects.equals(getAnoLetivo(), that.getAnoLetivo());
+		if(!(obj instanceof TurmaID)) return false;
+		TurmaID that = (TurmaID) obj;
+		return Objects.equals(getCodTurma(), that.getCodTurma()) && Objects.equals(getAnoLetivo(), that.getAnoLetivo());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getCodAluno(), getCodTurma(), getAnoLetivo());
+		return Objects.hash(getAnoLetivo(), getCodTurma());
 	}
 
 }

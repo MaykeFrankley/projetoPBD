@@ -169,7 +169,7 @@ public class HistoricoEscolarController implements Initializable{
 			param.put("naturalidade", aluno.getNaturalidade());param.put("nomeMae", aluno.getNomeMae());
 			param.put("nomePai", aluno.getNomePai());param.put("ufAluno", UtilDao.daoEnderecos.getEndereco(aluno.getCodPessoa()).getEstado());
 			param.put("codAluno", aluno.getCodPessoa());param.put("nomeCurriculo", curriculo.getNome());
-			Image img = ImageIO.read(new File(getClass().getResource("/images/argus_logo_transparent.png").getFile()));
+			Image img = ImageIO.read(getClass().getResourceAsStream("/images/argus_logo_transparent.png"));
 			param.put("codCurriculo", curriculo.getCodCurriculo());param.put("argusLogo", img);
 
 			Thread thread = new Thread(){
@@ -258,7 +258,8 @@ public class HistoricoEscolarController implements Initializable{
     			param.put("naturalidade", aluno.getNaturalidade());param.put("nomeMae", aluno.getNomeMae());
     			param.put("nomePai", aluno.getNomePai());param.put("ufAluno", UtilDao.daoEnderecos.getEndereco(aluno.getCodPessoa()).getEstado());
     			param.put("codAluno", aluno.getCodPessoa());param.put("nomeCurriculo", curriculo.getNome());
-    			Image img = ImageIO.read(new File(getClass().getResource("/images/argus_logo_transparent.png").getFile()));
+
+    			Image img = ImageIO.read(getClass().getResourceAsStream("/images/argus_logo_transparent.png"));
     			param.put("codCurriculo", curriculo.getCodCurriculo());param.put("argusLogo", img);
     			param.put("anoLetivo", Integer.valueOf(boxAnoLetivo.getSelectionModel().getSelectedItem()));
 
@@ -301,7 +302,7 @@ public class HistoricoEscolarController implements Initializable{
     		boxAnoLetivo.getItems().clear();
     		for (Turma turma : turmas) {
 				if(turma.getCodCurriculo().equals(curriculo.getCodCurriculo())){
-					boxAnoLetivo.getItems().add(String.valueOf(turma.getAnoLetivo()));
+					boxAnoLetivo.getItems().add(String.valueOf(turma.getId().getAnoLetivo()));
 				}
 			}
     	}
@@ -332,11 +333,11 @@ public class HistoricoEscolarController implements Initializable{
 					oblist_alunos.clear();
 					table_alunos.getItems().clear();
 
-					PreparedStatement stmt = con.prepareStatement("SELECT codTurma FROM argus.turmas WHERE codCurriculo = ? LIMIT 1;");
+					PreparedStatement stmt = con.prepareStatement("SELECT codTurma, anoLetivo FROM argus.turmas WHERE codCurriculo = ? LIMIT 1;");
 					stmt.setString(1, newSelection.getCodCurriculo());
 					ResultSet rs = stmt.executeQuery();
 					if(rs.next()){
-						oblist_alunos = UtilDao.daoTurmas.getAlunos(rs.getInt(1));
+						oblist_alunos = UtilDao.daoTurmas.getAlunos(rs.getString(1), rs.getInt(2));
 						rs.close();
 					}
 					table_alunos.setItems(oblist_alunos);

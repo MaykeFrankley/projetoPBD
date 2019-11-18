@@ -16,8 +16,8 @@ import br.com.Acad.model.AlunoNota;
 import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Matricula;
 import br.com.Acad.model.ViewAluno;
-import br.com.Acad.model.ViewMatricula;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
+import br.com.Acad.model.ViewconfirmarAlunos;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
@@ -256,12 +256,12 @@ public class DaoAlunos implements IDaoAlunos{
 		return null;
 	}
 
-	public ObservableList<ViewMatricula> getMatriculasView(){
+	public ObservableList<ViewconfirmarAlunos> getMatriculasView(){
 		try {
 			createEM();
 			@SuppressWarnings("unchecked")
-			List<ViewMatricula> list = entityMn.createQuery("from ViewMatricula").getResultList();
-			ObservableList<ViewMatricula> oblist = FXCollections.observableList(list);
+			List<ViewconfirmarAlunos> list = entityMn.createQuery("from ViewconfirmarAlunos").getResultList();
+			ObservableList<ViewconfirmarAlunos> oblist = FXCollections.observableList(list);
 
 			return oblist;
 		} catch (PersistenceException e) {

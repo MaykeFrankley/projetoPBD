@@ -114,20 +114,19 @@
                            <children>
                               <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="415.0" prefWidth="1275.0" spacing="20.0">
+                                    <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="305.0" prefWidth="1240.0" spacing="20.0">
                                        <children>
-                                          <VBox alignment="TOP_CENTER">
+                                          <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="271.0" prefWidth="752.0">
                                              <children>
                                                 <Label text="Currículos cadastrados" textFill="#f1ff30">
                                                    <font>
                                                       <Font size="16.0" />
                                                    </font>
                                                 </Label>
-                                                <TableView fx:id="table_curriculo" prefHeight="366.0" prefWidth="752.0">
+                                                <TableView fx:id="table_curriculo" prefHeight="246.0" prefWidth="655.0">
                                                    <columns>
                                                       <TableColumn fx:id="col_codCurriculo" prefWidth="73.0" text="Código" />
                                                       <TableColumn fx:id="col_nomeCurriculo" minWidth="0.0" prefWidth="366.0" text="Nome" />
-                                                      <TableColumn fx:id="col_anoLetivo" prefWidth="115.0" text="Ano letivo" />
                                                       <TableColumn fx:id="col_tipo" prefWidth="164.0" text="Tipo" />
                                                    </columns>
                                                    <tooltip>
@@ -139,19 +138,18 @@
                                        </children>
                                     </HBox>
                                     <FontAwesomeIconView fill="#e9ff25" glyphName="ARROW_DOWN" size="20" />
-                                    <VBox alignment="TOP_CENTER">
+                                    <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="270.0" prefWidth="714.0">
                                        <children>
                                           <Label text="Disciplinas cadastradas" textFill="#f1ff30">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
                                           </Label>
-                                          <TableView fx:id="table_disciplinasCur" prefHeight="366.0" prefWidth="833.0">
+                                          <TableView fx:id="table_disciplinasCur" prefHeight="227.0" prefWidth="714.0">
                                              <columns>
                                                 <TableColumn fx:id="col_codDisciplina" prefWidth="78.0" text="Código" />
                                                 <TableColumn fx:id="col_nomeDisciplina" minWidth="0.0" prefWidth="267.0" text="Nome" />
                                                 <TableColumn fx:id="col_serieDisciplina" prefWidth="133.0" text="Ano/Série" />
-                                                <TableColumn fx:id="col_anoLetivo" prefWidth="133.0" text="Ano Letivo" />
                                                 <TableColumn fx:id="col_cargaHoraria" prefWidth="145.0" text="Carga Horária" />
                                              </columns>
                                           </TableView>
@@ -204,11 +202,6 @@
                                                    </HBox.margin>
                                                 </ComboBox>
                                                 <JFXTextField fx:id="cargaHoraria_add" alignment="TOP_LEFT" focusColor="#909090" labelFloat="true" maxWidth="244.0" minWidth="127.0" prefHeight="49.0" prefWidth="169.0" promptText="Carga Horária(horas)" style="-fx-alignment: CENTER;" unFocusColor="RED">
-                                                   <HBox.margin>
-                                                      <Insets top="20.0" />
-                                                   </HBox.margin>
-                                                </JFXTextField>
-                                                <JFXTextField fx:id="anoLetivo_add" alignment="TOP_LEFT" focusColor="#909090" labelFloat="true" maxWidth="244.0" minWidth="113.0" prefHeight="49.0" prefWidth="113.0" promptText="Ano Letivo" style="-fx-alignment: CENTER;" unFocusColor="RED">
                                                    <HBox.margin>
                                                       <Insets top="20.0" />
                                                    </HBox.margin>

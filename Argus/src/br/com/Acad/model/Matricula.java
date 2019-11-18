@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="matriculas")
+@Table(name="confirmaralunos")
 public class Matricula {
 
 	@EmbeddedId
@@ -19,6 +19,7 @@ public class Matricula {
 
 	@Column
 	private Date dt_matricula;
+
 
 	public Matricula() {
 		// TODO Auto-generated constructor stub
@@ -47,4 +48,5 @@ public class Matricula {
 	public void setDt_matricula(Date dt_matricula) {
 		this.dt_matricula = dt_matricula;
 	}
+
 }

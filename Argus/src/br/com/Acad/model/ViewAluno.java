@@ -18,7 +18,7 @@ public class ViewAluno extends Pessoa{
 	@Column
 	private int codResponsavelFin;
 
-	@Transient
+	@Column
 	private String situacao;
 
 	public ViewAluno() {
