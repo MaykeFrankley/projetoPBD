@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ContextMenu?>
-<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -16,7 +13,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -36,66 +33,56 @@
          <tabs>
             <Tab fx:id="visualizarTab" closable="false" text="Visualizar">
                <content>
-                  <StackPane>
+                  <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: transparent;">
                      <children>
-                        <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: transparent;">
+                        <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="653.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <VBox alignment="TOP_CENTER" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <JFXTextField fx:id="campoPesquisa" labelFloat="true" maxWidth="1224.0" minWidth="553.0" onKeyReleased="#searchLog" prefHeight="49.0" prefWidth="1224.0" promptText="Pesquisar">
-                                       <VBox.margin>
-                                          <Insets bottom="30.0" top="30.0" />
-                                       </VBox.margin>
-                                    </JFXTextField>
-                                    <VBox alignment="TOP_CENTER" prefHeight="550.0" prefWidth="791.0">
-                                       <children>
-                                          <TableView fx:id="table_log" prefHeight="517.0" prefWidth="1200.0" tableMenuButtonVisible="true">
-                                            <columns>
-                                              <TableColumn fx:id="col_cod" prefWidth="136.0" sortType="DESCENDING" text="Codigo Pessoa" />
-                                              <TableColumn fx:id="col_acao" prefWidth="691.0" sortType="DESCENDING" text="Ação" />
-                                                <TableColumn fx:id="col_data" minWidth="0.0" prefWidth="190.0" sortType="DESCENDING" text="Data" />
-                                                <TableColumn fx:id="col_hora" prefWidth="181.0" sortType="DESCENDING" text="Hora" />
-                                            </columns>
-                                             <contextMenu>
-                                                <ContextMenu>
-                                                  <items>
-                                                    <MenuItem mnemonicParsing="false" onAction="#limparLog" style="-fx-font-size: 16px;" text="Limpar todo o log" />
-                                                  </items>
-                                                </ContextMenu>
-                                             </contextMenu>
-                                          </TableView>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="40.0" right="40.0" />
-                                       </VBox.margin>
-                                    </VBox>
-                                 </children>
-                                 <effect>
-                                    <DropShadow />
-                                 </effect>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                        <DialogPane fx:id="dialogPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="210.0" prefWidth="483.0" visible="false">
-                           <header>
-                              <Label alignment="CENTER" prefHeight="61.0" prefWidth="483.0" text="Confirme sua senha para limpar o log" textFill="#ffff8d">
+                              <JFXTextField fx:id="campoPesquisa" labelFloat="true" maxWidth="1224.0" minWidth="553.0" onKeyReleased="#searchLog" prefHeight="45.0" prefWidth="732.0" promptText="Filtrar">
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" top="30.0" />
+                                 </VBox.margin>
+                              </JFXTextField>
+                              <Label alignment="TOP_CENTER" text="Visualizar por tabela" textFill="#ffff8d">
                                  <font>
-                                    <Font size="20.0" />
+                                    <Font name="System Bold" size="16.0" />
                                  </font>
                               </Label>
-                           </header>
-                           <content>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                              <ComboBox fx:id="box_tabelas" onAction="#getLogsPorTabela" prefHeight="41.0" prefWidth="221.0" style="-fx-text-alignment: center;" />
+                              <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="225.0" prefWidth="1062.0">
                                  <children>
-                                    <JFXPasswordField fx:id="passTextField" labelFloat="true" layoutX="79.0" layoutY="30.0" maxWidth="334.0" minWidth="242.0" prefHeight="43.0" prefWidth="334.0" promptText="Senha" />
-                                    <JFXButton fx:id="btn_confirmar" layoutX="96.0" layoutY="107.0" onAction="#confirmar_limparLogs" text="Confirmar" />
-                                    <JFXButton fx:id="btn_cancelar" layoutX="273.0" layoutY="107.0" onAction="#confirmar_limparLogs" text="Cancelar" />
+                                    <TableView fx:id="table_log" prefHeight="332.0" prefWidth="1062.0" tableMenuButtonVisible="true">
+                                      <columns>
+                                        <TableColumn fx:id="col_id" prefWidth="61.0" sortType="DESCENDING" text="ID" />
+                                          <TableColumn fx:id="col_usuario" minWidth="0.0" prefWidth="250.0" sortType="DESCENDING" text="Usuário" />
+                                          <TableColumn fx:id="col_dataHora" prefWidth="285.0" sortType="DESCENDING" text="Data e Hora" />
+                                          <TableColumn fx:id="col_tipo" prefWidth="187.0" sortType="DESCENDING" text="Tipo de alteração" />
+                                          <TableColumn fx:id="col_nomeTabela" prefWidth="250.0" sortType="DESCENDING" text="Tabela" />
+                                      </columns>
+                                    </TableView>
                                  </children>
-                              </AnchorPane>
-                           </content>
-                        </DialogPane>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </VBox>
+                              <HBox alignment="TOP_CENTER" prefHeight="220.0" prefWidth="1065.0">
+                                 <children>
+                                    <JFXTextArea fx:id="campo_alteracoes" focusColor="RED" labelFloat="true" maxWidth="1270.0" minWidth="751.0" prefHeight="116.0" prefWidth="751.0" promptText="Detalhamento da alteração" style="-fx-text-alignment: CENTER;" styleClass=".scroll-pane .content .text">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </JFXTextArea>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="25.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </VBox>
                      </children>
-                  </StackPane>
+                  </AnchorPane>
                </content>
             </Tab>
          </tabs>

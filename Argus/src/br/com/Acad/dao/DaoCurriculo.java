@@ -129,6 +129,13 @@ public class DaoCurriculo implements IDaoCurriculo{
 		}
 	}
 
+	public Preco getPreco(String codCurriculo){
+		createEM();
+		Preco p = entityMn.find(Preco.class, codCurriculo);
+		entityMn.close();
+		return p;
+	}
+
 
 	@Override
 	public void addDisciplinaToCurriculo(CurriculoDisciplina cd) {

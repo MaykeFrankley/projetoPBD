@@ -21,7 +21,6 @@ import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Professor;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -212,7 +211,7 @@ public class CadastrarProfessorController implements Initializable{
 			dp.setNomeProfessor(pr.getNome());
 
 			UtilDao.daoProfessor.addDisciplinaToProfessor(dp);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getCodProfessor());
+
 
 			initTables();
 
@@ -251,7 +250,6 @@ public class CadastrarProfessorController implements Initializable{
 				p.setStatus("Ativo");
 
 				int cod = UtilDao.daoPessoa.addPessoa(p);
-				SysLog.addLog(SysLog.createPessoas(cod));
 
 				e.setCodPessoa(cod);
 				e.setBairro(bairro.getText());
@@ -262,7 +260,6 @@ public class CadastrarProfessorController implements Initializable{
 				if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
 				UtilDao.daoEnderecos.addEndereco(e);
-				SysLog.addLog(SysLog.createDados("Endereço", cod));
 
 				c.setCodPessoa(cod);
 				if(email.getText().length() > 0)c.setEmail(email.getText());
@@ -277,7 +274,6 @@ public class CadastrarProfessorController implements Initializable{
 
 				if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
 					UtilDao.daoContatos.addContato(c);
-					SysLog.addLog(SysLog.createDados("Contato", cod));
 				}
 
 				pr.setCodPessoa(cod);
@@ -287,7 +283,6 @@ public class CadastrarProfessorController implements Initializable{
 				pr.setFormacao(formacao.getSelectionModel().getSelectedItem());
 				pr.setStatus("Ativo");
 				UtilDao.daoProfessor.addProfessor(pr);
-				SysLog.addLog(SysLog.createTipoPessoa("Professor", cod));
 
 				initTables();
 

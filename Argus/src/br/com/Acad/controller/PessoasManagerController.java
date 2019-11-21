@@ -4,6 +4,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -24,12 +25,11 @@ import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
-import br.com.Acad.sql.ConnectionClass;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -208,12 +208,6 @@ public class PessoasManagerController implements Initializable{
 
 	private String oldCPF;
 
-	private Pessoa oldPessoa;
-
-	private Contato oldContato;
-
-	private Endereco oldEndereco;
-
 	private Pessoa pessoaToEdit;
 
 	@FXML
@@ -243,8 +237,6 @@ public class PessoasManagerController implements Initializable{
 					initTables();
 
 					Util.Alert(pessoaToEdit.getNome()+" foi removido do sistema!");
-
-		    		SysLog.addLog(SysLog.deletePessoas(pessoaToEdit.getCodPessoa()));
 
 		    		Usuario u = UtilDao.daoUsuarios.getUsuario(pessoaToEdit.getCpf());
 
@@ -300,23 +292,22 @@ public class PessoasManagerController implements Initializable{
 
 
 	@FXML
-	void atualizar(ActionEvent event) {
+	void atualizar(ActionEvent event) throws SQLException, InterruptedException {
 		if(checkTextFields()){
 			oblist = UtilDao.daoPessoa.getAllPessoa();
-			for (int i = 0; i < oblist.size(); i++) {
-				String obCPF = oblist.get(i).getCpf();
-
-				if((obCPF != null && oldCPF != null) || obCPF != null){
-					if(obCPF.equals(cpf_update.getText()) && !cpf_update.getText().equals(oldCPF)){
-						Util.Alert("CPF já está cadastrado no sistema!");
-						return;
-					}
-
+			Connection con = ConnectionClass.createConnection();
+			PreparedStatement stmt = con.prepareStatement("SELECT cpf FROM argus.pessoas WHERE pessoas.cpf = ?");
+			stmt.setString(1, cpf_update.getText());
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()){
+				if(!oldCPF.equals(rs.getString(1))){
+					Util.Alert("CPF já está cadastrado no sistema!");
+					return;
 				}
 			}
 
 			Date date = Date.valueOf(dt_nascimento_update.getValue());
-			Pessoa p = UtilDao.daoPessoa.getPessoa(Integer.valueOf(codigo_listar.getText()));
+			Pessoa p = table_pessoas.getSelectionModel().getSelectedItem();
 			Endereco e = new Endereco();
 			Contato c = new Contato();
 
@@ -358,19 +349,8 @@ public class PessoasManagerController implements Initializable{
 
 			Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
 
-			if(!oldPessoa.SameAs(p)){
-				SysLog.addLog(SysLog.updatePessoas("Dados", cod));
-			}
-
-			if(!oldEndereco.equals(e)){
-				SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
-			}
-
-			if(!oldContato.equals(c)){
-				SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
-			}
-
 			initTables();
+			limpar(event);
 
 		}
 	}
@@ -379,7 +359,7 @@ public class PessoasManagerController implements Initializable{
 	void selecionarPessoa(ActionEvent event)  {
 		Pessoa p = table_pessoas.getSelectionModel().getSelectedItem();
 		if(p != null){
-			oldPessoa = p;
+
 			limpar(event);
 
 			codigo_listar.setText(String.valueOf(p.getCodPessoa()));
@@ -393,7 +373,7 @@ public class PessoasManagerController implements Initializable{
 				cpf_update.setText(p.getCpf());
 				oldCPF = p.getCpf();
 			}
-			LocalDate dt = LocalDate.parse(p.getDt_nascimento().toLocalDate().toString());
+			LocalDate dt = p.getDt_nascimento().toLocalDate();
 			dt_nascimento_update.setValue(dt);
 
 			nomeRua_update.setText(e.getRua());
@@ -403,7 +383,6 @@ public class PessoasManagerController implements Initializable{
 			estado_update.getSelectionModel().select(e.getEstado());
 			cidade_update.getSelectionModel().select(e.getCidade());
 
-			oldEndereco = e;
 			if(c != null){
 				if(c.getEmail() != null)email_update.setText(c.getEmail());
 				if(c.getTelefone() != null)telefone_update.setText(c.getTelefone());
@@ -414,7 +393,6 @@ public class PessoasManagerController implements Initializable{
 					whatsapp_update.setSelected(false);
 				}
 
-				oldContato = c;
 			}
 
 			enableAtualizar();

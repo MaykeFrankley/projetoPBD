@@ -68,7 +68,7 @@ public class DaoPedagogos {
 	public ObservableList<ViewSessao> getSessaoPorPedagogo(int codPedagogo){
 		try {
 			createEM();
-			List<ViewSessao> list = entityMn.createQuery("from ViewSessao where codPedagogo = "+codPedagogo).getResultList();
+			List<ViewSessao> list = entityMn.createNativeQuery("SELECT * FROM ViewSessao where codPedagogo = :c", ViewSessao.class).setParameter("c", codPedagogo).getResultList();
 			oblist = FXCollections.observableList(list);
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);

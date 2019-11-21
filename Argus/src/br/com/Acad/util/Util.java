@@ -3,15 +3,11 @@ package br.com.Acad.util;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,8 +23,6 @@ import com.jfoenix.validation.RequiredFieldValidator;
 
 import br.com.Acad.controller.MainTelaController;
 import br.com.Acad.controller.SettingsController;
-import br.com.Acad.model.LogSistema;
-import br.com.Acad.model.LogSistemaID;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.sql.ConnectionClass;
 import javafx.animation.Interpolator;
@@ -73,15 +67,6 @@ public class Util {
 		Pattern pattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();
-	}
-
-	public static LogSistema prepareLog(){
-		LogSistema ls = new LogSistema();
-		Date data = new Date(Calendar.getInstance().getTime().getTime());
-		Time hora = new Time(Calendar.getInstance(TimeZone.getTimeZone("America/Sao_Paulo")).getTime().getTime());
-
-		ls.setId(new LogSistemaID(0, MainTelaController.user.getCodPessoa(), data, hora));
-		return ls;
 	}
 
 	public static void LoadWindow(URL loc,	Scene scene, String or) throws IOException{
@@ -446,6 +431,14 @@ public class Util {
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
+			stmt = con.prepareStatement("grant select, insert, update on argus.Boletos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.Pagamentos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
 			stmt = con.prepareStatement("grant insert on argus.LogSistema to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
@@ -492,7 +485,6 @@ public class Util {
 		    }
 		    else{
 		    	UtilDao.daoUsuarios.addUsuario(u);
-		    	SysLog.addLog(SysLog.createUser(u.getCodPessoa()));
 		    }
 	    }
 

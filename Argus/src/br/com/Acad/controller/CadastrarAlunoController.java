@@ -1,13 +1,38 @@
 package br.com.Acad.controller;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ThreadLocalRandom;
 
+import org.jrimum.bopepo.BancosSuportados;
+import org.jrimum.bopepo.Boleto;
+import org.jrimum.bopepo.view.BoletoViewer;
+import org.jrimum.domkee.comum.pessoa.endereco.UnidadeFederativa;
+import org.jrimum.domkee.financeiro.banco.febraban.Agencia;
+import org.jrimum.domkee.financeiro.banco.febraban.Carteira;
+import org.jrimum.domkee.financeiro.banco.febraban.Cedente;
+import org.jrimum.domkee.financeiro.banco.febraban.ContaBancaria;
+import org.jrimum.domkee.financeiro.banco.febraban.NumeroDaConta;
+import org.jrimum.domkee.financeiro.banco.febraban.Sacado;
+import org.jrimum.domkee.financeiro.banco.febraban.TipoDeTitulo;
+import org.jrimum.domkee.financeiro.banco.febraban.Titulo;
 import org.json.simple.JSONObject;
 
 import com.jfoenix.controls.JFXButton;
@@ -19,10 +44,14 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.Acad.model.Aluno;
 import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.AlunoTurmaID;
+import br.com.Acad.model.Boleto_pdf;
+import br.com.Acad.model.Boleto_pdfID;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.Endereco;
+import br.com.Acad.model.Pagamento;
+import br.com.Acad.model.PagamentoID;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.ResponsavelFinanceiro;
 import br.com.Acad.model.ResponsavelFinanceiroID;
@@ -30,9 +59,9 @@ import br.com.Acad.model.Turma;
 import br.com.Acad.model.TurmaID;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.Settings;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -263,10 +292,12 @@ public class CadastrarAlunoController implements Initializable{
 
 	private JSONObject options = Settings.get();
 
+	long randomNossoNum = ThreadLocalRandom.current().nextLong(10000000000l, 89999999999l);
+
 	@FXML
-	void confirmar(ActionEvent event) {
+	void confirmar(ActionEvent event) throws IOException {
 		Curriculo selectedCurriculo = table_curriculo.getSelectionModel().getSelectedItem();
-		if(selectedCurriculo != null && codAluno == 0 && !box_anoLetivo.getSelectionModel().isEmpty()){
+		if(selectedCurriculo != null && codAluno == 0 && !box_anoLetivo.getSelectionModel().isEmpty() && checkTextFields()){
 			Pessoa pessoaAluno = new Pessoa();
 			Endereco alunoEnd = new Endereco();
 			Contato alunoCont = new Contato();
@@ -289,7 +320,6 @@ public class CadastrarAlunoController implements Initializable{
 			pessoaAluno.setStatus("Ativo");
 
 			int cod = UtilDao.daoPessoa.addPessoa(pessoaAluno);
-			SysLog.addLog(SysLog.createPessoas(cod));
 
 			alunoEnd.setCodPessoa(cod);
 			alunoEnd.setRua(nomeRua.getText());
@@ -300,7 +330,6 @@ public class CadastrarAlunoController implements Initializable{
 			alunoEnd.setCidade(cidade.getSelectionModel().getSelectedItem());
 
 			UtilDao.daoEnderecos.addEndereco(alunoEnd);
-			SysLog.addLog(SysLog.createDados("Endereço", cod));
 
 			alunoCont.setCodPessoa(cod);
 			if(email.getText().length() > 0)alunoCont.setEmail(email.getText());
@@ -315,7 +344,6 @@ public class CadastrarAlunoController implements Initializable{
 
 			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
 				UtilDao.daoContatos.addContato(alunoCont);
-				SysLog.addLog(SysLog.createDados("Contato", cod));
 			}
 			// END ALUNOPESSOA
 
@@ -333,7 +361,6 @@ public class CadastrarAlunoController implements Initializable{
 					responsavel.setStatus("Ativo");
 
 					int codResp = UtilDao.daoPessoa.addPessoa(responsavel);
-					SysLog.addLog(SysLog.createPessoas(codResp));
 
 					responsavelEnd.setCodPessoa(codResp);
 					responsavelEnd.setRua(nomeRua1.getText());
@@ -344,7 +371,6 @@ public class CadastrarAlunoController implements Initializable{
 					responsavelEnd.setCidade(cidade1.getSelectionModel().getSelectedItem());
 
 					UtilDao.daoEnderecos.addEndereco(responsavelEnd);
-					SysLog.addLog(SysLog.createDados("Endereço", codResp));
 					a.setCodResponsavelFin(codResp);
 
 					responsavelCont.setCodPessoa(codResp);
@@ -360,7 +386,6 @@ public class CadastrarAlunoController implements Initializable{
 
 					if(email1.getText().length() > 0 || telefone1.getText().length() > 0 || celular1.getText().length() > 0){
 						UtilDao.daoContatos.addContato(responsavelCont);
-						SysLog.addLog(SysLog.createDados("Contato", codResp));
 					}
 
 					resp.setCpf(cpf1.getText());
@@ -368,10 +393,6 @@ public class CadastrarAlunoController implements Initializable{
 					resp.setStatus("Ativo");
 
 					UtilDao.daoResponsaveis.addResponsavel(resp);
-					SysLog.addLog(SysLog.message("Cadastrou um novo responsável financeiro de cod:"+resp.getId().getCodPessoa()));
-
-					gerarBoletos(resp);
-
 				}
 			}
 			else{ //ALUNORESPONSAVEL
@@ -381,16 +402,15 @@ public class CadastrarAlunoController implements Initializable{
 				resp.setStatus("Ativo");
 
 				UtilDao.daoResponsaveis.addResponsavel(resp);
-				SysLog.addLog(SysLog.message("Cadastrou um novo responsável financeiro de cod:"+resp.getId().getCodPessoa()));
 
-				gerarBoletos(resp);
 			}
 			a.setNomeMae(nomeMae.getText());
 			a.setNomePai(nomePai.getText());
 			a.setStatus("Ativo");
 
 			UtilDao.daoAlunos.addAluno(a);
-			SysLog.addLog(SysLog.message("Cadastrou um novo aluno de cod:"+a.getCodPessoa()));
+
+			gerarBoletos(resp, table_curriculo.getSelectionModel().getSelectedItem().getCodCurriculo());
 
 			String[] alphabet = { "A", "B", "C", "D", "E", "F", "G",
 					"H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
@@ -412,11 +432,11 @@ public class CadastrarAlunoController implements Initializable{
 							at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getId().getCodTurma(), turma.getId().getAnoLetivo()));
 							at.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(at);
-							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getId().getCodTurma()));
 
 							codResponsavel = 0;
 							initTable();
 							limpar(event);
+							Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
 
 							return;
 						}
@@ -431,12 +451,12 @@ public class CadastrarAlunoController implements Initializable{
 									at.setId(new AlunoTurmaID(a.getCodPessoa(), tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()));
 									at.setSituacao("Pendente");
 									UtilDao.daoTurmas.addAlunoTurma(at);
-									SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+tempTurma.getId().getCodTurma()));
 
 									codResponsavel = 0;
 									initTable();
 									limpar(event);
-
+									Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
+									
 									return;
 								}
 							}
@@ -453,20 +473,16 @@ public class CadastrarAlunoController implements Initializable{
 							novaTurma.setAno(disciplinas.get(0).getId().getAno());
 
 							UtilDao.daoTurmas.addTurma(novaTurma);
-							SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+novaTurma.getId().getCodTurma()+
-									" para o curriculo:"+novaTurma.getCodCurriculo()+
-									" ano/Série: "+novaTurma.getAno()+" e ano letivo:"+novaTurma.getId().getAnoLetivo()));
 
 							AlunoTurma at = new AlunoTurma();
 							at.setId(new AlunoTurmaID(a.getCodPessoa(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
 							at.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(at);
-							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+novaTurma.getId().getCodTurma()));
 
 							codResponsavel = 0;
 							initTable();
 							limpar(event);
-							Util.Alert("Aluno cadastrado com sucesso!");
+							Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
 							return;
 						}
 					}
@@ -478,20 +494,16 @@ public class CadastrarAlunoController implements Initializable{
 			turma.setAno(disciplinas.get(0).getId().getAno());
 
 			UtilDao.daoTurmas.addTurma(turma);
-			SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+turma.getId().getCodTurma()+
-					" para o curriculo:"+turma.getCodCurriculo()+
-					" ano/Série: "+turma.getAno()+" e ano letivo:"+turma.getId().getAnoLetivo()));
 
 			AlunoTurma at = new AlunoTurma();
 			at.setId(new AlunoTurmaID(a.getCodPessoa(), turma.getId().getCodTurma(), turma.getId().getAnoLetivo()));
 			at.setSituacao("Pendente");
 			UtilDao.daoTurmas.addAlunoTurma(at);
-			SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getId().getCodTurma()));
 
 			codResponsavel = 0;
 			initTable();
 			limpar(event);
-			Util.Alert("Aluno cadastrado com sucesso!");
+			Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
 
 		}
 		else if(selectedCurriculo != null && codAluno > 0 && !box_anoLetivo.getSelectionModel().isEmpty()){
@@ -508,7 +520,6 @@ public class CadastrarAlunoController implements Initializable{
 							at.setId(new AlunoTurmaID(codAluno, turma.getId().getCodTurma(), turma.getId().getAnoLetivo()));
 							at.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(at);
-							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getId().getCodTurma()));
 
 							codResponsavel = 0;
 							codAluno = 0;
@@ -534,21 +545,17 @@ public class CadastrarAlunoController implements Initializable{
 							novaTurma.setAno(disciplinas.get(0).getId().getAno());
 
 							UtilDao.daoTurmas.addTurma(novaTurma);
-							SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+novaTurma.getId().getCodTurma()+
-									" para o curriculo:"+novaTurma.getCodCurriculo()+
-									" ano/Série: "+novaTurma.getAno()+" e ano letivo:"+novaTurma.getId().getAnoLetivo()));
 
 							AlunoTurma at = new AlunoTurma();
 							at.setId(new AlunoTurmaID(codAluno, novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
 							at.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(at);
-							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+novaTurma.getId().getCodTurma()));
 
 							codResponsavel = 0;
 							codAluno = 0;
 							initTable();
 							limpar(event);
-							Util.Alert("Aluno cadastrado com sucesso!");
+							Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
 							return;
 						}
 					}
@@ -560,21 +567,17 @@ public class CadastrarAlunoController implements Initializable{
 			turma.setAno(disciplinas.get(0).getId().getAno());
 
 			UtilDao.daoTurmas.addTurma(turma);
-			SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+turma.getId().getCodTurma()+
-					" para o curriculo:"+turma.getCodCurriculo()+
-					" ano/Série: "+turma.getAno()+" e ano letivo:"+turma.getId().getAnoLetivo()));
 
 			AlunoTurma at = new AlunoTurma();
 			at.setId(new AlunoTurmaID(codAluno, turma.getId().getCodTurma(), turma.getId().getAnoLetivo()));
 			at.setSituacao("Pendente");
 			UtilDao.daoTurmas.addAlunoTurma(at);
-			SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+turma.getId().getCodTurma()));
 
 			codResponsavel = 0;
 			codAluno = 0;
 			initTable();
 			limpar(event);
-			Util.Alert("Aluno cadastrado com sucesso!");
+			Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
 		}
 	}
 
@@ -598,13 +601,16 @@ public class CadastrarAlunoController implements Initializable{
 
 	@FXML
 	void limpar(ActionEvent event) {
-		nome.clear();cpf.clear();nome1.clear();cpf1.clear();
-		dt_nascimento.setValue(null);naturalidade.clear();
-		nomeRua.clear();complemento.clear();numero.clear();
+		nome.clear();cpf.clear();nome1.clear();cpf1.clear();naturalidade1.clear();
+		dt_nascimento.setValue(null);naturalidade.clear();dt_nascimento1.setValue(null);
+		nomeRua.clear();complemento.clear();numero.clear();nomeRua1.clear();complemento1.clear();numero1.clear();
 		whatsapp.setSelected(false);cidade.getSelectionModel().clearSelection();cidade.getEditor().clear();
-		estado.getSelectionModel().clearSelection();estado.getEditor().clear();bairro.clear();
+		estado.getSelectionModel().clearSelection();estado.getEditor().clear();bairro.clear();bairro1.clear();
 		nomePai.clear();nomeMae.clear();responsavelFin.setSelected(false);celular.clear();telefone.clear();email.clear();
 		responsavelFin.setVisible(false);box_contatos.setVisible(false);estado.getItems().clear();cidade.getItems().clear();
+		estado1.getSelectionModel().clearSelection();cidade1.getSelectionModel().clearSelection();
+		whatsapp1.setSelected(false);email1.clear();celular1.clear();telefone1.clear();
+
 	}
 
 	void populateBoxes(){
@@ -822,8 +828,8 @@ public class CadastrarAlunoController implements Initializable{
 		oblist_resp = UtilDao.daoResponsaveis.getAllViewResponsavel();
 		oblist_alunos = UtilDao.daoAlunos.getAllAlunosView();
 
-		filtered_resp = new FilteredList<>(oblist_resp);
-		filtered_aluno = new FilteredList<>(oblist_alunos);
+		if(!oblist_resp.isEmpty())filtered_resp = new FilteredList<>(oblist_resp);
+		if(!oblist_alunos.isEmpty())filtered_aluno = new FilteredList<>(oblist_alunos);
 
 		col_cod.setCellValueFactory(new PropertyValueFactory<>("codCurriculo"));
 		col_nome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -892,23 +898,100 @@ public class CadastrarAlunoController implements Initializable{
 
 	///// Geração de boletos /////////
 
-	void gerarBoletos(ResponsavelFinanceiro resp){
+	void gerarBoletos(ResponsavelFinanceiro resp, String codCurriculo) throws IOException{
 
-		//		for (int i = 2; i < 12; i++) {
-		//			LocalDate hj = LocalDate.now();
-		//			Datas datas = Datas.novasDatas()
-		//					.comDocumento(hj.getDayOfMonth(), hj.getMonthValue(), hj.getYear())
-		//					.comProcessamento(hj.getDayOfMonth(), hj.getMonthValue(), hj.getYear())
-		//					.comVencimento(hj.getDayOfMonth(), i, hj.getYear());
-		//
-		//			Endereco end = UtilDao.daoEnderecos.getEndereco(resp.getId().getCodPessoa());
-		//			br.com.caelum.stella.boleto.Endereco enderecoBeneficiario = br.com.caelum.stella.boleto.Endereco.novoEndereco()
-		//					.comBairro(end.getBairro())
-		//					.comCidade(end.getCidade())
-		//					.comUf(Util.getUF(end.getEstado()))
-		//					.comLogradouro(end.getRua()+", "+end.getNumero());
-		//
-		//		}
+		JSONObject escola = Settings.getDadosBancarios();
+
+		Cedente cedente = new Cedente((String) escola.get("escola"), (String) escola.get("cnpj"));
+
+		Sacado sacado = new Sacado(UtilDao.daoPessoa.getPessoa(
+				resp.getId().getCodPessoa()).getNome(),
+				resp.getCpf());
+
+
+		Endereco end = UtilDao.daoEnderecos.getEndereco(resp.getId().getCodPessoa());
+		org.jrimum.domkee.comum.pessoa.endereco.Endereco enderecoSacado = new org.jrimum.domkee.comum.pessoa.endereco.Endereco();
+		enderecoSacado.setBairro(end.getBairro());
+		enderecoSacado.setComplemento(end.getComplemento());
+		enderecoSacado.setLocalidade(end.getCidade());
+		enderecoSacado.setLogradouro(end.getRua());
+		enderecoSacado.setNumero(String.valueOf(end.getNumero()));
+		enderecoSacado.setPais("Brasil");
+		enderecoSacado.setUF(UnidadeFederativa.valueOf(Util.getUF(end.getEstado())));
+
+		sacado.addEndereco(enderecoSacado);
+
+		ContaBancaria contaCedente = new ContaBancaria(BancosSuportados.valueOf((String) escola.get("nomeBanco")).create());
+		contaCedente.setNumeroDaConta(new NumeroDaConta(Integer.valueOf((String) escola.get("numeroConta")), (String) escola.get("digitoConta")));
+		contaCedente.setCarteira(new Carteira(1));
+		contaCedente.setAgencia(new Agencia(Integer.valueOf((String) escola.get("agencia")), "X"));
+
+		List<Pagamento> pgts = new ArrayList<>();
+		List<Boleto> boletos = new ArrayList<>();
+		for (int i = 1; i < 13; i++) {
+			Connection con = ConnectionClass.createConnection();
+			try {
+				boolean unique = false;
+				while(!unique){
+					PreparedStatement stmt = con.prepareStatement("SELECT nossoNumero FROM argus.Pagamentos WHERE nossoNumero = ?;");
+					stmt.setLong(1, randomNossoNum);
+					ResultSet rs = stmt.executeQuery();
+					if(!rs.next()){
+						unique = true;
+					}
+					randomNossoNum = ThreadLocalRandom.current().nextLong(10000000000l, 89999999999l);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Pagamento pag = new Pagamento();
+			pag.setId(new PagamentoID(resp.getId().getCodPessoa(), resp.getId().getCodAluno(), codCurriculo, Integer.valueOf(box_anoLetivo.getSelectionModel().getSelectedItem()), randomNossoNum));
+			pag.setSituacao("Pendente");
+			pag.setNum_parcela(i);
+
+			Titulo titulo = new Titulo(contaCedente, sacado, cedente);
+			titulo.setNumeroDoDocumento("0");
+			titulo.setValor(BigDecimal.valueOf(UtilDao.daoCurriculo.getPreco(codCurriculo).getValor()));
+			titulo.setValorCobrado(BigDecimal.valueOf(UtilDao.daoCurriculo.getPreco(codCurriculo).getValor()));
+			titulo.setDataDoDocumento(new java.util.Date());
+			Calendar myCalendar = new GregorianCalendar(Integer.valueOf(box_anoLetivo.getSelectionModel().getSelectedItem()), i-1, LocalDate.now().getDayOfMonth());
+			java.util.Date dv = myCalendar.getTime();
+
+			titulo.setDataDoVencimento(dv);
+			titulo.setTipoDeDocumento(TipoDeTitulo.DM_DUPLICATA_MERCANTIL);
+			titulo.setAceite(Titulo.Aceite.A);
+			titulo.setNossoNumero(String.valueOf(randomNossoNum));
+			titulo.setDigitoDoNossoNumero("1");
+
+			Boleto boleto = new Boleto(titulo);
+			boleto.setLocalPagamento("Em qualquer banco ou lotérica até o vencimento");
+			boleto.setInstrucaoAoSacado("Após o pagamento, levar o recibo para um secretário da escola!");
+			boleto.addTextosExtras("Numero do boleto", String.valueOf(i));
+
+			boletos.add(boleto);
+			pgts.add(pag);
+		}
+		new File(System.getProperty("user.home")+"/Desktop"+"/"+UtilDao.daoPessoa.getPessoa(
+				resp.getId().getCodPessoa()).getNome()).mkdir();
+
+
+		BoletoViewer.groupInOnePDF(boletos, new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
+
+		Desktop.getDesktop().open(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
+
+		Boleto_pdf argusBoleto = new Boleto_pdf();
+		argusBoleto.setId(new Boleto_pdfID(resp.getId().getCodPessoa(), resp.getId().getCodAluno(), codCurriculo, Integer.valueOf(box_anoLetivo.getSelectionModel().getSelectedItem())));
+		argusBoleto.setArquivoPdf(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
+
+		UtilDao.daoResponsaveis.addBoletos(argusBoleto);
+
+		for (Pagamento pag : pgts) {
+			UtilDao.daoResponsaveis.addPagamento(pag);
+		}
+
 	}
 
 	boolean checkTextFields2(){

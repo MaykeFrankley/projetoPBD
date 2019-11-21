@@ -20,7 +20,6 @@ import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.SetDbUser;
 import br.com.Acad.util.Settings;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -120,8 +119,6 @@ public class LoginController implements Initializable{
                     		mainTela.setUser(check);
                 			mainTela.enableHamburger();
                 			mainTela.enableNotificationTask();
-                			if(!check.getTipo().equals("Direção"))
-                				SysLog.addLog(SysLog.login(check.getUser()));
                         });
         		        return null;
         		    }

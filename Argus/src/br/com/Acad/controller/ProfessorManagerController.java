@@ -26,7 +26,6 @@ import br.com.Acad.model.DisciplinaProfessorID;
 import br.com.Acad.model.Professor;
 import br.com.Acad.model.ViewProfessor;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -273,7 +272,7 @@ public class ProfessorManagerController implements Initializable{
 
 	private FilteredList<Professor> filteredData2;
 
-	private Pessoa oldPessoa;private Contato oldContato;private Endereco oldEndereco;private String oldCPF;
+	private ViewProfessor oldPessoa;private Contato oldContato;private Endereco oldEndereco;private String oldCPF;
 
 	private Professor oldProfessor;
 
@@ -301,8 +300,6 @@ public class ProfessorManagerController implements Initializable{
 			JFXButton yes = new JFXButton("Remover");
 			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
 				UtilDao.daoProfessor.removeDisciplinaProfessor(selected);
-				SysLog.addLog(SysLog.message("removeu uma disciplina de cod: "+selected.getId().getCodDisciplina()+" do professor cod: ")
-						+selected.getCodProfessor());
 				initTables();
 			});
 			JFXButton cancel = new JFXButton("Cancelar");
@@ -329,7 +326,6 @@ public class ProfessorManagerController implements Initializable{
 
 			UtilDao.daoProfessor.addDisciplinaToProfessor(dp);
 			addDisciplinaPane.setVisible(false);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina de cod: "+cd.getId().getCodDisciplina()+" ao professor cod: ")+dp.getCodProfessor());
 
 			initTables();
 
@@ -412,22 +408,6 @@ public class ProfessorManagerController implements Initializable{
 			}
 
 			Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
-
-			if(!oldPessoa.SameAs(p)){
-				SysLog.addLog(SysLog.updatePessoas("Dados", cod));
-			}
-
-			if(!oldEndereco.equals(e)){
-				SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
-			}
-
-			if(!oldContato.equals(c)){
-				SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
-			}
-
-			if(!oldProfessor.equals(pr)){
-				SysLog.addLog(SysLog.message("Atualizou dados do professor cod:"+cod));
-			}
 
 			initTables();
 
@@ -549,7 +529,7 @@ public class ProfessorManagerController implements Initializable{
 
 	@FXML
 	void selecionarPessoa(ActionEvent event) {
-		Pessoa p = table_pessoas.getSelectionModel().getSelectedItem();
+		ViewProfessor p = table_pessoas.getSelectionModel().getSelectedItem();
 		if(p != null){
 			oldPessoa = p;
 			limpar(event);
@@ -671,7 +651,7 @@ public class ProfessorManagerController implements Initializable{
 
 		table_pessoas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
-				Pessoa selectedPessoa = table_pessoas.getSelectionModel().getSelectedItem();
+				ViewProfessor selectedPessoa = table_pessoas.getSelectionModel().getSelectedItem();
 				int cod = selectedPessoa.getCodPessoa();
 
 				if(selectedPessoa != null){

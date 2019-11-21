@@ -146,14 +146,14 @@ WHERE
 				<text><![CDATA[Idade:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="88" width="100" height="20" uuid="3b713980-5b6f-4810-87d5-1ee2d3bc2aed"/>
+				<reportElement x="360" y="88" width="100" height="20" uuid="3b713980-5b6f-4810-87d5-1ee2d3bc2aed"/>
 				<textElement>
 					<font isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Data de atendimento:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="450" y="88" width="104" height="20" uuid="fe57ec0b-fe15-4c2e-a2f2-4ae835b71439"/>
+				<reportElement x="460" y="88" width="100" height="20" uuid="fe57ec0b-fe15-4c2e-a2f2-4ae835b71439"/>
 				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($P{dt_atendimento})]]></textFieldExpression>
 			</textField>
 			<staticText>

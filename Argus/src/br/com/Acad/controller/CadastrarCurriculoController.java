@@ -19,7 +19,6 @@ import br.com.Acad.model.CurriculoDisciplinaID;
 import br.com.Acad.model.Disciplina;
 import br.com.Acad.model.Preco;
 import br.com.Acad.sql.ConnectionClass;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
@@ -163,7 +162,6 @@ public class CadastrarCurriculoController implements Initializable{
 			c.setTipo(box_tipo.getSelectionModel().getSelectedItem());
 
 			UtilDao.daoCurriculo.addCurriculo(c);
-			SysLog.addLog(SysLog.createCurriculo(c));
 
 			Preco p = new Preco();
 			p.setCodCurriculo(codCurriculo);
@@ -171,8 +169,6 @@ public class CadastrarCurriculoController implements Initializable{
 		}else{
 			updateCurriculo.setNome(txt_nome.getText());
 			UtilDao.daoCurriculo.updateCurriculo(updateCurriculo);
-			SysLog.addLog(SysLog.message("atualizou o curriculo \""+txt_nome.getText()+"\"!"));
-
 		}
 
 		initTables();
@@ -193,7 +189,6 @@ public class CadastrarCurriculoController implements Initializable{
 		CurriculoDisciplina cd = table_disciplinas.getSelectionModel().getSelectedItem();
 		if(cd != null){
 			UtilDao.daoCurriculo.removeDisciplinaCurriculo(cd);
-			SysLog.addLog(SysLog.message("Removeu a disciplina de cod:"+cd.getId().getCodDisciplina()+" do curriculo cod:"+cd.getId().getCodCurriculo()));
 			oblist_disciplinasCur.clear();
 			initTables();
 		}
@@ -216,7 +211,6 @@ public class CadastrarCurriculoController implements Initializable{
 			cd.setNomeCurriculo(c.getNome());
 			cd.setNomeDisciplina(d.getNome());
 			UtilDao.daoCurriculo.addDisciplinaToCurriculo(cd);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getCodCurriculo()));
 
 			cancelar(event);
 			oblist_disciplinasCur.clear();

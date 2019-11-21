@@ -45,7 +45,6 @@ public class DaoAlunos implements IDaoAlunos{
 			entityMn.clear();
 			entityMn.getTransaction().commit();
 
-	    	Util.Alert("Aluno cadastrado com sucesso!");
 		} catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
@@ -151,7 +150,6 @@ public class DaoAlunos implements IDaoAlunos{
 			return v;
 
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 		} finally {
 			entityMn.close();

@@ -40,7 +40,6 @@ import br.com.Acad.model.ViewTurma;
 import br.com.Acad.sql.ConnectionReserva;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.Settings;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -371,15 +370,7 @@ public class AlunosManagerController implements Initializable{
 
 	ObservableList<String> ob_alfa = FXCollections.observableArrayList(alphabet);
 
-	private Aluno oldAluno;
-
-	private Pessoa oldPessoa;
-
 	private String oldCPF;
-
-	private Endereco oldEndereco;
-
-	private Contato oldContato;
 
 	private FilteredList<ViewAluno> filteredData;
 
@@ -462,21 +453,6 @@ public class AlunosManagerController implements Initializable{
 
 			Util.Alert("Cod: "+cod+"\nNome: "+p.getNome()+"\nAtualizado com sucesso!");
 
-			if(!oldPessoa.SameAs(p)){
-				SysLog.addLog(SysLog.updatePessoas("Dados", cod));
-			}
-
-			if(!oldEndereco.equals(e)){
-				SysLog.addLog(SysLog.updatePessoas("Endereço", cod));
-			}
-
-			if(oldContato != null && !oldContato.equals(c)){
-				SysLog.addLog(SysLog.updatePessoas("Contatos", cod));
-			}
-
-			if(!oldAluno.equals(a)){
-				SysLog.addLog(SysLog.message("Atualizou dados do aluno cod:"+a.getCodPessoa()));
-			}
 			initTables();
 
 		}
@@ -560,7 +536,6 @@ public class AlunosManagerController implements Initializable{
 		unidadeBox.getItems().clear();
 		if(alunoAprovado != null){
 			UtilDao.daoTurmas.updateAlunoTurma(alunoAprovado);
-			SysLog.addLog(SysLog.message("Atualizou um aluno turma de cód:"+alunoAprovado.getId().getCodAluno()));
 			Connection con = ConnectionReserva.createConnection();
 
 			String codCurriculo = null;
@@ -610,8 +585,6 @@ public class AlunosManagerController implements Initializable{
 
 							UtilDao.daoAlunos.addMatricula(matricula);
 
-							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
-
 							Util.Alert("O Aluno foi aprovado nas disciplinas e foi cadastrado em uma nova turma!"
 									+"\nÉ nescessário confirmar a matrícula do aluno!");
 
@@ -629,7 +602,6 @@ public class AlunosManagerController implements Initializable{
 						at.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), checkNovaTurma.getString("codTurma"), checkNovaTurma.getInt("anoLetivo")));
 						at.setSituacao("Pendente");
 						UtilDao.daoTurmas.addAlunoTurma(at);
-						SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+checkNovaTurma.getString("codTurma")));
 
 						Matricula matricula = new Matricula();
 						Date dt_matricula = Date.valueOf(LocalDate.now());
@@ -655,7 +627,6 @@ public class AlunosManagerController implements Initializable{
 								at.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()));
 								at.setSituacao("Pendente");
 								UtilDao.daoTurmas.addAlunoTurma(at);
-								SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+tempTurma.getId().getCodTurma()));
 
 								Matricula matricula = new Matricula();
 								Date dt_matricula = Date.valueOf(LocalDate.now());
@@ -685,15 +656,11 @@ public class AlunosManagerController implements Initializable{
 						novaTurma.setAno(ano+1);
 
 						UtilDao.daoTurmas.addTurma(novaTurma);
-						SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+novaTurma.getId().getCodTurma()+
-								" para o curriculo:"+novaTurma.getCodCurriculo()+
-								" ano/Série: "+novaTurma.getAno()+" e ano letivo:"+novaTurma.getId().getAnoLetivo()));
 
 						AlunoTurma at = new AlunoTurma();
 						at.setId(new AlunoTurmaID(alunoAprovado.getId().getCodAluno(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
 						at.setSituacao("Pendente");
 						UtilDao.daoTurmas.addAlunoTurma(at);
-						SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+novaTurma.getId().getCodTurma()));
 
 						Matricula matricula = new Matricula();
 						Date dt_matricula = Date.valueOf(LocalDate.now());
@@ -724,7 +691,6 @@ public class AlunosManagerController implements Initializable{
 		}
 		else if(alunoReprovado != null){
 			UtilDao.daoTurmas.updateAlunoTurma(alunoReprovado);
-			SysLog.addLog(SysLog.message("Atualizou um aluno turma de cód:"+alunoReprovado.getId().getCodAluno()));
 			Connection con = ConnectionReserva.createConnection();
 
 			String codCurriculo = null;
@@ -767,8 +733,6 @@ public class AlunosManagerController implements Initializable{
 
 					UtilDao.daoAlunos.addMatricula(matricula);
 
-					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno de cod:"+aluno.getId().getCodAluno()+" na turma cod:"+aluno.getId().getCodTurma()));
-
 					Util.Alert("O Aluno foi reprovado e foi cadastrado em uma nova turma!"
 							+"\nÉ nescessário confirmar a matrícula do aluno!");
 
@@ -783,7 +747,6 @@ public class AlunosManagerController implements Initializable{
 							at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()));
 							at.setSituacao("Pendente");
 							UtilDao.daoTurmas.addAlunoTurma(at);
-							SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+tempTurma.getId().getCodTurma()));
 
 							Matricula matricula = new Matricula();
 							Date dt_matricula = Date.valueOf(LocalDate.now());
@@ -813,15 +776,11 @@ public class AlunosManagerController implements Initializable{
 					novaTurma.setAno(ano);
 
 					UtilDao.daoTurmas.addTurma(novaTurma);
-					SysLog.addLog(SysLog.message("cadastrou automaticamente uma nova turma de cod:"+novaTurma.getId().getCodTurma()+
-							" para o curriculo:"+novaTurma.getCodCurriculo()+
-							" ano/Série: "+novaTurma.getAno()+" e ano letivo:"+novaTurma.getId().getAnoLetivo()));
 
 					AlunoTurma at = new AlunoTurma();
 					at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
 					at.setSituacao("Pendente");
 					UtilDao.daoTurmas.addAlunoTurma(at);
-					SysLog.addLog(SysLog.message("adicionou automaticamente um aluno cod:"+at.getId().getCodAluno()+" na turma cod:"+novaTurma.getId().getCodTurma()));
 
 					Matricula matricula = new Matricula();
 					Date dt_matricula = Date.valueOf(LocalDate.now());
@@ -968,13 +927,11 @@ public class AlunosManagerController implements Initializable{
 
 	@FXML
 	void selecionarPessoa(ActionEvent event) {
-		Pessoa p = table_pessoas.getSelectionModel().getSelectedItem();
+		ViewAluno p = table_pessoas.getSelectionModel().getSelectedItem();
 		if(p != null){
-			oldPessoa = p;
 			limpar(event);
 
 			Aluno a = UtilDao.daoAlunos.getAluno(p.getCodPessoa());
-			oldAluno = a;
 			codigo_listar.setText(String.valueOf(p.getCodPessoa()));
 
 			Endereco e = UtilDao.daoEnderecos.getEndereco(p.getCodPessoa());
@@ -998,7 +955,6 @@ public class AlunosManagerController implements Initializable{
 			estado_update.getSelectionModel().select(e.getEstado());
 			cidade_update.getSelectionModel().select(e.getCidade());
 
-			oldEndereco = e;
 			if(c != null){
 				if(c.getEmail() != null)email_update.setText(c.getEmail());
 				if(c.getTelefone() != null)telefone_update.setText(c.getTelefone());
@@ -1008,8 +964,6 @@ public class AlunosManagerController implements Initializable{
 				}else{
 					whatsapp_update.setSelected(false);
 				}
-
-				oldContato = c;
 			}
 
 			enableAtualizar();
@@ -1136,6 +1090,9 @@ public class AlunosManagerController implements Initializable{
 										alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
 								if(media != null){
 									if(media.getSituacao().equals("AM")){
+										alunoNota.setMedia(0);
+										alunoNota.setSituacao("Pendente");
+										UtilDao.daoAlunos.setAlunoNota(alunoNota);
 										oblist.remove(alunoNota);j--;
 									}
 								}
@@ -1184,6 +1141,9 @@ public class AlunosManagerController implements Initializable{
 										alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
 								if(media != null){
 									if(media.getSituacao().equals("AM")){
+										alunoNota.setMedia(0);
+										alunoNota.setSituacao("Pendente");
+										UtilDao.daoAlunos.setAlunoNota(alunoNota);
 										oblist.remove(alunoNota);j--;
 									}
 								}
@@ -1238,7 +1198,6 @@ public class AlunosManagerController implements Initializable{
 			table_notas.getItems().add(selected);
 			UtilDao.daoAlunos.setAlunoNota(selected);
 
-			SysLog.addLog(SysLog.message("Alterou a nota do aluno cod:"+selected.getId().getCodAluno()+" para:"+selected.getMedia()+" disciplina:"+selected.getNomeDisciplina()));
 			Util.Alert("Média atualizada!");
 
 			int valorUnidade = 0;
@@ -1255,8 +1214,24 @@ public class AlunosManagerController implements Initializable{
 				}
 			}
 
+			String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
+			ObservableList<AlunoNota> notasDaFinal;
+			if(tipoUnidade.equals("Bimestral")){
+				notasDaFinal = UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), 5);
+			}
+			else{
+				notasDaFinal = UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), 4);
+			}
+
+			for (AlunoNota notaFinal : notasDaFinal) {
+				if(notaFinal.getId().getCodDisciplina().equals(selected.getId().getCodDisciplina())){
+					notaFinal.setMedia(0);
+					notaFinal.setSituacao("Pendente");
+					break;
+				}
+			}
+
 			if(nextUnidade){
-				String tipoUnidade = UtilDao.daoCurriculo.getCurriculo(table_turmas.getSelectionModel().getSelectedItem().getCodCurriculo()).getTipo();
 				if(tipoUnidade.equals("Bimestral")){
 					if(valorUnidade == 4){
 						ObservableList<AlunoNota> tempOb = UtilDao.daoAlunos.getNotas(selected.getId().getCodAluno(), selected.getId().getSerie(), selected.getId().getAnoLetivo(), 5);
@@ -1266,6 +1241,9 @@ public class AlunosManagerController implements Initializable{
 									alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
 							if(media != null){
 								if(media.getSituacao().equals("AM")){
+									alunoNota.setMedia(0);
+									alunoNota.setSituacao("Pendente");
+									UtilDao.daoAlunos.setAlunoNota(alunoNota);
 									tempOb.remove(alunoNota);j--;
 								}
 							}
@@ -1300,6 +1278,9 @@ public class AlunosManagerController implements Initializable{
 									alunoNota.getId().getSerie(), alunoNota.getId().getAnoLetivo()));
 							if(media != null){
 								if(media.getSituacao().equals("AM")){
+									alunoNota.setMedia(0);
+									alunoNota.setSituacao("Pendente");
+									UtilDao.daoAlunos.setAlunoNota(alunoNota);
 									tempOb.remove(alunoNota);j--;
 								}
 							}
@@ -1362,8 +1343,6 @@ public class AlunosManagerController implements Initializable{
 				UtilDao.daoAlunos.updateMatricula(matricula);
 				initTables();
 				Util.contentPane.getChildren().get(0).setEffect(null);
-
-				SysLog.addLog(SysLog.message("Confirmou a matrícula do aluno de cod:"+m.getCodAluno()));
 			});
 			JFXButton cancel = new JFXButton("Cancelar");
 			cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even2) ->{

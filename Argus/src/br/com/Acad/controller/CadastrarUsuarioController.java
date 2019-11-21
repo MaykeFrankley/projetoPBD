@@ -21,7 +21,6 @@ import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
@@ -144,7 +143,6 @@ public class CadastrarUsuarioController implements Initializable{
         		p.setStatus("Ativo");
 
         		int cod = UtilDao.daoPessoa.addPessoa(p);
-        		SysLog.addLog(SysLog.createPessoas(cod));
 
         		e.setCodPessoa(cod);
         		e.setBairro(bairro.getText());
@@ -155,7 +153,6 @@ public class CadastrarUsuarioController implements Initializable{
         		if(complemento.getText() != null && complemento.getText().length() > 0)e.setComplemento(complemento.getText());
 
         		UtilDao.daoEnderecos.addEndereco(e);
-        		SysLog.addLog(SysLog.createDados("Endereço", cod));
 
         		c.setCodPessoa(cod);
         		if(email.getText().length() > 0)c.setEmail(email.getText());
@@ -170,7 +167,6 @@ public class CadastrarUsuarioController implements Initializable{
 
     			if(email.getText().length() > 0 || telefone.getText().length() > 0 || celular.getText().length() > 0){
     				UtilDao.daoContatos.addContato(c);
-    				SysLog.addLog(SysLog.createDados("Contato", cod));
     			}
 
     			u.setCodPessoa(cod);

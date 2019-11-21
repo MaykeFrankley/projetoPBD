@@ -1,84 +1,76 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.Acad.dao.DaoLog;
 import br.com.Acad.model.LogSistema;
-import br.com.Acad.model.LogSistemaID;
+import br.com.Acad.sql.ConnectionReserva;
 import br.com.Acad.util.UtilDao;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
 
 public class LogSistemaController implements Initializable{
 
-    @FXML
+	@FXML
     private JFXTabPane tabPane;
-
-    @FXML
-    private AnchorPane anchorPane;
 
     @FXML
     private Tab visualizarTab;
 
     @FXML
+    private AnchorPane anchorPane;
+
+    @FXML
     private JFXTextField campoPesquisa;
+
+    @FXML
+    private ComboBox<String> box_tabelas;
 
     @FXML
     private TableView<LogSistema> table_log;
 
     @FXML
-    private TableColumn<LogSistema, LogSistemaID> col_cod;
+    private TableColumn<LogSistema, Integer> col_id;
 
     @FXML
-    private TableColumn<LogSistema, String> col_acao;
+    private TableColumn<LogSistema, String> col_usuario;
 
     @FXML
-    private TableColumn<LogSistema, LogSistemaID> col_data;
+    private TableColumn<LogSistema, Timestamp> col_dataHora;
 
     @FXML
-    private TableColumn<LogSistema, LogSistemaID> col_hora;
+    private TableColumn<LogSistema, String> col_tipo;
 
     @FXML
-    private DialogPane dialogPane;
+    private TableColumn<LogSistema, String> col_nomeTabela;
 
     @FXML
-    private JFXPasswordField passTextField;
-
-    @FXML
-    private JFXButton btn_confirmar;
-
-    @FXML
-    private JFXButton btn_cancelar;
-
-    private DaoLog daoLog;
+    private JFXTextArea campo_alteracoes;
 
     private ObservableList<LogSistema> oblist = FXCollections.observableArrayList();
 
@@ -88,25 +80,29 @@ public class LogSistemaController implements Initializable{
     void searchLog(KeyEvent event) {
     	campoPesquisa.textProperty().addListener((observableValue, oldValue,newValue)->{
 			filteredData.setPredicate(LogSistema->{
-				SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-				format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
-				String time = format.format(LogSistema.getId().getHora());
+				String lowerCaseFilter = newValue.toLowerCase();
 
 				if(newValue==null || newValue.isEmpty()){
 					return true;
 				}
-				String lowerCaseFilter = newValue.toLowerCase();
-				if(String.valueOf(LogSistema.getId().getCodPessoa()).toLowerCase().contains(lowerCaseFilter)){
-					return true;
-				}
-				else if(LogSistema.getId().getData().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(lowerCaseFilter)){
-					return true;
-				}
-				else if(time.contains(lowerCaseFilter)){
+
+				else if(LogSistema.getTabela().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
 
-				else if(LogSistema.getAcao().toLowerCase().contains(lowerCaseFilter)){
+				else if(LogSistema.getTipo_alteracao().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getUsuario().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getData().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")).contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getAlteracao().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
 
@@ -116,137 +112,92 @@ public class LogSistemaController implements Initializable{
 		SortedList<LogSistema> sortedData = new SortedList<>(filteredData);
 		sortedData.comparatorProperty().bind(table_log.comparatorProperty());
 		table_log.setItems(sortedData);
+
     }
 
     @FXML
-    void limparLog(ActionEvent event){
-    	BoxBlur blur = new BoxBlur(3, 3, 3);
-    	if(!dialogPane.isVisible()){
-    		dialogPane.setVisible(true);
-    		anchorPane.setEffect(blur);
-    		anchorPane.setMouseTransparent(true);
-    		Platform.runLater(() -> passTextField.requestFocus());
-    	}
-    }
+    void getLogsPorTabela(ActionEvent event) {
 
-    @FXML
-    void confirmar_limparLogs(ActionEvent event) {
-    	if(event.getSource() == btn_confirmar){
-    		if(!passTextField.getText().isEmpty()){
-    			String hash = DigestUtils.md5Hex(passTextField.getText());
-    			if(hash.equals(MainTelaController.user.getSenha())){
-    				daoLog.clearAllLogs();
-    				initTable();
-    				dialogPane.setVisible(false);
-    				anchorPane.setEffect(null);
-    				anchorPane.setMouseTransparent(false);
-    			}
-    		}
-    	}else{
-    		dialogPane.setVisible(false);
-    		anchorPane.setEffect(null);
-    		anchorPane.setMouseTransparent(false);
+    	oblist.clear();
+    	campo_alteracoes.clear();
+    	table_log.getItems().clear();
+    	if(box_tabelas.getSelectionModel().getSelectedItem().equals("TODOS")){
+    		oblist = UtilDao.daoLog.getAllLogs();
+    		table_log.setItems(oblist);
+    		filteredData = new FilteredList<>(oblist);
+    		return;
     	}
+    	oblist = UtilDao.daoLog.getLogTabela(box_tabelas.getSelectionModel().getSelectedItem());
+    	table_log.setItems(oblist);
+    	filteredData = new FilteredList<>(oblist);
     }
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		daoLog = new DaoLog();
-
+		PseudoClass centered = PseudoClass.getPseudoClass("centered");
+		box_tabelas.pseudoClassStateChanged(centered, true);
 		initTable();
-	}
 
-    void initTable(){
-    	oblist.clear();
-
-    	try {
-			oblist = UtilDao.daoLog.getAllLogs();
-		} catch (Exception e) {
+		Connection con = ConnectionReserva.createConnection();
+		box_tabelas.getItems().add("TODOS");
+		box_tabelas.getSelectionModel().select("TODOS");
+        DatabaseMetaData md;
+		try {
+			md = con.getMetaData();
+			String[] types = {"TABLE"};
+	        ResultSet rst = md.getTables("argus", null, "%", types);
+	        while (rst.next()) {
+	        	box_tabelas.getItems().add(rst.getString("TABLE_NAME").toUpperCase());
+	        }
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-    	filteredData = new FilteredList<>(oblist);
+	}
 
-    	col_acao.setCellValueFactory(new PropertyValueFactory<>("acao"));
-    	col_cod.setCellValueFactory(new PropertyValueFactory<>("id"));
-    	col_data.setCellValueFactory(new PropertyValueFactory<>("id"));
-    	col_hora.setCellValueFactory(new PropertyValueFactory<>("id"));
+    void initTable(){
 
-    	col_cod.setCellFactory(new Callback<TableColumn<LogSistema,LogSistemaID>, TableCell<LogSistema,LogSistemaID>>() {
+    	oblist = UtilDao.daoLog.getAllLogs();
+		table_log.setItems(oblist);
+		filteredData = new FilteredList<>(oblist);
 
-			@Override
-			public TableCell<LogSistema, LogSistemaID> call(TableColumn<LogSistema, LogSistemaID> param) {
+    	col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+    	col_nomeTabela.setCellValueFactory(new PropertyValueFactory<>("tabela"));
+    	col_tipo.setCellValueFactory(new PropertyValueFactory<>("tipo_alteracao"));
+    	col_usuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
+    	col_dataHora.setCellValueFactory(new PropertyValueFactory<>("data"));
 
-				final TableCell<LogSistema, LogSistemaID> cell = new TableCell<LogSistema, LogSistemaID>(){
+    	col_dataHora.setCellFactory(column -> {
+			TableCell<LogSistema, Timestamp> cell = new TableCell<LogSistema, Timestamp>() {
+				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-					@Override
-					protected void updateItem(LogSistemaID item, boolean empty) {
-						super.updateItem(item, empty);
-
-						if(empty){
-							this.setText("");
-						}else{
-							this.setText(String.valueOf(item.getCodPessoa()));
-						}
+				@Override
+				protected void updateItem(Timestamp item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
 					}
-
-				};
-				return cell;
-			}
-		});
-
-    	col_data.setCellFactory(new Callback<TableColumn<LogSistema,LogSistemaID>, TableCell<LogSistema,LogSistemaID>>() {
-
-			@Override
-			public TableCell<LogSistema, LogSistemaID> call(TableColumn<LogSistema, LogSistemaID> param) {
-
-				final TableCell<LogSistema, LogSistemaID> cell = new TableCell<LogSistema, LogSistemaID>(){
-
-					private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
-					@Override
-					protected void updateItem(LogSistemaID item, boolean empty) {
-						super.updateItem(item, empty);
-
-						if(empty){
-							this.setText("");
-						}else{
-							this.setText(format.format(item.getData()));
-						}
+					else {
+						this.setText(format.format(item));
 					}
-
-				};
-				return cell;
-			}
-		});
-
-    	col_hora.setCellFactory(new Callback<TableColumn<LogSistema,LogSistemaID>, TableCell<LogSistema,LogSistemaID>>() {
-
-			@Override
-			public TableCell<LogSistema, LogSistemaID> call(TableColumn<LogSistema, LogSistemaID> param) {
-
-				final TableCell<LogSistema, LogSistemaID> cell = new TableCell<LogSistema, LogSistemaID>(){
-					private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-
-					@Override
-					protected void updateItem(LogSistemaID item, boolean empty) {
-						super.updateItem(item, empty);
-
-						if(empty){
-							this.setText("");
-						}else{
-							format.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
-							this.setText(format.format(item.getHora()));
-						}
-					}
-
-				};
-				return cell;
-			}
+				}
+			};
+			return cell;
 		});
 
     	table_log.setItems(oblist);
+
+    	table_log.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+    		if(newSelection != null){
+    			campo_alteracoes.clear();
+    			campo_alteracoes.setText(newSelection.getAlteracao());
+    			campo_alteracoes.setText(campo_alteracoes.getText().replaceAll("\\|", "\n"));
+    			if(!newSelection.getTabela().equals("sessaopedagogica")){
+    				PseudoClass centered = PseudoClass.getPseudoClass("centered");
+        	    	campo_alteracoes.pseudoClassStateChanged(centered, true);
+    			}
+    		}
+    	});
 
     }
 

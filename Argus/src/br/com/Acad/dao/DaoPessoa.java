@@ -47,25 +47,21 @@ public class DaoPessoa implements IDaoPessoas{
 	}
 
 	@Override
-	public int UpdatePessoa(Pessoa pessoa){
+	public void UpdatePessoa(Pessoa pessoa){
 		try{
 			createEM();
 			if(!entityMn.getTransaction().isActive())
 				entityMn.getTransaction().begin();
 			entityMn.merge(pessoa);
-			int id = pessoa.getCodPessoa();
 			entityMn.flush();
 			entityMn.clear();
 			entityMn.getTransaction().commit();
-			return id;
 		}catch (PersistenceException e) {
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
 		}finally {
 			entityMn.close();
 		}
-		return 0;
-
 	}
 
 	@Override

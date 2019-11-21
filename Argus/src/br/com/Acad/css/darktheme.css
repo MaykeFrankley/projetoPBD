@@ -330,6 +330,10 @@
 	-fx-text-fill: #FFFF8D;
 }
 
+.text-area:centered .text {
+    -fx-text-alignment: center ;
+}
+
 
 /*ScrollPane */
 .scroll-pane > .viewport {
@@ -383,6 +387,10 @@
 }
 
 /*ComboBox */
+
+.combo-box:centered .list-cell {
+    -fx-alignment: center;
+}
 
 .combo-box,
 .choice-box {

@@ -109,13 +109,13 @@ public class PedagogiaManagerController implements Initializable{
     private TableView<ViewSessao> table_sessoes;
 
     @FXML
-    private TableColumn<ViewSessao, String> col_codAluno_Sessao;
+    private TableColumn<ViewSessao, SessaoPedagogicaID> col_codAluno_Sessao;
 
     @FXML
     private TableColumn<ViewSessao, String> col_nomeAluno_sessao;
 
     @FXML
-    private TableColumn<ViewSessao, Date> col_dt_atendimento;
+    private TableColumn<ViewSessao, SessaoPedagogicaID> col_dt_atendimento;
 
     @FXML
     private TableColumn<ViewSessao, String> col_status_sessao;
@@ -146,6 +146,18 @@ public class PedagogiaManagerController implements Initializable{
     		codigoPedagogoInt = Integer.valueOf(codPedagogo.getText());
     		oblist_sessoes = UtilDao.daoPedagogos.getSessaoPorPedagogo(codigoPedagogoInt);
     		table_sessoes.setItems(oblist_sessoes);
+
+    		Connection con = ConnectionClass.createConnection();
+    		try {
+    			ResultSet rs = con.prepareStatement("SELECT DISTINCT YEAR(data) FROM argus.sessaopedagogica WHERE codPedagogo = "+codigoPedagogoInt).executeQuery();
+    			while(rs.next()){
+    				box_ano.getItems().add(String.valueOf(rs.getInt(1)));
+    			}
+    			rs.close();
+    			con.close();
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}
     	}
     }
 
@@ -282,11 +294,11 @@ public class PedagogiaManagerController implements Initializable{
 	void searchPessoa(KeyEvent event) {
 		campo_pesquisa.textProperty().addListener((observableValue, oldValue,newValue)->{
 			filteredData.setPredicate(pessoa->{
+				String lowerCaseFilter = newValue.toLowerCase();
 				if(newValue==null || newValue.isEmpty()){
 					return true;
 				}
-				String lowerCaseFilter = newValue.toLowerCase();
-				if(pessoa.getNome().toLowerCase().contains(lowerCaseFilter)){
+				else if(pessoa.getNome().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
 				else if(pessoa.getNaturalidade().toLowerCase().contains(lowerCaseFilter)){
@@ -320,18 +332,19 @@ public class PedagogiaManagerController implements Initializable{
     void searchSessao(KeyEvent event) {
     	campo_Pesquisa2.textProperty().addListener((observableValue, oldValue,newValue)->{
 			filteredData2.setPredicate(sessao->{
+				String lowerCaseFilter = newValue.toLowerCase();
 				if(newValue==null || newValue.isEmpty()){
 					return true;
 				}
-				String lowerCaseFilter = newValue.toLowerCase();
-				if(String.valueOf(sessao.getCodAluno()).toLowerCase().contains(lowerCaseFilter)){
+
+				else if(String.valueOf(sessao.getId().getCodAluno()).toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
 				else if(sessao.getNome().toLowerCase().contains(lowerCaseFilter)){
 					return true;
 				}
 
-				else if(sessao.getData().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(lowerCaseFilter)){
+				else if(sessao.getId().getData().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(lowerCaseFilter)){
 					return true;
 				}
 
@@ -386,23 +399,40 @@ public class PedagogiaManagerController implements Initializable{
 
 		table_pessoas.setItems(oblist_pessoas);
 
-		col_codAluno_Sessao.setCellValueFactory(new PropertyValueFactory<>("codAluno"));
+		col_codAluno_Sessao.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_nomeAluno_sessao.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		col_dt_atendimento.setCellValueFactory(new PropertyValueFactory<>("data"));
+		col_dt_atendimento.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_status_sessao.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 		col_dt_atendimento.setCellFactory(column -> {
-			TableCell<ViewSessao, Date> cell = new TableCell<ViewSessao, Date>() {
+			TableCell<ViewSessao, SessaoPedagogicaID> cell = new TableCell<ViewSessao, SessaoPedagogicaID>() {
 				private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
 				@Override
-				protected void updateItem(Date item, boolean empty) {
+				protected void updateItem(SessaoPedagogicaID item, boolean empty) {
 					super.updateItem(item, empty);
 					if(empty) {
 						setText(null);
 					}
 					else {
-						this.setText(format.format(item));
+						this.setText(format.format(item.getData()));
+					}
+				}
+			};
+			return cell;
+		});
+
+		col_codAluno_Sessao.setCellFactory(column -> {
+			TableCell<ViewSessao, SessaoPedagogicaID> cell = new TableCell<ViewSessao, SessaoPedagogicaID>() {
+
+				@Override
+				protected void updateItem(SessaoPedagogicaID item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(String.valueOf(item.getCodAluno()));
 					}
 				}
 			};
@@ -414,7 +444,9 @@ public class PedagogiaManagerController implements Initializable{
 		table_pessoas.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
 			if(newSelection != null){
 				detalhamentoArea.clear();
+				box_situacao.setMouseTransparent(false);
 				box_situacao.getSelectionModel().clearSelection();
+				box_situacao.setMouseTransparent(true);
 				dt_atendimento.setValue(null);
 			}
 		});
@@ -425,10 +457,14 @@ public class PedagogiaManagerController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		initTables();
 
+		if(MainTelaController.user.getTipo().equals("Admin")){
+			box_admin.setVisible(true);
+		}
+
 		codigoPedagogoInt = MainTelaController.user.getCodPessoa();
 		Connection con = ConnectionClass.createConnection();
 		try {
-			ResultSet rs = con.prepareStatement("SELECT YEAR(data) FROM argus.sessaopedagogica WHERE codPedagogo = "+codigoPedagogoInt).executeQuery();
+			ResultSet rs = con.prepareStatement("SELECT DISTINCT YEAR(data) FROM argus.sessaopedagogica WHERE codPedagogo = "+codigoPedagogoInt).executeQuery();
 			while(rs.next()){
 				box_ano.getItems().add(String.valueOf(rs.getInt(1)));
 			}

@@ -166,6 +166,50 @@
                   </AnchorPane>
                </content>
             </Tab>
+            <Tab fx:id="dadosBancariosTab" closable="false" text="Dados bancarios">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="665.0" prefWidth="1280.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                           <children>
+                              <VBox fillWidth="false" prefHeight="608.0" prefWidth="467.0" spacing="40.0" style="-fx-border-color: black;">
+                                 <children>
+                                    <JFXTextField fx:id="nomeEscola" maxWidth="432.0" minWidth="183.0" prefHeight="43.0" prefWidth="432.0" promptText="Nome da escola">
+                                       <VBox.margin>
+                                          <Insets top="20.0" />
+                                       </VBox.margin>
+                                    </JFXTextField>
+                                    <HBox>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                       <children>
+                                          <JFXTextField fx:id="numConta" maxWidth="297.0" minWidth="222.0" prefHeight="43.0" prefWidth="222.0" promptText="Número da conta" />
+                                          <JFXTextField fx:id="digitoConta" maxWidth="297.0" minWidth="106.0" prefHeight="43.0" prefWidth="106.0" promptText="Dígito" />
+                                       </children>
+                                    </HBox>
+                                    <JFXTextField fx:id="agencia" maxWidth="297.0" minWidth="183.0" prefHeight="43.0" prefWidth="183.0" promptText="Agência" />
+                                    <JFXTextField fx:id="cnpj" maxWidth="297.0" minWidth="183.0" prefHeight="43.0" prefWidth="264.0" promptText="CPNPJ" />
+                                    <ComboBox fx:id="box_nomeBanco" prefHeight="41.0" prefWidth="282.0" promptText="Banco" style="-fx-font-size: 20px;">
+                                       <VBox.margin>
+                                          <Insets left="10.0" />
+                                       </VBox.margin>
+                                    </ComboBox>
+                                    <Button mnemonicParsing="false" onAction="#salvarDadosBancarios" prefHeight="49.0" prefWidth="479.0" text="Salvar" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
          </tabs>
       </JFXTabPane>
    </children>

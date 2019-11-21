@@ -17,7 +17,7 @@ public class ConnectionReserva {
 	public static boolean dbExists = false;
 
 	public final static String URL = "jdbc:mysql://127.0.0.1:3306/argus?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true&useSSL=true&"
-			+ "&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false";
+			+ "&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC&useLegacyDatetimeCode=false&allowMultiQueries=true";
 	public final static String USERNAME = "root";
 	public final static String PASSWORD = "9612";
 

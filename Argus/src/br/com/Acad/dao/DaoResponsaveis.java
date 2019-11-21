@@ -8,6 +8,8 @@ import javax.persistence.PersistenceException;
 import br.com.Acad.app.Main;
 import br.com.Acad.dao.interfaces.IDaoResponsaveis;
 import br.com.Acad.exceptions.HandleSQLException;
+import br.com.Acad.model.Boleto_pdf;
+import br.com.Acad.model.Pagamento;
 import br.com.Acad.model.ResponsavelFinanceiro;
 import br.com.Acad.model.ResponsavelFinanceiroID;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
@@ -40,7 +42,7 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen()) entityMn.close();
 		}
 	}
 
@@ -59,7 +61,7 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 			entityMn.getTransaction().rollback();
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen()) entityMn.close();
 		}
 
 	}
@@ -68,7 +70,7 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 	public ResponsavelFinanceiro getResponsavelFinanceiro(ResponsavelFinanceiroID ID) {
 		createEM();
 		ResponsavelFinanceiro rf = entityMn.find(ResponsavelFinanceiro.class, ID);
-		entityMn.close();
+		if(entityMn.isOpen()) entityMn.close();
 		return rf;
 	}
 
@@ -79,12 +81,85 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 					.setParameter("id", codResponsavel).getSingleResult();
 			return resp;
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen()) entityMn.close();
 		}
 		return null;
+	}
+
+	public void addBoletos(Boleto_pdf boleto) {
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.persist(boleto);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			if(entityMn.isOpen()) entityMn.close();
+		}
+	}
+
+	public void addPagamento(Pagamento pag){
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.persist(pag);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			if(entityMn.isOpen())
+				entityMn.close();
+		}
+
+	}
+
+	public void updatePagamento(Pagamento pag){
+		try {
+			createEM();
+			if(!entityMn.getTransaction().isActive())
+				entityMn.getTransaction().begin();
+			entityMn.merge(pag);
+			entityMn.flush();
+			entityMn.clear();
+			entityMn.getTransaction().commit();
+
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			if(entityMn.isOpen())
+				entityMn.close();
+		}
+	}
+
+	public Pagamento getPagamento(long nossoNumero){
+
+		try {
+			createEM();
+			Pagamento p = (Pagamento) entityMn.createQuery("from Pagamento where nossNumero = :n").setParameter("n", nossoNumero).getSingleResult();
+			return p;
+		} catch (PersistenceException e) {
+			entityMn.getTransaction().rollback();
+			new HandleSQLException(e);
+		}finally {
+			if(entityMn.isOpen()) entityMn.close();
+		}
+		return null;
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,7 +173,7 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen()) entityMn.close();
 		}
 		return oblist;
 	}
@@ -108,13 +183,13 @@ public class DaoResponsaveis implements IDaoResponsaveis{
 	public ObservableList<ViewResponsavelFinanceiro> getAllViewResponsavel() {
 		try {
 			createEM();
-			List<ViewResponsavelFinanceiro> list = entityMn.createNativeQuery("call argus.getResponsaveis();", ViewResponsavelFinanceiro.class).getResultList();
+			List<ViewResponsavelFinanceiro> list = entityMn.createQuery("from ViewResponsavelFinanceiro").getResultList();
 			ObservableList<ViewResponsavelFinanceiro> oblist = FXCollections.observableList(list);
 			return oblist;
 		} catch (PersistenceException e) {
 			new HandleSQLException(e);
 		}finally {
-			entityMn.close();
+			if(entityMn.isOpen()) entityMn.close();
 		}
 		return null;
 

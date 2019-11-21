@@ -102,8 +102,8 @@
 	argus.notas.serie AS Série,
 	argus.notas.`anoLetivo` AS Ano,
 	CASE argus.notas.media 
-		WHEN 0 AND argus.notas.unidade = "Final" THEN concat("NF") 
-        WHEN media THEN media
+		WHEN 0 AND argus.notas.unidade = "Final" THEN concat("") 
+        WHEN argus.notas.media  THEN argus.notas.media 
 	END As Média,
     CASE  
 		WHEN argus.notas.unidade = "Bimestral" AND argus.notas.valorUnidade = 5 THEN concat('Final')
@@ -111,13 +111,17 @@
 		WHEN argus.notas.unidade = "Bimestral" THEN concat(argus.notas.valorUnidade,'º Bimestre')
 		WHEN argus.notas.unidade = "Trimestral" THEN concat(argus.notas.valorUnidade,'º Trimestre')
     END as unidade,
-	situacao AS Situação
+	argus.mediaGeralAluno.situacao AS Situação
 FROM argus.notas,
-	argus.disciplinas
+	argus.disciplinas,
+	argus.mediaGeralAluno
 WHERE 
 	 argus.notas.`codAluno` = $P{codAluno}
 	 AND argus.notas.`anoLetivo` = $P{anoLetivo}
 	 AND argus.notas.`codDisciplina` = argus.disciplinas.`codDisciplina` 
+	 AND argus.notas.`codDisciplina` = argus.mediaGeralAluno.`codDisciplina`
+	 AND argus.mediaGeralAluno.codAluno = $P{codAluno}
+	 AND argus.mediaGeralAluno.anoLetivo = $P{anoLetivo}
 ORDER BY nome, valorUnidade ASC]]>
 	</queryString>
 	<field name="Nome" class="java.lang.String">
@@ -141,7 +145,7 @@ ORDER BY nome, valorUnidade ASC]]>
 	</field>
 	<field name="Situação" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="Situação"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="notas"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="mediageralaluno"/>
 	</field>
 	<title>
 		<band height="91" splitType="Stretch">
@@ -409,18 +413,18 @@ ORDER BY nome, valorUnidade ASC]]>
 					<property name="com.jaspersoft.studio.crosstab.style.total" value="Crosstab_CT"/>
 					<property name="com.jaspersoft.studio.crosstab.style.detail" value="Crosstab_CD"/>
 				</reportElement>
-				<rowGroup name="Nome" width="120" totalPosition="End">
+				<rowGroup name="Nome" width="160" totalPosition="End">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{Nome}]]></bucketExpression>
 					</bucket>
 					<crosstabRowHeader>
 						<cellContents mode="Opaque" style="Crosstab_CH">
 							<textField>
-								<reportElement x="0" y="0" width="120" height="20" uuid="1dd32347-14a1-449b-9611-9b47203b1430"/>
+								<reportElement x="0" y="0" width="160" height="20" uuid="1dd32347-14a1-449b-9611-9b47203b1430"/>
 								<textElement textAlignment="Left">
-									<font size="12"/>
+									<font size="11" isBold="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{Nome}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{Nome}+" ("+$V{Situação_MEASURE}+")"]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabRowHeader>
@@ -452,7 +456,7 @@ ORDER BY nome, valorUnidade ASC]]>
 				<measure name="Média_MEASURE" class="java.lang.String" calculation="Average">
 					<measureExpression><![CDATA[$F{Média}]]></measureExpression>
 				</measure>
-				<measure name="Situação_MEASURE" class="java.lang.Integer" calculation="Count">
+				<measure name="Situação_MEASURE" class="java.lang.String">
 					<measureExpression><![CDATA[$F{Situação}]]></measureExpression>
 				</measure>
 				<crosstabCell width="80" height="20">
@@ -479,18 +483,17 @@ ORDER BY nome, valorUnidade ASC]]>
 				</crosstabCell>
 			</crosstab>
 			<rectangle>
-				<reportElement x="0" y="50" width="120" height="30" uuid="1c4ca51f-352c-43d5-9936-706958643e49">
+				<reportElement x="0" y="50" width="160" height="30" uuid="1c4ca51f-352c-43d5-9936-706958643e49">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="0" y="50" width="89" height="30" uuid="5ffa8446-7ff8-4f9a-bb73-5f8c0f903a3b"/>
-				<textElement textAlignment="Left">
-					<font isBold="true"/>
+				<reportElement x="0" y="50" width="140" height="30" uuid="5ffa8446-7ff8-4f9a-bb73-5f8c0f903a3b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Componentes
-Curriculares]]></text>
+				<text><![CDATA[Componentes curriculares]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="470" y="0" width="84" height="20" uuid="f304c816-5b79-4fad-bcfe-a65c1e3b7bea"/>

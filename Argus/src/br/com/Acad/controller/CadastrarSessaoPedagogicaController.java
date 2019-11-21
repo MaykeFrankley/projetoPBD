@@ -78,11 +78,19 @@ public class CadastrarSessaoPedagogicaController implements Initializable{
     			return;
     		}
     		try {
+
     			Date d = Date.valueOf(dt_detalhamento.getValue());
         		SessaoPedagogica s = new SessaoPedagogica();
         		s.setDetalhamento(detalhamentoArea.getText());
         		s.setStatus("Em atendimento");
         		s.setId(new SessaoPedagogicaID(MainTelaController.user.getCodPessoa(), selecAluno.getCodPessoa(), d));
+
+        		SessaoPedagogica checkSessao = UtilDao.daoPedagogos.getSessao(s.getId());
+        		if(checkSessao != null){
+        			Util.Alert("Já existe uma sessão cadastrada pra esse aluno nesse dia!");
+        			return;
+        		}
+
         		UtilDao.daoPedagogos.addSessao(s);
 
         		Util.Alert("Sessão cadastrada com sucesso!");

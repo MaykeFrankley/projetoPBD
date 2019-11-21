@@ -22,7 +22,6 @@
 	<classpathentry kind="lib" path="Libs/jboss-archive-browsing.jar"/>
 	<classpathentry kind="lib" path="Libs/jfoenix.jar"/>
 	<classpathentry kind="lib" path="Libs/jta.jar"/>
-	<classpathentry kind="lib" path="Libs/log4j-1.2.11.jar"/>
 	<classpathentry kind="lib" path="Libs/mysql-connector-java-8.0.16.jar"/>
 	<classpathentry kind="lib" path="Libs/xstream-1.4.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -45,9 +44,12 @@
 	<classpathentry kind="lib" path="Libs/net.tascalate.javaflow.api-2.2.1.jar"/>
 	<classpathentry kind="lib" path="Libs/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="Libs/jfxswt.jar"/>
-	<classpathentry kind="lib" path="Libs/caelum-stella-boleto-2.1.2.jar"/>
 	<classpathentry kind="lib" path="Libs/scenicView.jar"/>
 	<classpathentry kind="lib" path="Libs/org.eclipse.jdt.compiler.apt-1.3.60.jar"/>
 	<classpathentry kind="lib" path="Libs/org.eclipse.jdt.core-3.19.0.jar"/>
+	<classpathentry kind="lib" path="Libs/itext-2.0.8.jar"/>
+	<classpathentry kind="lib" path="Libs/jrimum-bopepo-0.2.3-DEV-20190203.192336-60-dep.jar"/>
+	<classpathentry kind="lib" path="Libs/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="Libs/log4j-1.2.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

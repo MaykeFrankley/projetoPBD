@@ -36,7 +36,6 @@ public class DaoTurmas implements IDaoTurmas{
 			entityMn.clear();
 			entityMn.getTransaction().commit();
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 			entityMn.getTransaction().rollback();
 		} finally {
@@ -57,7 +56,6 @@ public class DaoTurmas implements IDaoTurmas{
 			entityMn.getTransaction().commit();
 
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 			entityMn.getTransaction().rollback();
 		} finally {
@@ -157,7 +155,6 @@ public class DaoTurmas implements IDaoTurmas{
 			ObservableList<Turma> oblist = FXCollections.observableList(list);
 			return oblist;
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 			entityMn.getTransaction().rollback();
 		} finally {
@@ -176,7 +173,6 @@ public class DaoTurmas implements IDaoTurmas{
 			ObservableList<ViewTurma> oblist = FXCollections.observableList(list);
 			return oblist;
 		} catch (PersistenceException e) {
-			e.printStackTrace();
 			new HandleSQLException(e);
 			entityMn.getTransaction().rollback();
 		} finally {

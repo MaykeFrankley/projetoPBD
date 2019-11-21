@@ -15,7 +15,6 @@ import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.SetDbUser;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -339,9 +338,6 @@ public class DrawerController{
 					Util.Alert("Senha alterada com sucesso!");
 					 new SetDbUser(MainTelaController.user.getUser(), hashNovo);
 				});
-
-        	    SysLog.addLog(SysLog.message("O usuário "+MainTelaController.user.getUser()+" alterou sua própria senha."));
-
 			}
 			else{
 				Platform.runLater(() -> {

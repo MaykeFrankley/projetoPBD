@@ -32,6 +32,8 @@ public class FillDataBase {
 			BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/scripts/createDB.sql"), "UTF8"));
 			runner.runScript(in);
 
+			new GenTriggerSql();
+
 			String admin = "INSERT INTO `Pessoas` VALUES (codPessoa, 'Mayke Frankley', 'Serra Talhada', '1997-08-08', '000.000.000-00', 'Ativo');";
 			stmt = con.prepareStatement(admin);
 			stmt.execute();
@@ -110,7 +112,7 @@ public class FillDataBase {
 
 			Usuario u3 = new Usuario();
 			u3.setUser("JoaoSilva");
-			u3.setTipo("Direção");
+			u3.setTipo("Pedagogo");
 			u3.setSenha(hashPass);
 			Util.setPrivileges(u3);
 

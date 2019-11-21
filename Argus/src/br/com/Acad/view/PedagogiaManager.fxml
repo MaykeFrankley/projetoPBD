@@ -35,6 +35,45 @@
       </ImageView>
       <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <tabs>
+            <Tab fx:id="relacaoTab" closable="false" text="Relação de alunos">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" fillWidth="false" prefHeight="821.0" prefWidth="1364.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <children>
+                              <HBox fx:id="box_admin" alignment="CENTER" visible="false">
+                                 <children>
+                                    <JFXTextField fx:id="codPedagogo" labelFloat="true" maxWidth="592.0" minWidth="87.0" onKeyReleased="#searchSessao" prefHeight="43.0" prefWidth="175.0" promptText="Código do pedagogo" />
+                                    <Button mnemonicParsing="false" onAction="#buscarPedagogo" style="-fx-font-size: 12;">
+                                       <graphic>
+                                          <FontAwesomeIconView fill="RED" glyphName="SEARCH" size="16" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <JFXTextField fx:id="campo_Pesquisa2" labelFloat="true" maxWidth="592.0" minWidth="535.0" onKeyReleased="#searchSessao" prefHeight="43.0" prefWidth="592.0" promptText="Filtrar" />
+                              <TableView fx:id="table_sessoes" prefHeight="276.0" prefWidth="1000.0">
+                                <columns>
+                                    <TableColumn fx:id="col_codAluno_Sessao" prefWidth="82.0" text="Código" />
+                                  <TableColumn fx:id="col_nomeAluno_sessao" prefWidth="386.0" text="Nome do aluno" />
+                                  <TableColumn fx:id="col_dt_atendimento" minWidth="0.0" prefWidth="191.0" text="Data de atendimento" />
+                                    <TableColumn fx:id="col_status_sessao" minWidth="0.0" prefWidth="301.0" text="Status" />
+                                </columns>
+                              </TableView>
+                              <ComboBox fx:id="box_ano" prefWidth="150.0" promptText="Ano" />
+                              <Button mnemonicParsing="false" onAction="#gerarRelacao" text="Gerar relatório da relação de alunos" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
             <Tab fx:id="alunosTab" closable="false" text="Acompanhamentos">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
@@ -98,45 +137,6 @@
                            <effect>
                               <DropShadow />
                            </effect>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-               </content>
-            </Tab>
-            <Tab fx:id="relacaoTab" closable="false" text="Relação de alunos">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                     <children>
-                        <VBox alignment="CENTER" fillWidth="false" prefHeight="821.0" prefWidth="1364.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <padding>
-                              <Insets left="40.0" />
-                           </padding>
-                           <effect>
-                              <DropShadow />
-                           </effect>
-                           <children>
-                              <HBox fx:id="box_admin" alignment="CENTER" visible="false">
-                                 <children>
-                                    <JFXTextField fx:id="codPedagogo" labelFloat="true" maxWidth="592.0" minWidth="87.0" onKeyReleased="#searchSessao" prefHeight="43.0" prefWidth="175.0" promptText="Código do pedagogo" />
-                                    <Button mnemonicParsing="false" onAction="#buscarPedagogo" style="-fx-font-size: 12;">
-                                       <graphic>
-                                          <FontAwesomeIconView fill="RED" glyphName="SEARCH" size="16" />
-                                       </graphic>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <JFXTextField fx:id="campo_Pesquisa2" labelFloat="true" maxWidth="592.0" minWidth="535.0" onKeyReleased="#searchSessao" prefHeight="43.0" prefWidth="592.0" promptText="Filtrar" />
-                              <TableView fx:id="table_sessoes" prefHeight="276.0" prefWidth="1000.0">
-                                <columns>
-                                    <TableColumn fx:id="col_codAluno_Sessao" prefWidth="82.0" text="Código" />
-                                  <TableColumn fx:id="col_nomeAluno_sessao" prefWidth="386.0" text="Nome do aluno" />
-                                  <TableColumn fx:id="col_dt_atendimento" minWidth="0.0" prefWidth="191.0" text="Data de atendimento" />
-                                    <TableColumn fx:id="col_status_sessao" minWidth="0.0" prefWidth="301.0" text="Status" />
-                                </columns>
-                              </TableView>
-                              <ComboBox fx:id="box_ano" prefWidth="150.0" promptText="Ano" />
-                              <Button mnemonicParsing="false" onAction="#gerarRelacao" text="Gerar relatório da relação de alunos" />
-                           </children>
                         </VBox>
                      </children>
                   </AnchorPane>

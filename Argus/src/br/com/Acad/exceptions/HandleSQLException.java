@@ -49,7 +49,7 @@ public class HandleSQLException {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							Util.Alert("Acesso negado!\nContate o administrador");
+							Util.Alert("Ocorreu um erro!\nContate o administrador");
 							return;
 						}
 					});
@@ -61,8 +61,8 @@ public class HandleSQLException {
 					printExeception(throwable);
 				}
 			}
-			printExeception(e);
 		}
+		printExeception(e);
 	}
 
 	private void printExeception(Throwable e){

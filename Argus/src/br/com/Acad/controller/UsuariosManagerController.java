@@ -22,13 +22,11 @@ import br.com.Acad.dao.DaoMudarSenhas;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
-import br.com.Acad.model.LogSistema;
 import br.com.Acad.model.MudarSenha;
 import br.com.Acad.model.Pessoa;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.model.ViewUsuario;
 import br.com.Acad.sql.ConnectionClass;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
@@ -221,8 +219,6 @@ public class UsuariosManagerController implements Initializable{
         	    con.close();
 
         	    initTables();
-
-        	    SysLog.addLog(SysLog.message("O admin gerou uma senha do usuário \""+user.getUser()+"\"."));
     		}
 
     	}else{
@@ -238,22 +234,13 @@ public class UsuariosManagerController implements Initializable{
 
     	if(!cod_update.getText().isEmpty() && ms != null){
 
-    		String username = UtilDao.daoUsuarios.getUsuario(ms.getCpf()).getUser();
-
         	DaoMudarSenhas daoMudarSenhas = new DaoMudarSenhas();
         	daoMudarSenhas.closeRequest(ms);
 
     	    initTables();
 
-        	LogSistema ls = Util.prepareLog();
-
-        	ls.setAcao("O admin encerrou a solicitação de senha do usuário \""+username+"\".");
-
-        	UtilDao.daoLog.addLog(ls);
-
-
-
-    	}else{
+    	}
+    	else{
     		Util.Alert("Selecione uma solicitação!");
     	}
 
@@ -489,13 +476,12 @@ public class UsuariosManagerController implements Initializable{
     	table_cpf.setItems(oblist_cpf);
     	table_usuarios.setItems(oblist_usuarios_view);
 
-    	col_tipo.setCellFactory(ComboBoxTableCell.forTableColumn("Admin", "Secretaria", "Direção", "CoordenacaoPedagogica"));
+    	col_tipo.setCellFactory(ComboBoxTableCell.forTableColumn("Admin", "Secretaria", "Direção", "Pedagogo"));
     	col_tipo.setOnEditCommit(e -> {
     		Usuario u = UtilDao.daoUsuarios.getUsuario(e.getTableView().getItems().get(e.getTablePosition().getRow()).getCpf());
     		u.setTipo(e.getNewValue());
     		try {
 				Util.setPrivileges(u);
-				SysLog.addLog(SysLog.message("alterou o tipo de usuário do usuário:"+u.getUser()));
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}

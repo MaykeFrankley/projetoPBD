@@ -1,24 +1,19 @@
 package br.com.Acad.model;
 
-import java.sql.Date;
-
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="viewSessao")
+@Table
 public class ViewSessao {
 
-	@Id
-	private int codAluno;
+	@EmbeddedId
+	private SessaoPedagogicaID id;
 
 	@Column
 	private String nome;
-
-	@Column(name="`Data de atendimento`")
-	private Date data;
 
 	@Column
 	private String status;
@@ -27,12 +22,12 @@ public class ViewSessao {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getCodAluno() {
-		return codAluno;
+	public SessaoPedagogicaID getId() {
+		return id;
 	}
 
-	public void setCodAluno(int codAluno) {
-		this.codAluno = codAluno;
+	public void setId(SessaoPedagogicaID id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -41,14 +36,6 @@ public class ViewSessao {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
 	}
 
 	public String getStatus() {

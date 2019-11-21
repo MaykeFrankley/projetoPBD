@@ -84,6 +84,8 @@ public class SettingsController implements Initializable{
 
     private JSONObject options = Settings.get();
 
+    private JSONObject dadosBancarios = Settings.getDadosBancarios();
+
     @FXML
     private VBox box_minMax;
 
@@ -92,6 +94,27 @@ public class SettingsController implements Initializable{
 
     @FXML
     private JFXTextField maxAlunos;
+
+    @FXML
+    private Tab dadosBancariosTab;
+
+    @FXML
+    private JFXTextField nomeEscola;
+
+    @FXML
+    private JFXTextField numConta;
+
+    @FXML
+    private JFXTextField digitoConta;
+
+    @FXML
+    private JFXTextField agencia;
+
+    @FXML
+    private JFXTextField cnpj;
+
+    @FXML
+    private ComboBox<String> box_nomeBanco;
 
     public static boolean callFromSettings = false;
 
@@ -175,6 +198,19 @@ public class SettingsController implements Initializable{
 
     @SuppressWarnings("unchecked")
 	@FXML
+    void salvarDadosBancarios(ActionEvent event) {
+    	dadosBancarios.put("escola", nomeEscola.getText());
+    	dadosBancarios.put("numeroConta", numConta.getText());
+    	dadosBancarios.put("digitoConta", digitoConta.getText());
+    	dadosBancarios.put("agencia", agencia.getText());
+    	dadosBancarios.put("cnpj", cnpj.getText());
+    	dadosBancarios.put("nomeBanco", box_nomeBanco.getSelectionModel().getSelectedItem());
+
+    	Settings.SaveDadosBancarios(dadosBancarios);
+    }
+
+    @SuppressWarnings("unchecked")
+	@FXML
     void minMaxAlunos(ActionEvent event) {
     	if(!minAlunos.getText().isEmpty() && !maxAlunos.getText().isEmpty()){
 	    	options.put("minAlunos", Integer.valueOf(minAlunos.getText()));
@@ -254,6 +290,13 @@ public class SettingsController implements Initializable{
 		minAlunos.setText(String.valueOf((Long)options.get("minAlunos")));
 		maxAlunos.setText(String.valueOf((Long)options.get("maxAlunos")));
 
+		nomeEscola.setText((String) dadosBancarios.get("escola"));
+		numConta.setText((String) dadosBancarios.get("numeroConta"));
+		digitoConta.setText((String) dadosBancarios.get("digitoConta"));
+		agencia.setText((String) dadosBancarios.get("agencia"));
+		cnpj.setText((String) dadosBancarios.get("cnpj"));
+		box_nomeBanco.getSelectionModel().select((String) dadosBancarios.get("nomeBanco"));
+
 		if(!MainTelaController.user.getTipo().equals("Admin")){
 			adminTab.setDisable(true);
 		}
@@ -289,6 +332,10 @@ public class SettingsController implements Initializable{
 
 				}
 				);
+
+		box_nomeBanco.getItems().addAll("BANCO_DO_BRASIL","BANCO_DO_NORDESTE_DO_BRASIL", "BANCO_SANTANDER", "BANCO_DE_BRASILIA",
+				"BANCO_INTEMEDIUM", "CECRED", "CAIXA_ECONOMICA_FEDERAL", "BANCO_BRADESCO", "BANCO_ITAU", "HSBC", "UNIBANCO",
+				"BANCO_SAFRA", "BANCO_SICREDI" , "BANCOOB");
 
 	}
 

@@ -14,7 +14,6 @@ import br.com.Acad.model.Curriculo;
 import br.com.Acad.model.CurriculoDisciplina;
 import br.com.Acad.model.CurriculoDisciplinaID;
 import br.com.Acad.model.Disciplina;
-import br.com.Acad.util.SysLog;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -141,7 +140,6 @@ public class CadastrarDisciplinaController implements Initializable{
 			cd.setNomeCurriculo(c.getNome());
 			cd.setNomeDisciplina(d.getNome());
 			UtilDao.daoCurriculo.addDisciplinaToCurriculo(cd);
-			SysLog.addLog(SysLog.message("adicionou uma disciplina para o currículo de cod: "+c.getCodCurriculo()));
 
 			cancelar(event);
 			oblist_disciplinasCur.clear();
@@ -169,11 +167,10 @@ public class CadastrarDisciplinaController implements Initializable{
 			d.setStatus("Ativo");
 
 			UtilDao.daoDisciplina.addDisciplina(d);
-			SysLog.addLog(SysLog.message("cadastrou uma nova disciplina de cod: ")+d.getCodDisciplina());
+
 		}else{
 			updateDisciplina.setNome(nome.getText());
 			UtilDao.daoDisciplina.updateDisciplina(updateDisciplina);
-			SysLog.addLog(SysLog.message("atualizou uma disciplina de cod: ")+updateDisciplina.getCodDisciplina());
 		}
 
 
