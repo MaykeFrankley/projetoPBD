@@ -8,11 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Pagamentos")
-public class Pagamento {
+@Table
+public class ViewPagamento{
 
 	@EmbeddedId
 	private PagamentoID id;
+
+	@Column
+	private String responsavel;
 
 	@Column
 	private int num_parcela;
@@ -23,7 +26,7 @@ public class Pagamento {
 	@Column
 	private String situacao;
 
-	public Pagamento() {
+	public ViewPagamento() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -35,12 +38,28 @@ public class Pagamento {
 		this.id = id;
 	}
 
+	public String getResponsavel() {
+		return responsavel;
+	}
+
+	public void setResponsavel(String responsavel) {
+		this.responsavel = responsavel;
+	}
+
 	public int getNum_parcela() {
 		return num_parcela;
 	}
 
 	public void setNum_parcela(int num_parcela) {
 		this.num_parcela = num_parcela;
+	}
+
+	public Date getDt_vencimento() {
+		return dt_vencimento;
+	}
+
+	public void setDt_vencimento(Date dt_vencimento) {
+		this.dt_vencimento = dt_vencimento;
 	}
 
 	public String getSituacao() {
@@ -51,12 +70,7 @@ public class Pagamento {
 		this.situacao = situacao;
 	}
 
-	public Date getDt_vencimento() {
-		return dt_vencimento;
-	}
 
-	public void setDt_vencimento(Date dt_vencimento) {
-		this.dt_vencimento = dt_vencimento;
-	}
+
 
 }

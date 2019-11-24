@@ -31,6 +31,8 @@ import br.com.Acad.model.SessaoPedagogica;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.Usuario;
 import br.com.Acad.model.ViewAluno;
+import br.com.Acad.model.ViewBoleto;
+import br.com.Acad.model.ViewPagamento;
 import br.com.Acad.model.ViewconfirmarAlunos;
 import br.com.Acad.model.ViewProfessor;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
@@ -76,7 +78,8 @@ public class SetDbUser extends TimerTask {
 			classes.setAll(Aluno.class, AlunoNota.class, AlunoMedia.class, AlunoTurma.class, Contato.class, Curriculo.class, CurriculoDisciplina.class, Disciplina.class,
 					DisciplinaProfessor.class, Endereco.class, LogSistema.class, MudarSenha.class, Pessoa.class, Professor.class, ResponsavelFinanceiro.class,
 					Turma.class, Usuario.class, ViewAluno.class, ViewProfessor.class, ViewResponsavelFinanceiro.class, ViewTurma.class, ViewUsuario.class, Preco.class,
-					SessaoPedagogica.class, ViewSessao.class, Matricula.class, ViewconfirmarAlunos.class, Boleto_pdf.class, Pagamento.class);
+					SessaoPedagogica.class, ViewSessao.class, Matricula.class, ViewconfirmarAlunos.class, Boleto_pdf.class, Pagamento.class, ViewPagamento.class,
+					ViewBoleto.class);
 
 			for (Class clazz : classes) {
 				cfg.addAnnotatedClass(clazz);

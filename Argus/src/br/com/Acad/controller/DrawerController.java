@@ -193,8 +193,9 @@ public class DrawerController{
 	}
 
 	@FXML
-	void pagamentos(ActionEvent event) {
-		Util.Alert("Não implementado ainda!");
+	void pagamentos(ActionEvent event) throws IOException {
+		Scene scene = (Scene) ((Node) event.getSource()).getScene();
+		Util.LoadWindow(getClass().getResource("/br/com/Acad/view/PagamentosManager.fxml"), scene, "y");
 	}
 
 	@FXML

@@ -7,6 +7,7 @@ import br.com.Acad.dao.DaoDisciplina;
 import br.com.Acad.dao.DaoEndereco;
 import br.com.Acad.dao.DaoLog;
 import br.com.Acad.dao.DaoMudarSenhas;
+import br.com.Acad.dao.DaoPagamentos;
 import br.com.Acad.dao.DaoPedagogos;
 import br.com.Acad.dao.DaoPessoa;
 import br.com.Acad.dao.DaoProfessor;
@@ -29,6 +30,7 @@ public class UtilDao {
 	public static final DaoResponsaveis daoResponsaveis = new DaoResponsaveis();
 	public static final DaoTurmas daoTurmas = new DaoTurmas();
 	public static final DaoPedagogos daoPedagogos = new DaoPedagogos();
+	public static final DaoPagamentos daoPagamentos = new DaoPagamentos();
 
 //	public static int persist(Object obj){
 //		if(obj instanceof Pessoa){

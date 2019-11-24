@@ -18,6 +18,12 @@ INSERT INTO curriculo(codCurriculo, Nome, Tipo) VALUES
 ('EM', 'Ensino Médio', 'Bimestral');
 
 --
+-- updating data into table precos
+--
+UPDATE precos SET valor = 400 WHERE codCurriculo = 'EFI';
+UPDATE precos SET valor = 600 WHERE codCurriculo = 'EFF';
+UPDATE precos SET valor = 800 WHERE codCurriculo = 'EM';
+--
 -- Inserting data into table disciplinas
 --
 INSERT INTO disciplinas(codDisciplina, Nome, Status) VALUES
@@ -622,3 +628,24 @@ INSERT INTO `Aluno-Turma`(codAluno, codTurma, anoLetivo, situacao) VALUES
 (29, 'EM-A', 2019, 'Pendente'),
 (31, 'EM-A', 2019, 'Pendente'),
 (40, 'EM-A', 2019, 'Pendente');
+
+
+INSERT INTO Boletos(codResponsavel, codAluno, codCurriculo, anoLetivo) VALUES
+(51, 102, 'EFI', 2019);
+
+--
+--Inserting data into table Pagamentos
+--
+INSERT INTO Pagamentos(codResponsavel, codAluno, codCurriculo, anoLetivo, nossoNumero, num_parcela, dt_vencimento, situacao) VALUES
+(51, 102, 'EFI', 2019, 10000000001, 1, '2019-01-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000002, 2, '2019-02-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000003, 3, '2019-03-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000004, 4, '2019-04-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000005, 5, '2019-05-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000006, 6, '2019-06-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000007, 7, '2019-07-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000008, 8, '2019-08-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000009, 9, '2019-09-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000010, 10, '2019-10-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000011, 11, '2019-11-15', 'Pendente'),
+(51, 102, 'EFI', 2019, 10000000012, 12, '2019-12-15', 'Pendente');

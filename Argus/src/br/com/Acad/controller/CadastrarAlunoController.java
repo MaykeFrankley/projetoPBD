@@ -456,7 +456,7 @@ public class CadastrarAlunoController implements Initializable{
 									initTable();
 									limpar(event);
 									Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
-									
+
 									return;
 								}
 							}
@@ -957,6 +957,8 @@ public class CadastrarAlunoController implements Initializable{
 			Calendar myCalendar = new GregorianCalendar(Integer.valueOf(box_anoLetivo.getSelectionModel().getSelectedItem()), i-1, LocalDate.now().getDayOfMonth());
 			java.util.Date dv = myCalendar.getTime();
 
+			pag.setDt_vencimento(new Date(dv.getTime()));
+
 			titulo.setDataDoVencimento(dv);
 			titulo.setTipoDeDocumento(TipoDeTitulo.DM_DUPLICATA_MERCANTIL);
 			titulo.setAceite(Titulo.Aceite.A);
@@ -986,10 +988,10 @@ public class CadastrarAlunoController implements Initializable{
 		argusBoleto.setArquivoPdf(new File(System.getProperty("user.home")+"/Desktop"+"/"+
 				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
 
-		UtilDao.daoResponsaveis.addBoletos(argusBoleto);
+		UtilDao.daoPagamentos.addBoletos(argusBoleto);
 
 		for (Pagamento pag : pgts) {
-			UtilDao.daoResponsaveis.addPagamento(pag);
+			UtilDao.daoPagamentos.addPagamento(pag);
 		}
 
 	}

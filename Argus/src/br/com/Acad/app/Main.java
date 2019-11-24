@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import com.sun.javafx.application.LauncherImpl;
 
 import br.com.Acad.sql.FillDataBase;
+import br.com.Acad.sql.GenTriggerSql;
 import br.com.Acad.util.SetDbUser;
 import br.com.Acad.util.Util;
 import javafx.application.Application;
@@ -100,7 +101,7 @@ public class Main extends Application{
 			LauncherImpl.notifyPreloader(this, new Preloader.ProgressNotification(progress));
 		}
 
-
+//		new GenTriggerSql();
 	}
 
 	public static void main(String[] args) {
