@@ -28,7 +28,7 @@
       </ImageView>
       <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <tabs>
-            <Tab closable="false" text="Dados do Aluno">
+            <Tab fx:id="tab_alunos" closable="false" text="Dados do Aluno">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>

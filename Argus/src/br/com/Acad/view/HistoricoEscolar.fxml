@@ -33,60 +33,6 @@
       </ImageView>
       <JFXTabPane fx:id="tabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <tabs>
-            <Tab fx:id="dadosEscola" closable="false" text="Dados da escola">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1366.0">
-                     <children>
-                        <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="354.0" layoutY="32.0" prefHeight="894.0" prefWidth="1366.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <padding>
-                              <Insets bottom="30.0" left="30.0" right="30.0" top="100.0" />
-                           </padding>
-                           <effect>
-                              <DropShadow />
-                           </effect>
-                           <children>
-                              <HBox spacing="40.0">
-                                 <children>
-                                    <VBox fillWidth="false" spacing="30.0">
-                                       <children>
-                                          <JFXTextField fx:id="nomeEscola" focusColor="RED" labelFloat="true" maxWidth="466.0" minWidth="432.0" prefHeight="43.0" prefWidth="466.0" promptText="*Nome da escola" unFocusColor="RED" />
-                                          <JFXTextField fx:id="endereco" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="432.0" prefHeight="43.0" prefWidth="432.0" promptText="*Endereço" unFocusColor="RED" />
-                                          <JFXTextField fx:id="bairro" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="370.0" prefHeight="43.0" prefWidth="370.0" promptText="*Bairro" unFocusColor="RED" />
-                                          <ComboBox fx:id="estado" onAction="#populateCidades" prefHeight="41.0" prefWidth="209.0" promptText="*Estado">
-                                             <VBox.margin>
-                                                <Insets left="10.0" />
-                                             </VBox.margin>
-                                          </ComboBox>
-                                          <ComboBox fx:id="cidade" prefHeight="41.0" prefWidth="269.0" promptText="*Cidade">
-                                             <VBox.margin>
-                                                <Insets left="10.0" />
-                                             </VBox.margin>
-                                          </ComboBox>
-                                       </children>
-                                    </VBox>
-                                    <VBox fillWidth="false" spacing="30.0">
-                                       <children>
-                                          <JFXTextField fx:id="telefone" focusColor="RED" labelFloat="true" maxWidth="466.0" minWidth="237.0" prefHeight="43.0" prefWidth="261.0" promptText="*Telefone" unFocusColor="RED" />
-                                          <JFXTextField fx:id="cnpj" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="237.0" prefHeight="43.0" prefWidth="237.0" promptText="*CNPJ" unFocusColor="RED" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                              <Button mnemonicParsing="false" onAction="#salvarEscola" text="Salvar" />
-                              <Label text="Campos com * são de preenchimento obrigatório" textFill="#ffff8d">
-                                 <VBox.margin>
-                                    <Insets top="100.0" />
-                                 </VBox.margin>
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-               </content>
-            </Tab>
             <Tab fx:id="selecionarAluno" closable="false" text="Selecionar Aluno">
                <content>
                   <StackPane>
@@ -158,6 +104,60 @@
                         </DialogPane>
                      </children>
                   </StackPane>
+               </content>
+            </Tab>
+            <Tab fx:id="dadosEscola" closable="false" text="Dados da escola">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1366.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="354.0" layoutY="32.0" prefHeight="894.0" prefWidth="1366.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="100.0" />
+                           </padding>
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                           <children>
+                              <HBox spacing="40.0">
+                                 <children>
+                                    <VBox fillWidth="false" spacing="30.0">
+                                       <children>
+                                          <JFXTextField fx:id="nomeEscola" focusColor="RED" labelFloat="true" maxWidth="466.0" minWidth="432.0" prefHeight="43.0" prefWidth="466.0" promptText="*Nome da escola" unFocusColor="RED" />
+                                          <JFXTextField fx:id="endereco" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="432.0" prefHeight="43.0" prefWidth="432.0" promptText="*Endereço" unFocusColor="RED" />
+                                          <JFXTextField fx:id="bairro" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="370.0" prefHeight="43.0" prefWidth="370.0" promptText="*Bairro" unFocusColor="RED" />
+                                          <ComboBox fx:id="estado" onAction="#populateCidades" prefHeight="41.0" prefWidth="209.0" promptText="*Estado">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                          <ComboBox fx:id="cidade" prefHeight="41.0" prefWidth="269.0" promptText="*Cidade">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </ComboBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox fillWidth="false" spacing="30.0">
+                                       <children>
+                                          <JFXTextField fx:id="telefone" focusColor="RED" labelFloat="true" maxWidth="466.0" minWidth="237.0" prefHeight="43.0" prefWidth="261.0" promptText="*Telefone" unFocusColor="RED" />
+                                          <JFXTextField fx:id="cnpj" focusColor="RED" labelFloat="true" maxWidth="432.0" minWidth="237.0" prefHeight="43.0" prefWidth="237.0" promptText="*CNPJ" unFocusColor="RED" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <Button mnemonicParsing="false" onAction="#salvarEscola" text="Salvar" />
+                              <Label text="Campos com * são de preenchimento obrigatório" textFill="#ffff8d">
+                                 <VBox.margin>
+                                    <Insets top="100.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
                </content>
             </Tab>
          </tabs>

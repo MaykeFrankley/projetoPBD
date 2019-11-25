@@ -89,6 +89,9 @@ public class CadastrarAlunoController implements Initializable{
 	private JFXTabPane tabPane;
 
 	@FXML
+    private Tab tab_alunos;
+
+	@FXML
 	private JFXTextField nome;
 
 	@FXML
@@ -352,7 +355,12 @@ public class CadastrarAlunoController implements Initializable{
 			a.setCodPessoa(cod);
 			if(!responsavelFin.isSelected()){
 				if(codResponsavel > 0){
+					String cpfResp = table_responsaveis.getSelectionModel().getSelectedItem().getCpf();
 					a.setCodResponsavelFin(codResponsavel);
+					resp.setId(new ResponsavelFinanceiroID(codResponsavel, cod));
+					resp.setCpf(cpfResp);
+					resp.setStatus("Ativo");
+					UtilDao.daoResponsaveis.addResponsavel(resp);
 				}
 				else{
 					responsavel.setCpf(cpf1.getText());
@@ -581,6 +589,10 @@ public class CadastrarAlunoController implements Initializable{
 			limpar(event);
 			Util.Alert("Aluno cadastrado com sucesso!\nOs boletos estão em uma pasta com o nome do responsável\nna área de trabalho!");
 		}
+
+		tabPane.getSelectionModel().select(tab_alunos);
+		tab_grade.setDisable(true);
+		tab_responsavel.setDisable(true);
 	}
 
 	@FXML

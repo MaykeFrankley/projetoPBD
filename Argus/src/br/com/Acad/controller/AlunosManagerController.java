@@ -770,63 +770,86 @@ public class AlunosManagerController implements Initializable{
 							+"\nÉ nescessário confirmar a matrícula do aluno!");
 
 				}
-				else{
-					ObservableList<Turma> turmas = UtilDao.daoTurmas.getAllTurmas();
-					for (int j = 0; j < turmas.size(); j++) {
-						Turma tempTurma = turmas.get(j);
-						int alunosSize = UtilDao.daoTurmas.getAlunos(tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()).size();
-						if(tempTurma.getCodCurriculo().equals(codCurriculo) && alunosSize < (Long)options.get("maxAlunos")){
-							AlunoTurma at = new AlunoTurma();
-							at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()));
-							at.setSituacao("Pendente");
-							UtilDao.daoTurmas.addAlunoTurma(at);
+				else{// se existe, verificar o tamanho da turma e cadastrar, se estiver lotadada, criar outra turma
+					ObservableList<ViewAluno> alunosDaTurma = UtilDao.daoTurmas.getAlunos(checkNovaTurma.getString("codTurma"), checkNovaTurma.getInt("anoLetivo"));
+					if(alunosDaTurma.size() < (Long)options.get("maxAlunos")){
+						AlunoTurma at = new AlunoTurma();
+						at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), checkNovaTurma.getString("codTurma"), checkNovaTurma.getInt("anoLetivo")));
+						at.setSituacao("Pendente");
+						UtilDao.daoTurmas.addAlunoTurma(at);
 
-							Matricula matricula = new Matricula();
-							Date dt_matricula = Date.valueOf(LocalDate.now());
-							matricula.setDt_matricula(dt_matricula);
-							matricula.setId(at.getId());
-							matricula.setSituacao("Pendente");
+						Matricula matricula = new Matricula();
+						Date dt_matricula = Date.valueOf(LocalDate.now());
+						matricula.setDt_matricula(dt_matricula);
+						matricula.setId(at.getId());
+						matricula.setSituacao("Pendente");
 
-							UtilDao.daoAlunos.addMatricula(matricula);
+						UtilDao.daoAlunos.addMatricula(matricula);
 
-							Util.Alert("O Aluno foi reprovado e foi cadastrado em uma nova turma!"
-									+"\nÉ nescessário confirmar a matrícula do aluno!");
+						Util.Alert("O Aluno foi reprovado e foi cadastrado em uma nova turma!"
+								+"\nÉ nescessário confirmar a matrícula do aluno!");
 
-							initTables();
-							return;
-						}
+						initTables();
+						return;
 					}
+					else{
+						ObservableList<Turma> turmas = UtilDao.daoTurmas.getAllTurmas();
+						for (int j = 0; j < turmas.size(); j++) {
+							Turma tempTurma = turmas.get(j);
+							int alunosSize = UtilDao.daoTurmas.getAlunos(tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()).size();
+							if(tempTurma.getCodCurriculo().equals(codCurriculo) && alunosSize < (Long)options.get("maxAlunos")){
+								AlunoTurma at = new AlunoTurma();
+								at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), tempTurma.getId().getCodTurma(), tempTurma.getId().getAnoLetivo()));
+								at.setSituacao("Pendente");
+								UtilDao.daoTurmas.addAlunoTurma(at);
 
-					String letraTurma = checkNovaTurma.getString("codTurma").substring(checkNovaTurma.getString("codTurma").length() - 1);
-					Turma novaTurma = new Turma();
-					for (String letra : ob_alfa) {
-						if(!letra.equals(letraTurma)){
-							novaTurma.setId(new TurmaID(codCurriculo+"-"+letra, anoLetivo+1));
-							break;
+								Matricula matricula = new Matricula();
+								Date dt_matricula = Date.valueOf(LocalDate.now());
+								matricula.setDt_matricula(dt_matricula);
+								matricula.setId(at.getId());
+								matricula.setSituacao("Pendente");
+
+								UtilDao.daoAlunos.addMatricula(matricula);
+
+								Util.Alert("O Aluno foi reprovado e foi cadastrado em uma nova turma!"
+										+"\nÉ nescessário confirmar a matrícula do aluno!");
+
+								initTables();
+								return;
+							}
 						}
+
+						String letraTurma = checkNovaTurma.getString("codTurma").substring(checkNovaTurma.getString("codTurma").length() - 1);
+						Turma novaTurma = new Turma();
+						for (String letra : ob_alfa) {
+							if(!letra.equals(letraTurma)){
+								novaTurma.setId(new TurmaID(codCurriculo+"-"+letra, anoLetivo+1));
+								break;
+							}
+						}
+						novaTurma.setCodCurriculo(codCurriculo);
+						novaTurma.setAno(ano+1);
+
+						UtilDao.daoTurmas.addTurma(novaTurma);
+
+						AlunoTurma at = new AlunoTurma();
+						at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
+						at.setSituacao("Pendente");
+						UtilDao.daoTurmas.addAlunoTurma(at);
+
+						Matricula matricula = new Matricula();
+						Date dt_matricula = Date.valueOf(LocalDate.now());
+						matricula.setDt_matricula(dt_matricula);
+						matricula.setId(at.getId());
+						matricula.setSituacao("Pendente");
+
+						UtilDao.daoAlunos.addMatricula(matricula);
+						Util.Alert("O Aluno foi reprovado nas disciplinas e foi cadastrado em uma nova turma!"
+								+"\nÉ nescessário confirmar a matrícula do aluno!");
+
+						initTables();
+						return;
 					}
-					novaTurma.setCodCurriculo(codCurriculo);
-					novaTurma.setAno(ano);
-
-					UtilDao.daoTurmas.addTurma(novaTurma);
-
-					AlunoTurma at = new AlunoTurma();
-					at.setId(new AlunoTurmaID(alunoReprovado.getId().getCodAluno(), novaTurma.getId().getCodTurma(), novaTurma.getId().getAnoLetivo()));
-					at.setSituacao("Pendente");
-					UtilDao.daoTurmas.addAlunoTurma(at);
-
-					Matricula matricula = new Matricula();
-					Date dt_matricula = Date.valueOf(LocalDate.now());
-					matricula.setDt_matricula(dt_matricula);
-					matricula.setId(at.getId());
-					matricula.setSituacao("Pendente");
-
-					UtilDao.daoAlunos.addMatricula(matricula);
-					Util.Alert("O Aluno foi aprovado nas disciplinas e foi cadastrado em uma nova turma!"
-							+"\nÉ nescessário confirmar a matrícula do aluno!");
-
-					initTables();
-					return;
 				}
 
 				stmt = con.prepareStatement("UPDATE `argus`.`notas` SET `situacao` = 'Finalizado' WHERE codAluno = ? AND anoLetivo = ? AND serie = ?");
@@ -1635,7 +1658,7 @@ public class AlunosManagerController implements Initializable{
 						}
 					}
 					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-					ViewResponsavelFinanceiro resp = UtilDao.daoResponsaveis.getResponsavelFinanceiro(selectedPessoa.getCodResponsavelFin());
+					ViewResponsavelFinanceiro resp = UtilDao.daoResponsaveis.getResponsavelFinanceiro(selectedPessoa.getCodPessoa());
 
 					codResp.setText(String.valueOf(resp.getCodPessoa()));nomeResp.setText(resp.getNome());
 					cpfResp.setText(resp.getCpf());dt_resp.setText(format.format(resp.getDt_nascimento()));

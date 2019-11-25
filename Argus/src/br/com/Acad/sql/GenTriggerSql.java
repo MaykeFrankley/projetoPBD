@@ -172,6 +172,9 @@ public class GenTriggerSql {
 	}
 
 	private static String genItemUpdateSql(String targetColumn) {
+		if(targetColumn.equals("detalhamento")){
+			return "CONCAT('" + targetColumn + "::', 'TextoMuitoLongo')";
+		}
 		return " IF(NOT OLD." + targetColumn + " <=> NEW." + targetColumn + ",CONCAT('NEW::',CONCAT_WS('->',CONCAT('" + targetColumn + "::',IFNULL(OLD." + targetColumn + ",'')),CONCAT(IFNULL(NEW." + targetColumn + ",''),'|'))" + ",''),'')";    }
 
 	private static String genItemDeleteSql(String targetColumn) {
@@ -181,6 +184,9 @@ public class GenTriggerSql {
 	private static String genItemInsertSql(String targetColumn) {
 		if(targetColumn.equals("arquivoPdf")){
 			return "'|', CONCAT('" + targetColumn + "::', 'boletoEmPdf')";
+		}
+		else if(targetColumn.equals("detalhamento")){
+			return "'|', CONCAT('" + targetColumn + "::', 'TextoMuitoLongo')";
 		}
 		return "'|', CONCAT('" + targetColumn + "::',IFNULL(NEW." + targetColumn + ",''))";
 	}

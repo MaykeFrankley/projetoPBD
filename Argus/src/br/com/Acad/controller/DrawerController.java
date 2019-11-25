@@ -347,7 +347,7 @@ public class DrawerController{
 
 	void setUser(Usuario user){
 		this.label_user.setText(user.getUser());
-		if(!MainTelaController.user.getTipo().equals("Admin")){
+		if(!MainTelaController.user.getTipo().equals("Admin") && !MainTelaController.user.getTipo().equals("Direção") ){
 			pessoas_btn.setDisable(true);
 		}else{
 			pessoas_btn.setDisable(false);

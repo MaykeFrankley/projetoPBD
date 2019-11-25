@@ -35,6 +35,16 @@ public class HandleSQLException {
 						}
 					});
 					break;
+				
+				case MysqlErrorNumbers.ER_TABLEACCESS_DENIED_ERROR:
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							Util.Alert("Acesso negado!\nContate o administrador");
+							return;
+						}
+					});
+					break;
 
 				case MysqlErrorNumbers.ER_DUP_ENTRY:
 					Platform.runLater(new Runnable() {
