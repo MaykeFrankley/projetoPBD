@@ -90,9 +90,6 @@ public class SettingsController implements Initializable{
     private VBox box_minMax;
 
     @FXML
-    private JFXTextField minAlunos;
-
-    @FXML
     private JFXTextField maxAlunos;
 
     @FXML
@@ -212,8 +209,7 @@ public class SettingsController implements Initializable{
     @SuppressWarnings("unchecked")
 	@FXML
     void minMaxAlunos(ActionEvent event) {
-    	if(!minAlunos.getText().isEmpty() && !maxAlunos.getText().isEmpty()){
-	    	options.put("minAlunos", Integer.valueOf(minAlunos.getText()));
+    	if(!maxAlunos.getText().isEmpty()){
 	    	options.put("maxAlunos", Integer.valueOf(maxAlunos.getText()));
 	    	Settings.Save(options);
     	}
@@ -222,20 +218,6 @@ public class SettingsController implements Initializable{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		initTable();
-		tipoCurriculo.getItems().addAll("Bimestral", "Trimestral");
-		Connection con = ConnectionClass.createConnection();
-		try {
-			ResultSet rs = con.prepareStatement("SELECT Tipo FROM argus.curriculo;").executeQuery();
-			if(rs.next()){
-				tipoCurriculo.getSelectionModel().select(rs.getString(1));
-			}
-			rs.close();
-			con.close();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
 
 		if((boolean) options.get("TemaEscuro"))
 			temaEscuro.setSelected(true);
@@ -285,57 +267,57 @@ public class SettingsController implements Initializable{
 			Settings.Save(options);
 		});
 
-		hora.setTime(LocalTime.parse((CharSequence) options.get("Hora")));
+		if(MainTelaController.user.getTipo().equals("Admin")){
+			initTable();
+			tipoCurriculo.getItems().addAll("Bimestral", "Trimestral");
+			Connection con = ConnectionClass.createConnection();
+			try {
+				ResultSet rs = con.prepareStatement("SELECT Tipo FROM argus.curriculo;").executeQuery();
+				if(rs.next()){
+					tipoCurriculo.getSelectionModel().select(rs.getString(1));
+				}
+				rs.close();
+				con.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 
-		minAlunos.setText(String.valueOf((Long)options.get("minAlunos")));
-		maxAlunos.setText(String.valueOf((Long)options.get("maxAlunos")));
+			hora.setTime(LocalTime.parse((CharSequence) options.get("Hora")));
 
-		nomeEscola.setText((String) dadosBancarios.get("escola"));
-		numConta.setText((String) dadosBancarios.get("numeroConta"));
-		digitoConta.setText((String) dadosBancarios.get("digitoConta"));
-		agencia.setText((String) dadosBancarios.get("agencia"));
-		cnpj.setText((String) dadosBancarios.get("cnpj"));
-		box_nomeBanco.getSelectionModel().select((String) dadosBancarios.get("nomeBanco"));
+			maxAlunos.setText(String.valueOf((Long)options.get("maxAlunos")));
+
+			nomeEscola.setText((String) dadosBancarios.get("escola"));
+			numConta.setText((String) dadosBancarios.get("numeroConta"));
+			digitoConta.setText((String) dadosBancarios.get("digitoConta"));
+			agencia.setText((String) dadosBancarios.get("agencia"));
+			cnpj.setText((String) dadosBancarios.get("cnpj"));
+			box_nomeBanco.getSelectionModel().select((String) dadosBancarios.get("nomeBanco"));
+
+			maxAlunos.textProperty().addListener(
+					(observable, old_value, new_value) -> {
+
+						if(new_value.contains(" ")){
+							maxAlunos.setText(old_value);
+						}
+						if(new_value.contains("")){
+							maxAlunos.setText(new_value);
+						}
+						if(!new_value.matches("\\d+")){
+							maxAlunos.setText(old_value);
+						}
+
+					}
+					);
+
+			box_nomeBanco.getItems().addAll("BANCO_DO_BRASIL","BANCO_DO_NORDESTE_DO_BRASIL", "BANCO_SANTANDER", "BANCO_DE_BRASILIA",
+					"BANCO_INTEMEDIUM", "CECRED", "CAIXA_ECONOMICA_FEDERAL", "BANCO_BRADESCO", "BANCO_ITAU", "HSBC", "UNIBANCO",
+					"BANCO_SAFRA", "BANCO_SICREDI" , "BANCOOB");
+		}
 
 		if(!MainTelaController.user.getTipo().equals("Admin")){
 			adminTab.setDisable(true);
+			dadosBancariosTab.setDisable(true);
 		}
-
-		minAlunos.textProperty().addListener(
-				(observable, old_value, new_value) -> {
-
-					if(new_value.contains(" ")){
-						minAlunos.setText(old_value);
-					}
-					if(new_value.contains("")){
-						minAlunos.setText(new_value);
-					}
-					if(new_value.matches("\\d+")){
-						minAlunos.setText(new_value);
-					}
-
-				}
-				);
-
-		maxAlunos.textProperty().addListener(
-				(observable, old_value, new_value) -> {
-
-					if(new_value.contains(" ")){
-						maxAlunos.setText(old_value);
-					}
-					if(new_value.contains("")){
-						maxAlunos.setText(new_value);
-					}
-					if(!new_value.matches("\\d+")){
-						maxAlunos.setText(old_value);
-					}
-
-				}
-				);
-
-		box_nomeBanco.getItems().addAll("BANCO_DO_BRASIL","BANCO_DO_NORDESTE_DO_BRASIL", "BANCO_SANTANDER", "BANCO_DE_BRASILIA",
-				"BANCO_INTEMEDIUM", "CECRED", "CAIXA_ECONOMICA_FEDERAL", "BANCO_BRADESCO", "BANCO_ITAU", "HSBC", "UNIBANCO",
-				"BANCO_SAFRA", "BANCO_SICREDI" , "BANCOOB");
 
 	}
 

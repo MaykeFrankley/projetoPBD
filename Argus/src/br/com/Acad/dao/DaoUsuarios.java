@@ -3,6 +3,7 @@ package br.com.Acad.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
@@ -65,23 +66,24 @@ public class DaoUsuarios implements IDaoUsuarios{
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Usuario getUsuario(String usuario, String Senha) {
 		createEM();
-		query = entityMn.createQuery("from Usuario where User = :user and Senha = :senha and Status = :s");
+		query = entityMn.createNativeQuery("select * from Usuarios where User = BINARY :user and Senha = :senha and Status = :s",
+				Usuario.class);
 		query.setParameter("user", usuario);
 		query.setParameter("senha", Senha);
 		query.setParameter("s", "Ativo");
+		Usuario u;
+		try {
+			u = (Usuario) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 
-		List<Usuario> list = query.getResultList();
 		entityMn.close();
 
-		if(list.size() > 0){
-			Usuario usu = list.get(0);
-			return usu;
-		}
-		return null;
+		return u;
 	}
 
 

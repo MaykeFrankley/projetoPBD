@@ -1,6 +1,5 @@
 package br.com.Acad.dao;
 
-import java.io.File;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -124,7 +123,7 @@ public class DaoPagamentos {
 		return null;
 	}
 
-	public File getBoletos(Boleto_pdfID id){
+	public byte[] getBoletos(Boleto_pdfID id){
 		createEM();
 		Boleto_pdf b = entityMn.find(Boleto_pdf.class, id);
 		return b.getArquivoPdf();

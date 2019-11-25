@@ -12,6 +12,5 @@ public interface IDaoAlunos {
 	public Aluno getAluno(int ID);
 	public ObservableList<Aluno> getAllAlunos();
 	public ObservableList<ViewAluno> getAllAlunosView();
-	public ViewResponsavelFinanceiro getResponsavel(int codPessoa);
 
 }

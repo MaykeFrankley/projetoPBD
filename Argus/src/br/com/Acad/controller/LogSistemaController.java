@@ -49,6 +49,9 @@ public class LogSistemaController implements Initializable{
     private JFXTextField campoPesquisa;
 
     @FXML
+    private JFXTextField campoPesquisa2;
+
+    @FXML
     private ComboBox<String> box_tabelas;
 
     @FXML
@@ -76,8 +79,11 @@ public class LogSistemaController implements Initializable{
 
     private FilteredList<LogSistema> filteredData;
 
+    private FilteredList<LogSistema> filteredData2;
+
     @FXML
     void searchLog(KeyEvent event) {
+    	campoPesquisa2.clear();
     	campoPesquisa.textProperty().addListener((observableValue, oldValue,newValue)->{
 			filteredData.setPredicate(LogSistema->{
 				String lowerCaseFilter = newValue.toLowerCase();
@@ -110,6 +116,46 @@ public class LogSistemaController implements Initializable{
 			});
 		});
 		SortedList<LogSistema> sortedData = new SortedList<>(filteredData);
+		sortedData.comparatorProperty().bind(table_log.comparatorProperty());
+		table_log.setItems(sortedData);
+		filteredData2 = new FilteredList<>(table_log.getItems());
+
+    }
+
+    @FXML
+    void searchLog2(KeyEvent event) {
+    	campoPesquisa2.textProperty().addListener((observableValue, oldValue,newValue)->{
+    		filteredData2.setPredicate(LogSistema->{
+				String lowerCaseFilter = newValue.toLowerCase();
+
+				if(newValue==null || newValue.isEmpty()){
+					return true;
+				}
+
+				else if(LogSistema.getTabela().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getTipo_alteracao().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getUsuario().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getData().toLocalDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")).contains(lowerCaseFilter)){
+					return true;
+				}
+
+				else if(LogSistema.getAlteracao().toLowerCase().contains(lowerCaseFilter)){
+					return true;
+				}
+
+				return false;
+			});
+		});
+		SortedList<LogSistema> sortedData = new SortedList<>(filteredData2);
 		sortedData.comparatorProperty().bind(table_log.comparatorProperty());
 		table_log.setItems(sortedData);
 

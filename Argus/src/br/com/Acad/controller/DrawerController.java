@@ -248,7 +248,7 @@ public class DrawerController{
 		box.setSpacing(40);
 		JFXPasswordField antigaSenha = new JFXPasswordField();
 		antigaSenha.setLabelFloat(true);
-		antigaSenha.setPromptText("Senha antiga");
+		antigaSenha.setPromptText("Senha atual");
 		antigaSenha.requestFocus();
 		box.getChildren().add(antigaSenha);
 
@@ -270,9 +270,6 @@ public class DrawerController{
 				(observable, old_value, new_value) -> {
 
 					if(new_value.contains(" ")){
-						antigaSenha.setText(old_value);
-					}
-					if(new_value.length() > 11){
 						antigaSenha.setText(old_value);
 					}
 				}

@@ -33,8 +33,7 @@ public class Settings {
 			options.put("Animacoes", true);
 			options.put("Hora", "00:00");
 			options.put("DiaDoMes", 1);
-			options.put("minAlunos", 5);
-			options.put("maxAlunos", 40);
+			options.put("maxAlunos", 50);
 			Save(options);
 		}
 		return options;

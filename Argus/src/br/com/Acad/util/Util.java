@@ -359,6 +359,10 @@ public class Util {
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
+			stmt = con.prepareStatement("grant select on argus.viewresponsavelfinanceiro to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
 			stmt = con.prepareStatement("grant select on argus.ViewTurma to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
@@ -368,6 +372,10 @@ public class Util {
 			stmt.execute();
 
 			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getAlunos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant execute on PROCEDURE argus.getResponsavelDoAluno to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
@@ -427,7 +435,7 @@ public class Util {
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
-			stmt = con.prepareStatement("grant select, insert, update on argus.Notas to ?@localhost;");
+			stmt = con.prepareStatement("grant select, insert, update on argus.MediaGeralAluno to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 
@@ -444,6 +452,22 @@ public class Util {
 			stmt.execute();
 
 			stmt = con.prepareStatement("grant select, insert, update on argus.confirmarAlunos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select, insert, update on argus.responsaveisfinanceiros to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.precos to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+
+			stmt = con.prepareStatement("grant select on argus.viewboleto to ?@localhost;");
+    	    stmt.setString(1, u.getUser());
+			stmt.execute();
+			
+			stmt = con.prepareStatement("grant select on argus.viewpagamento to ?@localhost;");
     	    stmt.setString(1, u.getUser());
 			stmt.execute();
 

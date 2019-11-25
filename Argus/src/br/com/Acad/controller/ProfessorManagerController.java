@@ -1,7 +1,11 @@
 package br.com.Acad.controller;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +29,7 @@ import br.com.Acad.model.DisciplinaProfessor;
 import br.com.Acad.model.DisciplinaProfessorID;
 import br.com.Acad.model.Professor;
 import br.com.Acad.model.ViewProfessor;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
@@ -272,9 +277,7 @@ public class ProfessorManagerController implements Initializable{
 
 	private FilteredList<Professor> filteredData2;
 
-	private ViewProfessor oldPessoa;private Contato oldContato;private Endereco oldEndereco;private String oldCPF;
-
-	private Professor oldProfessor;
+	private String oldCPF;
 
 	@FXML
 	void adicionar(ActionEvent event) {
@@ -346,18 +349,17 @@ public class ProfessorManagerController implements Initializable{
 	}
 
 	@FXML
-	void atualizar(ActionEvent event) {
+	void atualizar(ActionEvent event) throws SQLException {
 		if(checkTextFields()){
 			oblist_pessoas = UtilDao.daoProfessor.getAllProfessoresView();
-			for (int i = 0; i < oblist_pessoas.size(); i++) {
-				String obCPF = oblist_pessoas.get(i).getCpf();
-
-				if((obCPF != null && oldCPF != null) || obCPF != null){
-					if(obCPF.equals(cpf_update.getText()) && !cpf_update.getText().equals(oldCPF)){
-						Util.Alert("CPF já está cadastrado no sistema!");
-						return;
-					}
-
+			Connection con = ConnectionClass.createConnection();
+			PreparedStatement stmt = con.prepareStatement("SELECT cpf FROM argus.pessoas WHERE pessoas.cpf = ?");
+			stmt.setString(1, cpf_update.getText());
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()){
+				if(!oldCPF.equals(rs.getString(1))){
+					Util.Alert("CPF já está cadastrado no sistema!");
+					return;
 				}
 			}
 
@@ -531,7 +533,6 @@ public class ProfessorManagerController implements Initializable{
 	void selecionarPessoa(ActionEvent event) {
 		ViewProfessor p = table_pessoas.getSelectionModel().getSelectedItem();
 		if(p != null){
-			oldPessoa = p;
 			limpar(event);
 
 			codigo_listar.setText(String.valueOf(p.getCodPessoa()));
@@ -540,7 +541,6 @@ public class ProfessorManagerController implements Initializable{
 			Contato c = UtilDao.daoContatos.getContato(p.getCodPessoa());
 
 			Professor pr = UtilDao.daoProfessor.getProfessor(p.getCodPessoa());
-			oldProfessor = pr;
 
 			nome_update.setText(p.getNome());
 			naturalidade_update.setText(p.getNaturalidade());
@@ -560,7 +560,6 @@ public class ProfessorManagerController implements Initializable{
 			formacao.getSelectionModel().select(pr.getFormacao());
 			cursoFormacao.setText(pr.getCursoFormacao());
 
-			oldEndereco = e;
 			if(c != null){
 				if(c.getEmail() != null)email_update.setText(c.getEmail());
 				if(c.getTelefone() != null)telefone_update.setText(c.getTelefone());
@@ -570,8 +569,6 @@ public class ProfessorManagerController implements Initializable{
 				}else{
 					whatsapp_update.setSelected(false);
 				}
-
-				oldContato = c;
 			}
 
 			enableAtualizar();

@@ -3,29 +3,23 @@ package br.com.Acad.model;
 import java.sql.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 @Entity
 public class ViewconfirmarAlunos {
 
-	@Id
-	private int codAluno;
+	@EmbeddedId
+	private AlunoTurmaID id;
 
 	@Column
-	private String codTurma;
+	private int serie;
 
 	@Column
 	private String aluno;
 
 	@Column
 	private String curriculo;
-
-	@Column
-	private int serie;
-
-	@Column
-	private int anoLetivo;
 
 	@Column
 	private Date dt_matricula;
@@ -37,13 +31,11 @@ public class ViewconfirmarAlunos {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getCodAluno() {
-		return codAluno;
+
+	public AlunoTurmaID getId() {
+		return id;
 	}
 
-	public void setCodAluno(int codAluno) {
-		this.codAluno = codAluno;
-	}
 
 	public String getAluno() {
 		return aluno;
@@ -61,21 +53,6 @@ public class ViewconfirmarAlunos {
 		this.curriculo = curriculo;
 	}
 
-	public int getSerie() {
-		return serie;
-	}
-
-	public void setSerie(int serie) {
-		this.serie = serie;
-	}
-
-	public int getAnoLetivo() {
-		return anoLetivo;
-	}
-
-	public void setAnoLetivo(int anoLetivo) {
-		this.anoLetivo = anoLetivo;
-	}
 
 	public Date getDt_matricula() {
 		return dt_matricula;
@@ -93,12 +70,14 @@ public class ViewconfirmarAlunos {
 		this.situacao = situacao;
 	}
 
-	public String getCodTurma() {
-		return codTurma;
+
+	public int getSerie() {
+		return serie;
 	}
 
-	public void setCodTurma(String codTurma) {
-		this.codTurma = codTurma;
+
+	public void setSerie(int serie) {
+		this.serie = serie;
 	}
 
 

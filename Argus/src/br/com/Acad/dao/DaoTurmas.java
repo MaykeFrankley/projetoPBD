@@ -12,6 +12,7 @@ import br.com.Acad.exceptions.HandleSQLException;
 import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.AlunoTurmaID;
 import br.com.Acad.model.Turma;
+import br.com.Acad.model.TurmaID;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewTurma;
 import javafx.collections.FXCollections;
@@ -23,14 +24,14 @@ public class DaoTurmas implements IDaoTurmas{
 
 	public void createEM(){
 		this.entityMn = Main.factory.createEntityManager();
+		if(!entityMn.getTransaction().isActive())
+			entityMn.getTransaction().begin();
 	}
 
 	@Override
 	public void addTurma(Turma turma) {
 		try {
 			createEM();
-			if(!entityMn.getTransaction().isActive())
-				entityMn.getTransaction().begin();
 			entityMn.persist(turma);
 			entityMn.flush();
 			entityMn.clear();
@@ -48,8 +49,6 @@ public class DaoTurmas implements IDaoTurmas{
 	public void updateTurma(Turma turma) {
 		try {
 			createEM();
-			if(!entityMn.getTransaction().isActive())
-				entityMn.getTransaction().begin();
 			entityMn.merge(turma);
 			entityMn.flush();
 			entityMn.clear();
@@ -64,9 +63,9 @@ public class DaoTurmas implements IDaoTurmas{
 	}
 
 	@Override
-	public Turma getTurma(int codTurma) {
+	public Turma getTurma(TurmaID id) {
 		createEM();
-		Turma t = entityMn.find(Turma.class, codTurma);
+		Turma t = entityMn.find(Turma.class, id);
 		entityMn.close();
 		return t;
 	}
@@ -75,8 +74,6 @@ public class DaoTurmas implements IDaoTurmas{
 	public void addAlunoTurma(AlunoTurma alunoturma) {
 		try {
 			createEM();
-			if(!entityMn.getTransaction().isActive())
-				entityMn.getTransaction().begin();
 			entityMn.persist(alunoturma);
 			entityMn.flush();
 			entityMn.clear();
@@ -94,8 +91,7 @@ public class DaoTurmas implements IDaoTurmas{
 	public void updateAlunoTurma(AlunoTurma alunoturma){
 		try {
 			createEM();
-			if(!entityMn.getTransaction().isActive())
-				entityMn.getTransaction().begin();
+
 			entityMn.merge(alunoturma);
 			entityMn.flush();
 			entityMn.clear();

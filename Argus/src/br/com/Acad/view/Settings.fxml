@@ -128,15 +128,10 @@
                                     <Font name="System Bold" size="18.0" />
                                  </font>
                               </Label>
-                              <HBox>
+                              <HBox fillHeight="false" prefHeight="51.0" prefWidth="281.0" spacing="100.0" style="-fx-border-color: black;">
                                  <children>
-                                    <HBox fillHeight="false" prefHeight="49.0" prefWidth="474.0" spacing="100.0" style="-fx-border-color: black;">
-                                       <children>
-                                          <JFXTextField fx:id="minAlunos" focusColor="RED" labelFloat="true" maxWidth="75.0" minWidth="75.0" prefHeight="43.0" prefWidth="75.0" promptText="Min alunos" />
-                                          <JFXTextField fx:id="maxAlunos" focusColor="RED" labelFloat="true" maxWidth="75.0" minWidth="75.0" prefHeight="43.0" prefWidth="75.0" promptText="Max alunos" />
-                                          <Button mnemonicParsing="false" onAction="#minMaxAlunos" text="Aplicar" />
-                                       </children>
-                                    </HBox>
+                                    <JFXTextField fx:id="maxAlunos" focusColor="RED" labelFloat="true" maxWidth="75.0" minWidth="75.0" prefHeight="43.0" prefWidth="75.0" promptText="Max alunos" />
+                                    <Button mnemonicParsing="false" onAction="#minMaxAlunos" text="Aplicar" />
                                  </children>
                               </HBox>
                               <VBox fx:id="box_backup" alignment="TOP_CENTER" prefHeight="208.0" prefWidth="731.0" style="-fx-border-color: black;">

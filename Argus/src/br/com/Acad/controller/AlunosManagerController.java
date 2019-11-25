@@ -1,5 +1,9 @@
 package br.com.Acad.controller;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
@@ -9,9 +13,27 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ThreadLocalRandom;
 
+import org.jrimum.bopepo.BancosSuportados;
+import org.jrimum.bopepo.Boleto;
+import org.jrimum.bopepo.pdf.Files;
+import org.jrimum.bopepo.view.BoletoViewer;
+import org.jrimum.domkee.comum.pessoa.endereco.UnidadeFederativa;
+import org.jrimum.domkee.financeiro.banco.febraban.Agencia;
+import org.jrimum.domkee.financeiro.banco.febraban.Carteira;
+import org.jrimum.domkee.financeiro.banco.febraban.Cedente;
+import org.jrimum.domkee.financeiro.banco.febraban.ContaBancaria;
+import org.jrimum.domkee.financeiro.banco.febraban.NumeroDaConta;
+import org.jrimum.domkee.financeiro.banco.febraban.Sacado;
+import org.jrimum.domkee.financeiro.banco.febraban.TipoDeTitulo;
+import org.jrimum.domkee.financeiro.banco.febraban.Titulo;
 import org.json.simple.JSONObject;
 
 import com.jfoenix.controls.JFXButton;
@@ -27,16 +49,23 @@ import br.com.Acad.model.AlunoNota;
 import br.com.Acad.model.AlunoNotaID;
 import br.com.Acad.model.AlunoTurma;
 import br.com.Acad.model.AlunoTurmaID;
+import br.com.Acad.model.Boleto_pdf;
+import br.com.Acad.model.Boleto_pdfID;
 import br.com.Acad.model.Contato;
 import br.com.Acad.model.Endereco;
 import br.com.Acad.model.Matricula;
+import br.com.Acad.model.Pagamento;
+import br.com.Acad.model.PagamentoID;
 import br.com.Acad.model.Pessoa;
+import br.com.Acad.model.ResponsavelFinanceiro;
+import br.com.Acad.model.ResponsavelFinanceiroID;
 import br.com.Acad.model.Turma;
 import br.com.Acad.model.TurmaID;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewconfirmarAlunos;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.model.ViewTurma;
+import br.com.Acad.sql.ConnectionClass;
 import br.com.Acad.sql.ConnectionReserva;
 import br.com.Acad.util.AutoCompleteComboBoxListener;
 import br.com.Acad.util.Settings;
@@ -344,7 +373,7 @@ public class AlunosManagerController implements Initializable{
 	private TableView<ViewconfirmarAlunos> table_matriculas;
 
 	@FXML
-	private TableColumn<ViewconfirmarAlunos, String> col_codAluno_mat;
+	private TableColumn<ViewconfirmarAlunos, AlunoTurmaID> col_codAluno_mat;
 
 	@FXML
 	private TableColumn<ViewconfirmarAlunos, String> col_nomeAluno_mat;
@@ -359,7 +388,7 @@ public class AlunosManagerController implements Initializable{
 	private TableColumn<ViewconfirmarAlunos, Date> col_dtMatricula;
 
 	@FXML
-	private TableColumn<ViewconfirmarAlunos, String> col_anoLetivo_mat;
+	private TableColumn<ViewconfirmarAlunos, AlunoTurmaID> col_anoLetivo_mat;
 
 	@FXML
 	private TableColumn<ViewconfirmarAlunos, String> col_situacao_mat;
@@ -389,6 +418,8 @@ public class AlunosManagerController implements Initializable{
 	private AlunoTurma alunoReprovado;
 
 	private JSONObject options = Settings.get();
+
+	long randomNossoNum = ThreadLocalRandom.current().nextLong(10000000000l, 89999999999l);
 
 	@FXML
 	void atualizar(ActionEvent event) {
@@ -543,8 +574,9 @@ public class AlunosManagerController implements Initializable{
 			int ano = 0;
 			PreparedStatement stmt;
 			try {
-				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ?;");
+				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ? AND Turmas.anoLetivo = ?;");
 				stmt.setString(1, alunoAprovado.getId().getCodTurma());
+				stmt.setInt(2, alunoAprovado.getId().getAnoLetivo());
 				ResultSet getTurma = stmt.executeQuery();
 				if(getTurma.next()){
 					codCurriculo = getTurma.getString("codCurriculo");
@@ -698,8 +730,9 @@ public class AlunosManagerController implements Initializable{
 			int ano = 0;
 			PreparedStatement stmt;
 			try {
-				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ?;");
+				stmt = con.prepareStatement("SELECT Turmas.codCurriculo, Turmas.anoLetivo, Turmas.ano FROM Turmas WHERE Turmas.codTurma = ? AND Turmas.anoLetivo = ?;");
 				stmt.setString(1, alunoReprovado.getId().getCodTurma());
+				stmt.setInt(2, alunoReprovado.getId().getAnoLetivo());
 				ResultSet getTurma = stmt.executeQuery();
 				if(getTurma.next()){
 					codCurriculo = getTurma.getString("codCurriculo");
@@ -1335,14 +1368,32 @@ public class AlunosManagerController implements Initializable{
 	@FXML
 	void confirmar_matricula(ActionEvent event) {
 		ViewconfirmarAlunos m = table_matriculas.getSelectionModel().getSelectedItem();
+
 		if(m != null){
 			JFXButton yes = new JFXButton("Confirmar");
 			yes.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even1) ->{
-				Matricula matricula = UtilDao.daoAlunos.getMatricula(new AlunoTurmaID(m.getCodAluno(), m.getCodTurma(), m.getAnoLetivo()));
+
+				Matricula matricula = UtilDao.daoAlunos.getMatricula(m.getId());
+
+				ViewResponsavelFinanceiro viewResp = UtilDao.daoAlunos.getResponsavel(matricula.getId().getCodAluno());
+
+				ResponsavelFinanceiro resp = UtilDao.daoResponsaveis.getResponsavelFinanceiro(new ResponsavelFinanceiroID(viewResp.getCodPessoa(), matricula.getId().getCodAluno()));
+
+
+				String codCurriculo = UtilDao.daoTurmas.getTurma(new TurmaID(m.getId().getCodTurma(), m.getId().getAnoLetivo())).getCodCurriculo();
+				try {
+					if(!matricula.getSituacao().equals("Confirmada"))
+						gerarBoletos(resp,codCurriculo, matricula.getId().getAnoLetivo());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 				matricula.setSituacao("Confirmada");
 				UtilDao.daoAlunos.updateMatricula(matricula);
+
 				initTables();
 				Util.contentPane.getChildren().get(0).setEffect(null);
+				Util.Alert("Os boletos estão em uma pasta com o nome do responsável\n na área de trabalho.");
 			});
 			JFXButton cancel = new JFXButton("Cancelar");
 			cancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent even2) ->{
@@ -1351,6 +1402,104 @@ public class AlunosManagerController implements Initializable{
 
 			Util.confirmation(Arrays.asList(yes, cancel),"Deseja confirmar a matrícula do aluno: "+m.getAluno());
 		}
+	}
+
+	void gerarBoletos(ResponsavelFinanceiro resp, String codCurriculo, int anoLetivo) throws IOException{
+
+		JSONObject escola = Settings.getDadosBancarios();
+
+		Cedente cedente = new Cedente((String) escola.get("escola"), (String) escola.get("cnpj"));
+
+		Sacado sacado = new Sacado(UtilDao.daoPessoa.getPessoa(
+				resp.getId().getCodPessoa()).getNome(),
+				resp.getCpf());
+
+
+		Endereco end = UtilDao.daoEnderecos.getEndereco(resp.getId().getCodPessoa());
+		org.jrimum.domkee.comum.pessoa.endereco.Endereco enderecoSacado = new org.jrimum.domkee.comum.pessoa.endereco.Endereco();
+		enderecoSacado.setBairro(end.getBairro());
+		enderecoSacado.setComplemento(end.getComplemento());
+		enderecoSacado.setLocalidade(end.getCidade());
+		enderecoSacado.setLogradouro(end.getRua());
+		enderecoSacado.setNumero(String.valueOf(end.getNumero()));
+		enderecoSacado.setPais("Brasil");
+		enderecoSacado.setUF(UnidadeFederativa.valueOf(Util.getUF(end.getEstado())));
+
+		sacado.addEndereco(enderecoSacado);
+
+		ContaBancaria contaCedente = new ContaBancaria(BancosSuportados.valueOf((String) escola.get("nomeBanco")).create());
+		contaCedente.setNumeroDaConta(new NumeroDaConta(Integer.valueOf((String) escola.get("numeroConta")), (String) escola.get("digitoConta")));
+		contaCedente.setCarteira(new Carteira(1));
+		contaCedente.setAgencia(new Agencia(Integer.valueOf((String) escola.get("agencia")), "X"));
+
+		List<Pagamento> pgts = new ArrayList<>();
+		List<Boleto> boletos = new ArrayList<>();
+		for (int i = 1; i < 13; i++) {
+			Connection con = ConnectionClass.createConnection();
+			try {
+				boolean unique = false;
+				while(!unique){
+					PreparedStatement stmt = con.prepareStatement("SELECT nossoNumero FROM argus.Pagamentos WHERE nossoNumero = ?;");
+					stmt.setLong(1, randomNossoNum);
+					ResultSet rs = stmt.executeQuery();
+					if(!rs.next()){
+						unique = true;
+					}
+					randomNossoNum = ThreadLocalRandom.current().nextLong(10000000000l, 89999999999l);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Pagamento pag = new Pagamento();
+			pag.setId(new PagamentoID(resp.getId().getCodPessoa(), resp.getId().getCodAluno(), codCurriculo, anoLetivo, randomNossoNum));
+			pag.setSituacao("Pendente");
+			pag.setNum_parcela(i);
+
+			Titulo titulo = new Titulo(contaCedente, sacado, cedente);
+			titulo.setNumeroDoDocumento("0");
+			titulo.setValor(BigDecimal.valueOf(UtilDao.daoCurriculo.getPreco(codCurriculo).getValor()));
+			titulo.setValorCobrado(BigDecimal.valueOf(UtilDao.daoCurriculo.getPreco(codCurriculo).getValor()));
+			titulo.setDataDoDocumento(new java.util.Date());
+			Calendar myCalendar = new GregorianCalendar(anoLetivo, i-1, LocalDate.now().getDayOfMonth());
+			java.util.Date dv = myCalendar.getTime();
+
+			pag.setDt_vencimento(new Date(dv.getTime()));
+
+			titulo.setDataDoVencimento(dv);
+			titulo.setTipoDeDocumento(TipoDeTitulo.DM_DUPLICATA_MERCANTIL);
+			titulo.setAceite(Titulo.Aceite.A);
+			titulo.setNossoNumero(String.valueOf(randomNossoNum));
+			titulo.setDigitoDoNossoNumero("1");
+
+			Boleto boleto = new Boleto(titulo);
+			boleto.setLocalPagamento("Em qualquer banco ou lotérica até o vencimento");
+			boleto.setInstrucaoAoSacado("Após o pagamento, levar o recibo para um secretário da escola!");
+			boleto.addTextosExtras("Numero do boleto", String.valueOf(i));
+
+			boletos.add(boleto);
+			pgts.add(pag);
+		}
+		new File(System.getProperty("user.home")+"/Desktop"+"/"+UtilDao.daoPessoa.getPessoa(
+				resp.getId().getCodPessoa()).getNome()).mkdir();
+
+
+		BoletoViewer.groupInOnePDF(boletos, new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
+
+		Desktop.getDesktop().open(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
+
+		Boleto_pdf argusBoleto = new Boleto_pdf();
+		argusBoleto.setId(new Boleto_pdfID(resp.getId().getCodPessoa(), resp.getId().getCodAluno(), codCurriculo, anoLetivo));
+		argusBoleto.setArquivoPdf(Files.toByteArray(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf")));
+
+		UtilDao.daoPagamentos.addBoletos(argusBoleto);
+
+		for (Pagamento pag : pgts) {
+			UtilDao.daoPagamentos.addPagamento(pag);
+		}
+
 	}
 
 	void initTables(){
@@ -1371,13 +1520,48 @@ public class AlunosManagerController implements Initializable{
 		col_nomeMae.setCellValueFactory(new PropertyValueFactory<>("nomeMae"));
 		col_nomePai.setCellValueFactory(new PropertyValueFactory<>("nomePai"));
 
-		col_codAluno_mat.setCellValueFactory(new PropertyValueFactory<>("codAluno"));
+		col_codAluno_mat.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_nomeAluno_mat.setCellValueFactory(new PropertyValueFactory<>("aluno"));
 		col_curriculo_mat.setCellValueFactory(new PropertyValueFactory<>("curriculo"));
 		col_situacao_mat.setCellValueFactory(new PropertyValueFactory<>("situacao"));
 		col_ano_mat.setCellValueFactory(new PropertyValueFactory<>("serie"));
-		col_anoLetivo_mat.setCellValueFactory(new PropertyValueFactory<>("anoLetivo"));
+		col_anoLetivo_mat.setCellValueFactory(new PropertyValueFactory<>("id"));
 		col_dtMatricula.setCellValueFactory(new PropertyValueFactory<>("dt_matricula"));
+
+		col_anoLetivo_mat.setCellFactory(column -> {
+			TableCell<ViewconfirmarAlunos, AlunoTurmaID> cell = new TableCell<ViewconfirmarAlunos, AlunoTurmaID>() {
+
+				@Override
+				protected void updateItem(AlunoTurmaID item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(String.valueOf(item.getAnoLetivo()));
+					}
+				}
+			};
+			return cell;
+		});
+
+
+		col_codAluno_mat.setCellFactory(column -> {
+			TableCell<ViewconfirmarAlunos, AlunoTurmaID> cell = new TableCell<ViewconfirmarAlunos, AlunoTurmaID>() {
+
+				@Override
+				protected void updateItem(AlunoTurmaID item, boolean empty) {
+					super.updateItem(item, empty);
+					if(empty) {
+						setText(null);
+					}
+					else {
+						this.setText(String.valueOf(item.getCodAluno()));
+					}
+				}
+			};
+			return cell;
+		});
 
 		col_dtMatricula.setCellFactory(column -> {
 			TableCell<ViewconfirmarAlunos, Date> cell = new TableCell<ViewconfirmarAlunos, Date>() {
@@ -1570,7 +1754,7 @@ public class AlunosManagerController implements Initializable{
 					if(m.getSerie() == selected.getAno() && m.getSituacao().equals("Pendente")){
 						for (int i = 0; i < alunos.size(); i++) {
 							ViewAluno aluno = alunos.get(i);
-							if(m.getCodAluno() == aluno.getCodPessoa()){
+							if(m.getId().getCodAluno() == aluno.getCodPessoa()){
 								alunos.remove(aluno);i--;
 							}
 						}

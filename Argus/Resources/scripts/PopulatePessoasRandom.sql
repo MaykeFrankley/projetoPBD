@@ -267,7 +267,7 @@ INSERT INTO pessoas(codPessoa, Nome, Naturalidade, Dt_nascimento, CPF, Status) V
 (98, 'Darleen Bratcher', 'Houtzdale', '1953-10-30', '097.963.451-24', 'Ativo'),
 (99, 'Stanley Anderson', 'Hadley', '2003-11-12', '612.620.363-33', 'Ativo'),
 (100, 'Clarence Abbott', 'Elizabeth', '2004-10-13', '906.058.179-07', 'Ativo'),
-(101, 'Clint Merriman', 'Lookout Mountain', '1949-01-05', '856.487.469-50', 'Ativo'),
+(101, 'Clint Merriman', 'Lookout Mountain', '1949-01-05', '255.098.410-28', 'Ativo'),
 (102, 'Johnson Carl', 'Hagerman', '2015-09-29', NULL, 'Ativo');
 --
 -- Inserting data into table contatos
@@ -430,7 +430,7 @@ INSERT INTO enderecos(codPessoa, Rua, Numero, Complemento, Bairro, Cidade, Estad
 (85, '222 Waterview Ct', 12, '8th Floor', 'South Wales', 'Lincolnwood', 'Colorado'),
 (90, '1807 NE Pine Tree Ct', 83, '58th FL', 'Heislerville', 'Mower County', 'Alaska'),
 (57, '244 White Social Parkway', 24, '85th FL', 'Chowchilla', 'Bondurant', 'Arizona'),
-(101, '537 New Deepwood Court', 171, '8th Floor', 'Fairmont', 'West Pawlet', 'Delaware'),
+(101, '537 New Deepwood Court', 171, '8th Floor', 'Fairmont', 'West Pawlet', 'Pernambuco'),
 (99, '151 Front Loop', 28, '89th Floor', 'Potomac', 'Convent', 'Georgia'),
 (96, '162 Rock Hill Hwy', 112, '6th FL', 'Newman', 'Ft Deposit', 'North Carolina'),
 (63, '3131 Social Ave', 78, '86th Floor', 'Potosi', 'Davenport', 'New Mexico'),
@@ -548,7 +548,7 @@ INSERT INTO ResponsaveisFinanceiros(codPessoa, codAluno, CPF, Status) VALUES
 (7, 11, '653.359.505-61', 'Ativo'),
 (91, 10, '750.274.633-30', 'Ativo'),
 (37, 8, '545.947.609-11', 'Ativo'),
-(101, 6, '856.487.469-50', 'Ativo');
+(101, 6, '255.098.410-28', 'Ativo');
 
 --
 -- Inserting data into table alunos

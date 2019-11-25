@@ -321,20 +321,16 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <HBox alignment="TOP_CENTER" fillHeight="false">
-                                 <children>
-                                    <TableView fx:id="table_turmas" editable="true" minWidth="-Infinity" prefHeight="250.0" prefWidth="757.0" tableMenuButtonVisible="true">
-                                       <columns>
-                                          <TableColumn fx:id="col_codTurma" minWidth="111.0" prefWidth="111.0" text="Cód. Turma" />
-                                          <TableColumn fx:id="col_curriculo" minWidth="1.0" prefWidth="283.0" text="Currículo" />
-                                          <TableColumn fx:id="col_ano" minWidth="21.0" prefWidth="173.0" text="Ano/Série" />
-                                          <TableColumn fx:id="col_anoLetivo" minWidth="0.0" prefWidth="161.0" text="Ano letivo" />
-                                       </columns>
-                                    </TableView>
-                                 </children>
-                              </HBox>
+                              <TableView fx:id="table_turmas" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="192.0" prefWidth="757.0" tableMenuButtonVisible="true">
+                                 <columns>
+                                    <TableColumn fx:id="col_codTurma" minWidth="111.0" prefWidth="111.0" text="Cód. Turma" />
+                                    <TableColumn fx:id="col_curriculo" minWidth="1.0" prefWidth="283.0" text="Currículo" />
+                                    <TableColumn fx:id="col_ano" minWidth="21.0" prefWidth="173.0" text="Ano/Série" />
+                                    <TableColumn fx:id="col_anoLetivo" minWidth="0.0" prefWidth="161.0" text="Ano letivo" />
+                                 </columns>
+                              </TableView>
                               <JFXTextField fx:id="campoPesquisa3" labelFloat="true" maxWidth="672.0" minWidth="672.0" onKeyReleased="#searchAlunoTurma" prefHeight="43.0" prefWidth="672.0" promptText="Filtrar alunos" />
-                              <TableView fx:id="table_alunos" editable="true" minWidth="-Infinity" prefHeight="447.0" prefWidth="1306.0" tableMenuButtonVisible="true">
+                              <TableView fx:id="table_alunos" editable="true" minWidth="-Infinity" prefHeight="339.0" prefWidth="1306.0" tableMenuButtonVisible="true">
                                  <columns>
                                     <TableColumn fx:id="col_codPessoa2" minWidth="50.0" text="Cod" />
                                     <TableColumn fx:id="col_nome2" minWidth="300.0" prefWidth="302.9999694824219" text="Nome" />

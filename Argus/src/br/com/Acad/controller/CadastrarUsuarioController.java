@@ -266,7 +266,7 @@ public class CadastrarUsuarioController implements Initializable{
 					i++;
 					nomeUsuario.setText(primeiroNome+ultimoNome+String.valueOf(i));
 				}else{
-					nomeUsuario.setText(primeiroNome+ultimoNome+String.valueOf(1));
+					nomeUsuario.setText(primeiroNome+ultimoNome+String.valueOf(2));
 				}
 			}
 		}

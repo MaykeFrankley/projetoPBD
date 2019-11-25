@@ -29,7 +29,7 @@ public class BackupManager {
 			properties.setProperty(MysqlExportService.EMAIL_HOST, "smtp.gmail.com");
 			properties.setProperty(MysqlExportService.EMAIL_PORT, "587");
 			properties.setProperty(MysqlExportService.EMAIL_USERNAME, "backupsistemaargus@gmail.com");
-			properties.setProperty(MysqlExportService.EMAIL_PASSWORD, "Mayke.9612");
+			properties.setProperty(MysqlExportService.EMAIL_PASSWORD, "Mayke.9612.uast");
 			properties.setProperty(MysqlExportService.EMAIL_FROM, "backupsistemaargus@gmail.com");
 			properties.setProperty(MysqlExportService.EMAIL_TO, "backupsistemaargus@gmail.com");
 

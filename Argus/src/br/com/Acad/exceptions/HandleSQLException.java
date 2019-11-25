@@ -3,10 +3,11 @@ package br.com.Acad.exceptions;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLSyntaxErrorException;
+import java.sql.SQLException;
 
 import org.hibernate.exception.ExceptionUtils;
+
+import com.mysql.cj.exceptions.MysqlErrorNumbers;
 
 import br.com.Acad.util.Util;
 import javafx.application.Platform;
@@ -21,8 +22,11 @@ public class HandleSQLException {
 		Throwable[] t = ExceptionUtils.getThrowables(e);
 		for (int i = 0; i < t.length; i++) {
 			Throwable throwable = t[i];
-			if(throwable instanceof SQLSyntaxErrorException){
-				if(((SQLSyntaxErrorException) throwable).getErrorCode() == 1142){
+
+			if(throwable instanceof SQLException){
+				switch (((SQLException) throwable).getErrorCode()) {
+
+				case MysqlErrorNumbers.ER_ACCESS_DENIED_ERROR:
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -30,7 +34,20 @@ public class HandleSQLException {
 							return;
 						}
 					});
-				}else{
+					break;
+
+				case MysqlErrorNumbers.ER_DUP_ENTRY:
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							Util.Alert("O registro já está no sistema!");
+							return;
+						}
+					});
+
+					break;
+
+				default:
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -39,30 +56,17 @@ public class HandleSQLException {
 						}
 					});
 					printExeception(e);
+					break;
 				}
+
 			}
-			else if(throwable instanceof SQLIntegrityConstraintViolationException){
-				if(((SQLIntegrityConstraintViolationException) throwable).getErrorCode() == 1062){
-					Util.Alert("O registro já está no sistema!");
-					return;
-				}else{
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							Util.Alert("Ocorreu um erro!\nContate o administrador");
-							return;
-						}
-					});
-					printExeception(e);
-				}
-			}
+
 			else{
 				if(i == t.length-1){
 					printExeception(throwable);
 				}
 			}
 		}
-		printExeception(e);
 	}
 
 	private void printExeception(Throwable e){

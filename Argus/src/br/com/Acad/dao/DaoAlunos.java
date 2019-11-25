@@ -18,7 +18,6 @@ import br.com.Acad.model.Matricula;
 import br.com.Acad.model.ViewAluno;
 import br.com.Acad.model.ViewResponsavelFinanceiro;
 import br.com.Acad.model.ViewconfirmarAlunos;
-import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -140,13 +139,12 @@ public class DaoAlunos implements IDaoAlunos{
 		}
 	}
 
-	@Override
-	public ViewResponsavelFinanceiro getResponsavel(int codPessoa){
+	public ViewResponsavelFinanceiro getResponsavel(int codAluno){
 		try {
 			createEM();
 			ViewResponsavelFinanceiro v = (ViewResponsavelFinanceiro) entityMn.
 					createNativeQuery("call argus.getResponsavelDoAluno(:id);",
-					ViewResponsavelFinanceiro.class).setParameter("id", codPessoa).getSingleResult();
+					ViewResponsavelFinanceiro.class).setParameter("id", codAluno).getSingleResult();
 			return v;
 
 		} catch (PersistenceException e) {

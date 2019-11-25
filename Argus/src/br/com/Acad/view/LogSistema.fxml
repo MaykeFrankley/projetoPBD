@@ -37,11 +37,12 @@
                      <children>
                         <VBox alignment="TOP_CENTER" fillWidth="false" layoutX="74.0" layoutY="5.0" prefHeight="653.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <JFXTextField fx:id="campoPesquisa" labelFloat="true" maxWidth="1224.0" minWidth="553.0" onKeyReleased="#searchLog" prefHeight="45.0" prefWidth="732.0" promptText="Filtrar">
+                              <JFXTextField fx:id="campoPesquisa" labelFloat="true" maxWidth="1224.0" minWidth="553.0" onKeyReleased="#searchLog" prefHeight="45.0" prefWidth="732.0" promptText="Filtro 1">
                                  <VBox.margin>
                                     <Insets bottom="30.0" top="30.0" />
                                  </VBox.margin>
                               </JFXTextField>
+                              <JFXTextField fx:id="campoPesquisa2" labelFloat="true" maxWidth="1224.0" minWidth="553.0" onKeyReleased="#searchLog2" prefHeight="45.0" prefWidth="732.0" promptText="Filtro 2" />
                               <Label alignment="TOP_CENTER" text="Visualizar por tabela" textFill="#ffff8d">
                                  <font>
                                     <Font name="System Bold" size="16.0" />

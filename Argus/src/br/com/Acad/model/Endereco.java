@@ -1,5 +1,7 @@
 package br.com.Acad.model;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -105,6 +107,11 @@ public class Endereco {
 
 		return true;
 
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getBairro(), getCidade(), getCodPessoa(), getComplemento(), getEstado(), getNumero(), getRua());
 	}
 
 }

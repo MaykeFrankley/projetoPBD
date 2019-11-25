@@ -23,6 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.jrimum.bopepo.BancosSuportados;
 import org.jrimum.bopepo.Boleto;
+import org.jrimum.bopepo.pdf.Files;
 import org.jrimum.bopepo.view.BoletoViewer;
 import org.jrimum.domkee.comum.pessoa.endereco.UnidadeFederativa;
 import org.jrimum.domkee.financeiro.banco.febraban.Agencia;
@@ -65,6 +66,7 @@ import br.com.Acad.util.Settings;
 import br.com.Acad.util.TextFieldFormatter;
 import br.com.Acad.util.Util;
 import br.com.Acad.util.UtilDao;
+import br.com.Acad.util.ValidaCPF;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -297,7 +299,7 @@ public class CadastrarAlunoController implements Initializable{
 	@FXML
 	void confirmar(ActionEvent event) throws IOException {
 		Curriculo selectedCurriculo = table_curriculo.getSelectionModel().getSelectedItem();
-		if(selectedCurriculo != null && codAluno == 0 && !box_anoLetivo.getSelectionModel().isEmpty() && checkTextFields()){
+		if(selectedCurriculo != null && codAluno == 0 && !box_anoLetivo.getSelectionModel().isEmpty()){
 			Pessoa pessoaAluno = new Pessoa();
 			Endereco alunoEnd = new Endereco();
 			Contato alunoCont = new Contato();
@@ -985,8 +987,8 @@ public class CadastrarAlunoController implements Initializable{
 
 		Boleto_pdf argusBoleto = new Boleto_pdf();
 		argusBoleto.setId(new Boleto_pdfID(resp.getId().getCodPessoa(), resp.getId().getCodAluno(), codCurriculo, Integer.valueOf(box_anoLetivo.getSelectionModel().getSelectedItem())));
-		argusBoleto.setArquivoPdf(new File(System.getProperty("user.home")+"/Desktop"+"/"+
-				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf"));
+		argusBoleto.setArquivoPdf(Files.toByteArray(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+				UtilDao.daoPessoa.getPessoa(resp.getId().getCodPessoa()).getNome()+"/boletos.pdf")));
 
 		UtilDao.daoPagamentos.addBoletos(argusBoleto);
 
@@ -1009,11 +1011,17 @@ public class CadastrarAlunoController implements Initializable{
 			Util.Alert("Verifique o CPF!");
 			return false;
 		}else{
-			tff = new TextFieldFormatter();
-			tff.setMask("###.###.###-##");
-			tff.setCaracteresValidos("0123456789");
-			tff.setTf(cpf1);
-			tff.formatter();
+			if(ValidaCPF.isCPF(cpf1.getText())){
+				tff = new TextFieldFormatter();
+				tff.setMask("###.###.###-##");
+				tff.setCaracteresValidos("0123456789");
+				tff.setTf(cpf1);
+				tff.formatter();
+			}
+			else{
+				Util.Alert("CPF inválido!");
+				return false;
+			}
 		}
 
 		if(naturalidade1.getText().length() < 5 || naturalidade1.getText() == null){
@@ -1096,11 +1104,17 @@ public class CadastrarAlunoController implements Initializable{
 				Util.Alert("Verifique o CPF!");
 				return false;
 			}else{
-				tff = new TextFieldFormatter();
-				tff.setMask("###.###.###-##");
-				tff.setCaracteresValidos("0123456789");
-				tff.setTf(cpf);
-				tff.formatter();
+				if(ValidaCPF.isCPF(cpf.getText())){
+					tff = new TextFieldFormatter();
+					tff.setMask("###.###.###-##");
+					tff.setCaracteresValidos("0123456789");
+					tff.setTf(cpf);
+					tff.formatter();
+				}
+				else{
+					Util.Alert("CPF inválido!");
+					return false;
+				}
 			}
 		}
 

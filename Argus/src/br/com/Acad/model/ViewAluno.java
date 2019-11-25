@@ -38,9 +38,6 @@ public class ViewAluno{
 	@Column
 	private int codResponsavelFin;
 
-	@Column
-	private String situacao;
-
 	public ViewAluno() {
 		// TODO Auto-generated constructor stub
 	}
@@ -67,14 +64,6 @@ public class ViewAluno{
 
 	public void setCodResponsavelFin(int codResponsavelFin) {
 		this.codResponsavelFin = codResponsavelFin;
-	}
-
-	public String getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(String situacao) {
-		this.situacao = situacao;
 	}
 
 	public int getCodPessoa() {

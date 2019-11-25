@@ -2,7 +2,9 @@ package br.com.Acad.controller;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -101,8 +103,20 @@ public class PagamentosManagerController implements Initializable{
     void gerarBoletos(ActionEvent event) throws IOException {
     	ViewBoleto selected = table_boletos.getSelectionModel().getSelectedItem();
     	if(selected != null){
-    		File pdf = UtilDao.daoPagamentos.getBoletos(selected.getId());
-    		Desktop.getDesktop().open(pdf);
+    		byte[] bytePdf = UtilDao.daoPagamentos.getBoletos(selected.getId());
+
+    		new File(System.getProperty("user.home")+"/Desktop"+"/"+
+    				selected.getResponsavel()).mkdir();
+
+    		OutputStream targetFile=  new FileOutputStream(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+    				selected.getResponsavel()+"/boletos.pdf"));
+
+    		targetFile.write(bytePdf);
+            targetFile.close();
+
+    		Desktop.getDesktop().open(new File(System.getProperty("user.home")+"/Desktop"+"/"+
+    				selected.getResponsavel()+"/boletos.pdf"));
+
     	}
     }
 

@@ -1,7 +1,5 @@
 package br.com.Acad.model;
 
-import java.io.File;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,18 +13,18 @@ public class Boleto_pdf {
 	private Boleto_pdfID id;
 
 	@Column
-	private File arquivoPdf;
+	private byte[] arquivoPdf;
 
 	public Boleto_pdf() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public File getArquivoPdf() {
+	public byte[] getArquivoPdf() {
 		return arquivoPdf;
 	}
 
-	public void setArquivoPdf(File arquivoPdf) {
-		this.arquivoPdf = arquivoPdf;
+	public void setArquivoPdf(byte[] bs) {
+		this.arquivoPdf = bs;
 	}
 
 	public Boleto_pdfID getId() {
